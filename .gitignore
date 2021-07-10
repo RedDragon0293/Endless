@@ -1,0 +1,9 @@
+/gradle/
+/build/
+/.gradle/
+!.idea/runConfigurations/
+*.iml
+*.ipr
+*.iws
+/bin/
+/.settings/
