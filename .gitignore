@@ -7,3 +7,5 @@
 *.iws
 /bin/
 /.settings/
+/.idea/
+/run/
