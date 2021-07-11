@@ -629,11 +629,11 @@ public abstract class GuiScreen extends Gui implements GuiYesNoCallback
      */
     public void handleKeyboardInput() throws IOException
     {
-        if (Keyboard.getEventKeyState())
-        {
-            this.keyTyped(Keyboard.getEventCharacter(), Keyboard.getEventKey());
+        char character = Keyboard.getEventCharacter();
+        int key = Keyboard.getEventKey();
+        if (Keyboard.getEventKeyState() || (key == 0 && Character.isDefined(character))) {
+            this.keyTyped(character, key);
         }
-
         this.mc.dispatchKeypresses();
     }
 
