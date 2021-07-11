@@ -1,6 +1,8 @@
 package net.minecraft.client.resources;
 
 import com.google.gson.JsonParseException;
+
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import net.minecraft.client.gui.GuiScreenResourcePacks;
 import net.minecraft.client.renderer.texture.DynamicTexture;
@@ -22,10 +24,16 @@ public class ResourcePackListEntryDefault extends ResourcePackListEntry
         super(resourcePacksGUIIn);
         this.field_148320_d = this.mc.getResourcePackRepository().rprDefaultResourcePack;
         DynamicTexture dynamictexture;
-
         try
         {
-            dynamictexture = new DynamicTexture(this.field_148320_d.getPackImage());
+            BufferedImage bufferedImage = this.field_148320_d.getPackImage();
+            if(bufferedImage != null)
+            {
+                dynamictexture = new DynamicTexture(bufferedImage);
+            } else
+            {
+                dynamictexture = TextureUtil.missingTexture;
+            }
         }
         catch (IOException var4)
         {
