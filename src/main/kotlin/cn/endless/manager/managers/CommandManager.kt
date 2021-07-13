@@ -51,7 +51,8 @@ object CommandManager : Manager<Command>("Command"), EventListener {
                 history += "$arg "
             }.onFailure {
                 if (lastCommand!!.subCommands.isNotEmpty()) {
-                    chat("§3§lSyntax:\n§7  $history<${lastCommand!!.subCommands.joinToString(separator = "/") { it.name }}>")
+                    chat("§3§lSyntax:")
+                    chat("§7  $history<${lastCommand!!.subCommands.joinToString(separator = "/") { it.name }}>", false)
                     return@execute
                 }
             }

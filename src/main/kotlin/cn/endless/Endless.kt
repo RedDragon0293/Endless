@@ -23,7 +23,7 @@ object Endless : EventListener {
     fun startClient() {
         Thread {
             isStarting = true
-            println("Starting Endless client.")
+            System.out.println("Starting Endless client.")
             EventManager
             CommandManager
             FileManager

@@ -11,7 +11,8 @@ abstract class Manager<E : Element>(name: String) {
     val elements = mutableSetOf<E>()
     val logger: Logger = LogManager.getLogger(this.name)
 
-    fun chat(message: String) = cn.endless.utils.io.chat("§2[§o$name§2] §f$message")
+    fun chat(message: String, prefix: Boolean = true) =
+        cn.endless.utils.io.chat(if (prefix) "§2[§o$name§2] §f$message" else message)
 
     fun error(message: String) = chat("§4§lError§4: §4$message")
 
