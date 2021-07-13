@@ -1,6 +1,8 @@
 package net.minecraft.client;
 
 import cn.endless.Endless;
+import cn.endless.event.KeyEvent;
+import cn.endless.manager.managers.EventManager;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -619,7 +621,13 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
     private void createDisplay() throws LWJGLException {
         Display.setResizable(true);
 //        Display.setTitle("Minecraft 1.8.9");
-        Display.setTitle(String.format("%s v%s | Minecraft 1.8.9", Endless.CLIENT_NAME, Endless.CLIENT_VERSION));
+        Display.setTitle(String.format(
+                "%s v%d.%d.%d | Minecraft 1.8.9",
+                Endless.CLIENT_NAME,
+                Endless.VERSION_MAJOR,
+                Endless.VERSION_MINOR,
+                Endless.VERSION_PATCH
+        ));
 
         try {
             Display.create((new PixelFormat()).withDepthBits(24));
@@ -1666,6 +1674,9 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
                     if (this.currentScreen != null) {
                         this.currentScreen.handleKeyboardInput();
                     } else {
+
+                        EventManager.callEvent(new KeyEvent(k));
+
                         if (k == 1) {
                             this.displayInGameMenu();
                         }
