@@ -123,10 +123,10 @@ public class FallbackResourceManager implements IResourceManager
         {
             if (!this.field_177329_c)
             {
-                FallbackResourceManager.logger.warn(this.field_177328_b);
+                //FallbackResourceManager.logger.warn(this.field_177328_b);
             }
 
-            super.finalize();
+            //super.finalize();
         }
 
         public int read() throws IOException
