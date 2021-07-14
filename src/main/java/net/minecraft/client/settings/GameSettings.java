@@ -1296,6 +1296,7 @@ public class GameSettings
             printwriter.println("particles:" + this.particleSetting);
             printwriter.println("bobView:" + this.viewBobbing);
             printwriter.println("anaglyph3d:" + this.anaglyph);
+            printwriter.println("enableVsync:" + this.enableVsync);
             printwriter.println("maxFps:" + this.limitFramerate);
             printwriter.println("fboEnable:" + this.fboEnable);
             printwriter.println("difficulty:" + this.difficulty.getDifficultyId());
@@ -1327,7 +1328,6 @@ public class GameSettings
             printwriter.println("chatOpacity:" + this.chatOpacity);
             printwriter.println("snooperEnabled:" + this.snooperEnabled);
             printwriter.println("fullscreen:" + this.fullScreen);
-            printwriter.println("enableVsync:" + this.enableVsync);
             printwriter.println("useVbo:" + this.useVbo);
             printwriter.println("hideServerAddress:" + this.hideServerAddress);
             printwriter.println("advancedItemTooltips:" + this.advancedItemTooltips);
