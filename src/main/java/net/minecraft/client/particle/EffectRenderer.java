@@ -2,11 +2,6 @@ package net.minecraft.client.particle;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.concurrent.Callable;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -21,21 +16,22 @@ import net.minecraft.crash.CrashReport;
 import net.minecraft.crash.CrashReportCategory;
 import net.minecraft.entity.Entity;
 import net.minecraft.src.Config;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.MathHelper;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.ReportedException;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.*;
 import net.minecraft.world.World;
 import net.optifine.reflect.Reflector;
 
-public class EffectRenderer
-{
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.concurrent.Callable;
+
+public class EffectRenderer {
     private static final ResourceLocation particleTextures = new ResourceLocation("textures/particle/particles.png");
 
-    /** Reference to the World object. */
+    /**
+     * Reference to the World object.
+     */
     protected World worldObj;
     private List<EntityFX>[][] fxLayers = new List[4][];
     private List<EntityParticleEmitter> particleEmitters = Lists.<EntityParticleEmitter>newArrayList();
@@ -307,7 +303,7 @@ public class EffectRenderer
                     GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
                     Tessellator tessellator = Tessellator.getInstance();
                     WorldRenderer worldrenderer = tessellator.getWorldRenderer();
-                    worldrenderer.func_181668_a(7, DefaultVertexFormats.field_181704_d);
+                    worldrenderer.begin(7, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
 
                     for (int k = 0; k < this.fxLayers[i][j].size(); ++k)
                     {

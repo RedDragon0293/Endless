@@ -1,9 +1,5 @@
 package net.optifine;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Properties;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
@@ -22,8 +18,12 @@ import net.optifine.util.NumUtils;
 import net.optifine.util.SmoothFloat;
 import net.optifine.util.TextureUtils;
 
-public class CustomSkyLayer
-{
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Properties;
+
+public class CustomSkyLayer {
     public String source = null;
     private int startFadeIn = -1;
     private int endFadeIn = -1;
@@ -471,16 +471,15 @@ public class CustomSkyLayer
         }
     }
 
-    private void renderSide(Tessellator tess, int side)
-    {
+    private void renderSide(Tessellator tess, int side) {
         WorldRenderer worldrenderer = tess.getWorldRenderer();
-        double d0 = (double)(side % 3) / 3.0D;
-        double d1 = (double)(side / 3) / 2.0D;
-        worldrenderer.func_181668_a(7, DefaultVertexFormats.field_181707_g);
-        worldrenderer.func_181662_b(-100.0D, -100.0D, -100.0D).func_181673_a(d0, d1).func_181675_d();
-        worldrenderer.func_181662_b(-100.0D, -100.0D, 100.0D).func_181673_a(d0, d1 + 0.5D).func_181675_d();
-        worldrenderer.func_181662_b(100.0D, -100.0D, 100.0D).func_181673_a(d0 + 0.3333333333333333D, d1 + 0.5D).func_181675_d();
-        worldrenderer.func_181662_b(100.0D, -100.0D, -100.0D).func_181673_a(d0 + 0.3333333333333333D, d1).func_181675_d();
+        double d0 = (double) (side % 3) / 3.0D;
+        double d1 = (double) (side / 3) / 2.0D;
+        worldrenderer.begin(7, DefaultVertexFormats.POSITION_TEX);
+        worldrenderer.pos(-100.0D, -100.0D, -100.0D).tex(d0, d1).endVertex();
+        worldrenderer.pos(-100.0D, -100.0D, 100.0D).tex(d0, d1 + 0.5D).endVertex();
+        worldrenderer.pos(100.0D, -100.0D, 100.0D).tex(d0 + 0.3333333333333333D, d1 + 0.5D).endVertex();
+        worldrenderer.pos(100.0D, -100.0D, -100.0D).tex(d0 + 0.3333333333333333D, d1).endVertex();
         tess.draw();
     }
 

@@ -5,21 +5,6 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.gson.Gson;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SoundCategory;
 import net.minecraft.client.gui.GuiNewChat;
@@ -34,14 +19,7 @@ import net.minecraft.network.play.client.C15PacketClientSettings;
 import net.minecraft.src.Config;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.EnumDifficulty;
-import net.optifine.ClearWater;
-import net.optifine.CustomColors;
-import net.optifine.CustomGuis;
-import net.optifine.CustomSky;
-import net.optifine.DynamicLights;
-import net.optifine.Lang;
-import net.optifine.NaturalTextures;
-import net.optifine.RandomEntities;
+import net.optifine.*;
 import net.optifine.reflect.Reflector;
 import net.optifine.shaders.Shaders;
 import net.optifine.util.KeyUtils;
@@ -54,15 +32,20 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 
-public class GameSettings
-{
+import java.io.*;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+public class GameSettings {
     private static final Logger logger = LogManager.getLogger();
     private static final Gson gson = new Gson();
-    private static final ParameterizedType typeListString = new ParameterizedType()
-    {
-        public Type[] getActualTypeArguments()
-        {
-            return new Type[] {String.class};
+    private static final ParameterizedType typeListString = new ParameterizedType() {
+        public Type[] getActualTypeArguments() {
+            return new Type[]{String.class};
         }
         public Type getRawType()
         {
@@ -106,7 +89,7 @@ public class GameSettings
     public float chatOpacity = 1.0F;
     public boolean snooperEnabled = true;
     public boolean fullScreen;
-    public boolean enableVsync = true;
+    public boolean enableVsync = false;
     public boolean useVbo = false;
     public boolean allowBlockAlternatives = true;
     public boolean reducedDebugInfo = false;
@@ -1296,7 +1279,6 @@ public class GameSettings
             printwriter.println("particles:" + this.particleSetting);
             printwriter.println("bobView:" + this.viewBobbing);
             printwriter.println("anaglyph3d:" + this.anaglyph);
-            printwriter.println("enableVsync:" + this.enableVsync);
             printwriter.println("maxFps:" + this.limitFramerate);
             printwriter.println("fboEnable:" + this.fboEnable);
             printwriter.println("difficulty:" + this.difficulty.getDifficultyId());
@@ -1328,6 +1310,7 @@ public class GameSettings
             printwriter.println("chatOpacity:" + this.chatOpacity);
             printwriter.println("snooperEnabled:" + this.snooperEnabled);
             printwriter.println("fullscreen:" + this.fullScreen);
+            printwriter.println("enableVsync:" + this.enableVsync);
             printwriter.println("useVbo:" + this.useVbo);
             printwriter.println("hideServerAddress:" + this.hideServerAddress);
             printwriter.println("advancedItemTooltips:" + this.advancedItemTooltips);

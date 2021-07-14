@@ -1,7 +1,6 @@
 package net.minecraft.client.renderer.tileentity;
 
 import com.google.common.collect.Maps;
-import java.util.Map;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -14,30 +13,23 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.crash.CrashReport;
 import net.minecraft.crash.CrashReportCategory;
 import net.minecraft.entity.Entity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityBanner;
-import net.minecraft.tileentity.TileEntityBeacon;
-import net.minecraft.tileentity.TileEntityChest;
-import net.minecraft.tileentity.TileEntityEnchantmentTable;
-import net.minecraft.tileentity.TileEntityEndPortal;
-import net.minecraft.tileentity.TileEntityEnderChest;
-import net.minecraft.tileentity.TileEntityMobSpawner;
-import net.minecraft.tileentity.TileEntityPiston;
-import net.minecraft.tileentity.TileEntitySign;
-import net.minecraft.tileentity.TileEntitySkull;
+import net.minecraft.tileentity.*;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ReportedException;
 import net.minecraft.world.World;
 import net.optifine.EmissiveTextures;
 import net.optifine.reflect.Reflector;
 
-public class TileEntityRendererDispatcher
-{
+import java.util.Map;
+
+public class TileEntityRendererDispatcher {
     public Map<Class, TileEntitySpecialRenderer> mapSpecialRenderers = Maps.newHashMap();
     public static TileEntityRendererDispatcher instance = new TileEntityRendererDispatcher();
     public FontRenderer fontRenderer;
 
-    /** The player's current X position (same as playerX) */
+    /**
+     * The player's current X position (same as playerX)
+     */
     public static double staticPlayerX;
 
     /** The player's current Y position (same as playerY) */
@@ -209,9 +201,8 @@ public class TileEntityRendererDispatcher
         return this.fontRenderer;
     }
 
-    public void preDrawBatch()
-    {
-        this.batchBuffer.getWorldRenderer().func_181668_a(7, DefaultVertexFormats.BLOCK);
+    public void preDrawBatch() {
+        this.batchBuffer.getWorldRenderer().begin(7, DefaultVertexFormats.BLOCK);
         this.drawingBatch = true;
     }
 
@@ -234,7 +225,7 @@ public class TileEntityRendererDispatcher
 
         if (p_drawBatch_1_ > 0)
         {
-            this.batchBuffer.getWorldRenderer().func_181674_a((float)staticPlayerX, (float)staticPlayerY, (float)staticPlayerZ);
+            this.batchBuffer.getWorldRenderer().sortVertexData((float) staticPlayerX, (float) staticPlayerY, (float) staticPlayerZ);
         }
 
         this.batchBuffer.draw();

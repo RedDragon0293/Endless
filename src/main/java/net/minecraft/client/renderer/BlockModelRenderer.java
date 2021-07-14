@@ -1,7 +1,5 @@
 package net.minecraft.client.renderer;
 
-import java.util.BitSet;
-import java.util.List;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -12,12 +10,7 @@ import net.minecraft.client.resources.model.IBakedModel;
 import net.minecraft.crash.CrashReport;
 import net.minecraft.crash.CrashReportCategory;
 import net.minecraft.src.Config;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumWorldBlockLayer;
-import net.minecraft.util.MathHelper;
-import net.minecraft.util.ReportedException;
-import net.minecraft.util.Vec3i;
+import net.minecraft.util.*;
 import net.minecraft.world.IBlockAccess;
 import net.optifine.BetterSnow;
 import net.optifine.CustomColors;
@@ -28,14 +21,15 @@ import net.optifine.render.RenderEnv;
 import net.optifine.shaders.SVertexBuilder;
 import net.optifine.shaders.Shaders;
 
-public class BlockModelRenderer
-{
+import java.util.BitSet;
+import java.util.List;
+
+public class BlockModelRenderer {
     private static float aoLightValueOpaque = 0.2F;
     private static boolean separateAoLightValue = false;
-    private static final EnumWorldBlockLayer[] OVERLAY_LAYERS = new EnumWorldBlockLayer[] {EnumWorldBlockLayer.CUTOUT, EnumWorldBlockLayer.CUTOUT_MIPPED, EnumWorldBlockLayer.TRANSLUCENT};
+    private static final EnumWorldBlockLayer[] OVERLAY_LAYERS = new EnumWorldBlockLayer[]{EnumWorldBlockLayer.CUTOUT, EnumWorldBlockLayer.CUTOUT_MIPPED, EnumWorldBlockLayer.TRANSLUCENT};
 
-    public BlockModelRenderer()
-    {
+    public BlockModelRenderer() {
         if (Reflector.ForgeModContainer_forgeLightPipelineEnabled.exists())
         {
             Reflector.setFieldValue(Reflector.ForgeModContainer_forgeLightPipelineEnabled, Boolean.valueOf(false));
@@ -474,7 +468,7 @@ public class BlockModelRenderer
 
         for (BakedQuad bakedquad : p_178264_5_)
         {
-            worldrenderer.func_181668_a(7, DefaultVertexFormats.ITEM);
+            worldrenderer.begin(7, DefaultVertexFormats.ITEM);
             worldrenderer.addVertexData(bakedquad.getVertexData());
             worldrenderer.putSprite(bakedquad.getSprite());
 
@@ -523,7 +517,7 @@ public class BlockModelRenderer
 
                         if (!worldrenderer.isDrawing())
                         {
-                            worldrenderer.func_181668_a(7, DefaultVertexFormats.BLOCK);
+                            worldrenderer.begin(7, DefaultVertexFormats.BLOCK);
                             worldrenderer.setTranslation(p_renderOverlayModels_5_.getXOffset(), p_renderOverlayModels_5_.getYOffset(), p_renderOverlayModels_5_.getZOffset());
                         }
 

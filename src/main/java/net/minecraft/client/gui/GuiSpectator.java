@@ -115,17 +115,14 @@ public class GuiSpectator extends Gui implements ISpectatorMenuRecipient
         }
     }
 
-    public void func_175263_a(ScaledResolution p_175263_1_)
-    {
-        int i = (int)(this.func_175265_c() * 255.0F);
+    public void renderSelectedItem(ScaledResolution p_175263_1_) {
+        int i = (int) (this.func_175265_c() * 255.0F);
 
-        if (i > 3 && this.field_175271_i != null)
-        {
+        if (i > 3 && this.field_175271_i != null) {
             ISpectatorMenuObject ispectatormenuobject = this.field_175271_i.func_178645_b();
             String s = ispectatormenuobject != SpectatorMenu.field_178657_a ? ispectatormenuobject.getSpectatorName().getFormattedText() : this.field_175271_i.func_178650_c().func_178670_b().getFormattedText();
 
-            if (s != null)
-            {
+            if (s != null) {
                 int j = (p_175263_1_.getScaledWidth() - this.field_175268_g.fontRendererObj.getStringWidth(s)) / 2;
                 int k = p_175263_1_.getScaledHeight() - 35;
                 GlStateManager.pushMatrix();

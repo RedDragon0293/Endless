@@ -1,10 +1,6 @@
 package net.minecraft.client.gui.achievement;
 
 import com.google.common.collect.Lists;
-import java.io.IOException;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiButton;
@@ -28,8 +24,12 @@ import net.minecraft.stats.StatList;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.input.Mouse;
 
-public class GuiStats extends GuiScreen implements IProgressMeter
-{
+import java.io.IOException;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
+public class GuiStats extends GuiScreen implements IProgressMeter {
     protected GuiScreen parentScreen;
     protected String screenTitle = "Select world";
     private GuiStats.StatsGeneral generalStats;
@@ -204,8 +204,7 @@ public class GuiStats extends GuiScreen implements IProgressMeter
     /**
      * Draws a sprite from assets/textures/gui/container/stats_icons.png
      */
-    private void drawSprite(int p_146527_1_, int p_146527_2_, int p_146527_3_, int p_146527_4_)
-    {
+    private void drawSprite(int p_146527_1_, int p_146527_2_, int p_146527_3_, int p_146527_4_) {
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         this.mc.getTextureManager().bindTexture(statIcons);
         float f = 0.0078125F;
@@ -214,11 +213,11 @@ public class GuiStats extends GuiScreen implements IProgressMeter
         int j = 18;
         Tessellator tessellator = Tessellator.getInstance();
         WorldRenderer worldrenderer = tessellator.getWorldRenderer();
-        worldrenderer.func_181668_a(7, DefaultVertexFormats.field_181707_g);
-        worldrenderer.func_181662_b((double)(p_146527_1_ + 0), (double)(p_146527_2_ + 18), (double)this.zLevel).func_181673_a((double)((float)(p_146527_3_ + 0) * 0.0078125F), (double)((float)(p_146527_4_ + 18) * 0.0078125F)).func_181675_d();
-        worldrenderer.func_181662_b((double)(p_146527_1_ + 18), (double)(p_146527_2_ + 18), (double)this.zLevel).func_181673_a((double)((float)(p_146527_3_ + 18) * 0.0078125F), (double)((float)(p_146527_4_ + 18) * 0.0078125F)).func_181675_d();
-        worldrenderer.func_181662_b((double)(p_146527_1_ + 18), (double)(p_146527_2_ + 0), (double)this.zLevel).func_181673_a((double)((float)(p_146527_3_ + 18) * 0.0078125F), (double)((float)(p_146527_4_ + 0) * 0.0078125F)).func_181675_d();
-        worldrenderer.func_181662_b((double)(p_146527_1_ + 0), (double)(p_146527_2_ + 0), (double)this.zLevel).func_181673_a((double)((float)(p_146527_3_ + 0) * 0.0078125F), (double)((float)(p_146527_4_ + 0) * 0.0078125F)).func_181675_d();
+        worldrenderer.begin(7, DefaultVertexFormats.POSITION_TEX);
+        worldrenderer.pos((double) (p_146527_1_ + 0), (double) (p_146527_2_ + 18), (double) this.zLevel).tex((double) ((float) (p_146527_3_ + 0) * 0.0078125F), (double) ((float) (p_146527_4_ + 18) * 0.0078125F)).endVertex();
+        worldrenderer.pos((double) (p_146527_1_ + 18), (double) (p_146527_2_ + 18), (double) this.zLevel).tex((double) ((float) (p_146527_3_ + 18) * 0.0078125F), (double) ((float) (p_146527_4_ + 18) * 0.0078125F)).endVertex();
+        worldrenderer.pos((double) (p_146527_1_ + 18), (double) (p_146527_2_ + 0), (double) this.zLevel).tex((double) ((float) (p_146527_3_ + 18) * 0.0078125F), (double) ((float) (p_146527_4_ + 0) * 0.0078125F)).endVertex();
+        worldrenderer.pos((double) (p_146527_1_ + 0), (double) (p_146527_2_ + 0), (double) this.zLevel).tex((double) ((float) (p_146527_3_ + 0) * 0.0078125F), (double) ((float) (p_146527_4_ + 0) * 0.0078125F)).endVertex();
         tessellator.draw();
     }
 

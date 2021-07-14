@@ -1,16 +1,15 @@
 package net.minecraft.realms;
 
-import java.util.ArrayList;
-import java.util.List;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.renderer.vertex.VertexFormatElement;
 
-public class RealmsVertexFormat
-{
+import java.util.ArrayList;
+import java.util.List;
+
+public class RealmsVertexFormat {
     private VertexFormat v;
 
-    public RealmsVertexFormat(VertexFormat p_i46456_1_)
-    {
+    public RealmsVertexFormat(VertexFormat p_i46456_1_) {
         this.v = p_i46456_1_;
     }
 
@@ -57,7 +56,7 @@ public class RealmsVertexFormat
 
     public RealmsVertexFormat addElement(RealmsVertexFormatElement p_addElement_1_)
     {
-        return this.from(this.v.func_181721_a(p_addElement_1_.getVertexFormatElement()));
+        return this.from(this.v.addElement(p_addElement_1_.getVertexFormatElement()));
     }
 
     public int getColorOffset()
@@ -99,7 +98,7 @@ public class RealmsVertexFormat
 
     public int getIntegerSize()
     {
-        return this.v.func_181719_f();
+        return this.v.getIntegerSize();
     }
 
     public boolean equals(Object p_equals_1_)

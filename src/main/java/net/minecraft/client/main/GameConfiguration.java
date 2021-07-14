@@ -1,9 +1,10 @@
 package net.minecraft.client.main;
 
 import com.mojang.authlib.properties.PropertyMap;
+import net.minecraft.util.Session;
+
 import java.io.File;
 import java.net.Proxy;
-import net.minecraft.util.Session;
 
 public class GameConfiguration
 {
@@ -82,15 +83,14 @@ public class GameConfiguration
     {
         public final Session session;
         public final PropertyMap userProperties;
-        public final PropertyMap field_181172_c;
+        public final PropertyMap profileProperties;
         public final Proxy proxy;
 
-        public UserInformation(Session p_i46375_1_, PropertyMap p_i46375_2_, PropertyMap p_i46375_3_, Proxy p_i46375_4_)
-        {
-            this.session = p_i46375_1_;
-            this.userProperties = p_i46375_2_;
-            this.field_181172_c = p_i46375_3_;
-            this.proxy = p_i46375_4_;
+        public UserInformation(Session session, PropertyMap userMap, PropertyMap profileMap, Proxy proxy) {
+            this.session = session;
+            this.userProperties = userMap;
+            this.profileProperties = profileMap;
+            this.proxy = proxy;
         }
     }
 }

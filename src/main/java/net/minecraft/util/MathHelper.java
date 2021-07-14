@@ -1,8 +1,9 @@
 package net.minecraft.util;
 
+import net.optifine.util.MathUtils;
+
 import java.util.Random;
 import java.util.UUID;
-import net.optifine.util.MathUtils;
 
 public class MathHelper
 {
@@ -494,10 +495,9 @@ public class MathHelper
         return p_181161_0_;
     }
 
-    public static int func_181758_c(float p_181758_0_, float p_181758_1_, float p_181758_2_)
-    {
-        int i = (int)(p_181758_0_ * 6.0F) % 6;
-        float f = p_181758_0_ * 6.0F - (float)i;
+    public static int hsvToRGB(float p_181758_0_, float p_181758_1_, float p_181758_2_) {
+        int i = (int) (p_181758_0_ * 6.0F) % 6;
+        float f = p_181758_0_ * 6.0F - (float) i;
         float f1 = p_181758_2_ * (1.0F - p_181758_1_);
         float f2 = p_181758_2_ * (1.0F - f * p_181758_1_);
         float f3 = p_181758_2_ * (1.0F - (1.0F - f) * p_181758_1_);
