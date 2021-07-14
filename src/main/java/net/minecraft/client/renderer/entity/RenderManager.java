@@ -48,15 +48,19 @@ public class RenderManager {
      * Renders fonts
      */
     private FontRenderer textRenderer;
-    private double renderPosX;
-    private double renderPosY;
-    private double renderPosZ;
+    public double renderPosX;
+    public double renderPosY;
+    public double renderPosZ;
     public TextureManager renderEngine;
 
-    /** Reference to the World object. */
+    /**
+     * Reference to the World object.
+     */
     public World worldObj;
 
-    /** Rendermanager's variable for the player */
+    /**
+     * Rendermanager's variable for the player
+     */
     public Entity livingPlayer;
     public Entity pointedEntity;
     public float playerViewY;

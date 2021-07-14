@@ -23,6 +23,7 @@ abstract class Value<T>(val name: String, protected var value: T) {
 
 open class BoolValue(name: String, value: Boolean)
     : Value<Boolean>(name, value) {
+    var subValue: ArrayList<Value<*>> = arrayListOf()
 
     override fun toJson() = JsonPrimitive(value)
 
@@ -95,9 +96,12 @@ open class BlockValue(name: String, value: Int) : IntValue(name, value, 1, 197)
 open class ListValue(name: String, val values: Array<String>, value: String) : Value<String>(name, value) {
     @JvmField
     var openList = false
+    var subValue: MutableMap<String, ArrayList<Value<*>>> = mutableMapOf()
 
     init {
         this.value = value
+        for (currentValue in values)
+            subValue[currentValue] = arrayListOf()
     }
 
     operator fun contains(string: String?): Boolean {

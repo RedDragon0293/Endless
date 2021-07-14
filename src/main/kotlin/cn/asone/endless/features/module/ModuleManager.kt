@@ -4,26 +4,31 @@ import cn.asone.endless.event.Event
 import cn.asone.endless.event.EventManager
 import cn.asone.endless.event.KeyEvent
 import cn.asone.endless.features.command.CommandManager
-import cn.asone.endless.features.module.modules.misc.TestModule
+import cn.asone.endless.features.module.modules.misc.ModuleTest
+import cn.asone.endless.features.module.modules.movement.ModuleSprint
+import cn.asone.endless.features.module.modules.render.ModuleSimpleArrayList
 import cn.asone.endless.utils.ClientUtils
 import cn.asone.endless.utils.ListenableManager
 import java.util.*
 
 object ModuleManager : ListenableManager() {
-    override fun handledEvents(): List<Class<out Event>> = arrayListOf(KeyEvent::class.java)
-    private val modules = TreeSet<Module> { module1, module2 -> module1.name.compareTo(module2.name) }
+    override val handledEvents: List<Class<out Event>> = arrayListOf(KeyEvent::class.java)
+    val modules = TreeSet<AbstractModule> { module1, module2 -> module1.name.compareTo(module2.name) }
 
     init {
         EventManager.registerListener(this)
         arrayOf(
-                TestModule
+                ModuleTest,
+                ModuleSimpleArrayList,
+                ModuleSprint
         ).forEach {
             registerModule(it)
-            CommandManager.registerModuleCommand(it)
+            if (!it.values.isNullOrEmpty())
+                CommandManager.registerModuleCommand(it)
         }
     }
 
-    private fun registerModule(module: Module) {
+    private fun registerModule(module: AbstractModule) {
         modules.add(module)
         EventManager.registerListener(module)
     }
@@ -34,7 +39,7 @@ object ModuleManager : ListenableManager() {
         if (event.state)
             modules.filter { it.keyBind == event.key }
                     .forEach {
-                        ClientUtils.displayChatMessage("Toggle module ${it.name}")
+                        ClientUtils.displayChatMessage("[ModuleManager] Toggle module ${it.name}")
                         it.toggle()
                     }
     }

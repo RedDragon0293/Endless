@@ -1,11 +1,11 @@
 package cn.asone.endless.features.command.commands
 
-import cn.asone.endless.features.command.Command
+import cn.asone.endless.features.command.AbstractCommand
 import cn.asone.endless.features.module.ModuleManager
 import cn.asone.endless.utils.ClientUtils
 import org.lwjgl.input.Keyboard
 
-object BindCommand : Command("bind") {
+object CommandBind : AbstractCommand("bind") {
     override fun onExecute(command: String) {
         val args = command.split(' ').toTypedArray()
         if (args.isEmpty() || (args.size == 1 && args[0] == "")) {
@@ -22,7 +22,7 @@ object BindCommand : Command("bind") {
             return
         }
         module.keyBind = Keyboard.getKeyIndex(args[1].toUpperCase())
-        ClientUtils.chatSuccess("绑定快捷键 §9§l${Keyboard.getKeyName(module.keyBind)} §a至功能 §9§l${module.name}§a。")
+        ClientUtils.chatSuccess("绑定快捷键 §9§l${Keyboard.getKeyName(module.keyBind)} §a至功能 §9§l${module.name}§a.")
+        playEditSound()
     }
-
 }

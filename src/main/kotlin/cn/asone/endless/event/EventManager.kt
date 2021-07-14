@@ -1,6 +1,6 @@
 package cn.asone.endless.event
 
-import cn.asone.endless.features.module.Module
+import cn.asone.endless.features.module.AbstractModule
 import cn.asone.endless.utils.ClientUtils
 
 object EventManager {
@@ -23,7 +23,7 @@ object EventManager {
     }
 
     fun registerListener(listener: Listenable) {
-        for (event in listener.handledEvents()) {
+        for (event in listener.handledEvents) {
             registry[event]!!.add(listener)
         }
     }
@@ -79,7 +79,7 @@ object EventManager {
                         target.onRender2D(event)
                     }.onFailure {
                         it.printStackTrace()
-                        if (target is Module)
+                        if (target is AbstractModule)
                             target.state = false
                     }
 
@@ -94,7 +94,7 @@ object EventManager {
                         target.onRender3D(event)
                     }.onFailure {
                         it.printStackTrace()
-                        if (target is Module)
+                        if (target is AbstractModule)
                             target.state = false
                     }
                 }
@@ -138,7 +138,7 @@ object EventManager {
             }
 
             else -> {
-                ClientUtils.displayChatMessage("Unsupported event detected!")
+                ClientUtils.displayChatMessage("[EventManager] Unsupported event detected!")
             }
         }
     }

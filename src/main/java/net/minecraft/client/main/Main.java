@@ -1,5 +1,6 @@
 package net.minecraft.client.main;
 
+import cn.asone.endless.config.ConfigManager;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.mojang.authlib.properties.PropertyMap;
@@ -9,6 +10,8 @@ import joptsimple.OptionSet;
 import joptsimple.OptionSpec;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Session;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.net.Authenticator;
@@ -18,8 +21,10 @@ import java.net.Proxy;
 import java.net.Proxy.Type;
 import java.util.List;
 
-public class Main
-{
+public class Main {
+    public static boolean safelyQuit = false;
+    private final static Logger logger = LogManager.getLogger("Endless");
+
     public static void main(String[] args) {
         System.setProperty("java.net.preferIPv4Stack", "true");
         OptionParser optionparser = new OptionParser();
@@ -93,8 +98,18 @@ public class Main
         Integer portValue = argsOptions.valueOf(port);
         Session session = new Session(username.value(argsOptions), uuidValue, accessToken.value(argsOptions), userType.value(argsOptions));
         GameConfiguration gameconfiguration = new GameConfiguration(new GameConfiguration.UserInformation(session, userPropertyMap, profilePropertyMap, proxy), new GameConfiguration.DisplayInformation(displayWidth, displayHeight, fullScreen, checkGLErrors), new GameConfiguration.FolderInformation(gameDirFile, resourcePacksFile, assetsFile, assetIndexValue), new GameConfiguration.GameInformation(demo, versionValue), new GameConfiguration.ServerInformation(serverValue, portValue));
+        Runtime.getRuntime().addShutdownHook(new Thread("Endless Shutdown Thread") {
+            public void run() {
+                if (!Main.safelyQuit) {
+                    Main.logger.warn("检测到异常的退出. 紧急保存配置文件!");
+                    ConfigManager.INSTANCE.saveAllConfigs();
+                } else
+                    Main.logger.info("检测到已正常退出客户端.");
+            }
+        });
         Runtime.getRuntime().addShutdownHook(new Thread("Client Shutdown Thread") {
             public void run() {
+                Main.logger.info("[Debug] Shutting down server...");
                 Minecraft.stopIntegratedServer();
             }
         });
@@ -102,8 +117,7 @@ public class Main
         (new Minecraft(gameconfiguration)).run();
     }
 
-    private static boolean isNullOrEmpty(String str)
-    {
+    private static boolean isNullOrEmpty(String str) {
         return str != null && !str.isEmpty();
     }
 }

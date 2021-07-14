@@ -365,9 +365,7 @@ public class EntityPlayerSP extends AbstractClientPlayer {
     }
 
     protected boolean pushOutOfBlocks(double x, double y, double z) {
-        if (this.noClip) {
-            return false;
-        } else {
+        if (!this.noClip) {
             BlockPos blockpos = new BlockPos(x, y, z);
             double d0 = x - (double) blockpos.getX();
             double d1 = z - (double) blockpos.getZ();
@@ -415,8 +413,8 @@ public class EntityPlayerSP extends AbstractClientPlayer {
                 }
             }
 
-            return false;
         }
+        return false;
     }
 
     /**
@@ -644,10 +642,10 @@ public class EntityPlayerSP extends AbstractClientPlayer {
             --this.timeUntilPortal;
         }
 
-        boolean flag = this.movementInput.jump;
-        boolean flag1 = this.movementInput.sneak;
+        boolean jump = this.movementInput.jump;
+        boolean sneak = this.movementInput.sneak;
         float f = 0.8F;
-        boolean flag2 = this.movementInput.moveForward >= f;
+        boolean forward = this.movementInput.moveForward >= f;
         this.movementInput.updatePlayerMoveState();
 
         if (this.isUsingItem() && !this.isRiding()) {
@@ -662,7 +660,7 @@ public class EntityPlayerSP extends AbstractClientPlayer {
         this.pushOutOfBlocks(this.posX + (double) this.width * 0.35D, this.getEntityBoundingBox().minY + 0.5D, this.posZ + (double) this.width * 0.35D);
         boolean flag3 = (float) this.getFoodStats().getFoodLevel() > 6.0F || this.capabilities.allowFlying;
 
-        if (this.onGround && !flag1 && !flag2 && this.movementInput.moveForward >= f && !this.isSprinting() && flag3 && !this.isUsingItem() && !this.isPotionActive(Potion.blindness)) {
+        if (this.onGround && !sneak && !forward && this.movementInput.moveForward >= f && !this.isSprinting() && flag3 && !this.isUsingItem() && !this.isPotionActive(Potion.blindness)) {
             if (this.sprintToggleTimer <= 0 && !this.mc.gameSettings.keyBindSprint.isKeyDown()) {
                 this.sprintToggleTimer = 7;
             } else {
@@ -684,7 +682,7 @@ public class EntityPlayerSP extends AbstractClientPlayer {
                     this.capabilities.isFlying = true;
                     this.sendPlayerAbilities();
                 }
-            } else if (!flag && this.movementInput.jump) {
+            } else if (!jump && this.movementInput.jump) {
                 if (this.flyToggleTimer == 0) {
                     this.flyToggleTimer = 7;
                 } else {
@@ -714,13 +712,13 @@ public class EntityPlayerSP extends AbstractClientPlayer {
                 }
             }
 
-            if (flag && !this.movementInput.jump) {
+            if (jump && !this.movementInput.jump) {
                 this.horseJumpPowerCounter = -10;
                 this.sendHorseJump();
-            } else if (!flag && this.movementInput.jump) {
+            } else if (!jump && this.movementInput.jump) {
                 this.horseJumpPowerCounter = 0;
                 this.horseJumpPower = 0.0F;
-            } else if (flag) {
+            } else if (jump) {
                 ++this.horseJumpPowerCounter;
 
                 if (this.horseJumpPowerCounter < 10) {

@@ -1,30 +1,36 @@
 package cn.asone.endless
 
+import cn.asone.endless.config.ConfigManager
 import cn.asone.endless.event.EventManager
 import cn.asone.endless.features.command.CommandManager
 import cn.asone.endless.features.module.ModuleManager
-import cn.asone.endless.features.module.modules.misc.TestModule
+import net.minecraft.client.main.Main
 import org.apache.logging.log4j.LogManager
 import org.lwjgl.opengl.Display
 
 object Endless {
     const val CLIENT_NAME = "Endless"
     private const val CLIENT_VERSION = "Beta 1.0"
+    const val MINECRAFT_VERSION = "1.8.9"
 
     val logger = LogManager.getLogger(CLIENT_NAME)!!
 
     fun startClient() {
-        logger.info("Launching $CLIENT_NAME $CLIENT_VERSION...")
+        logger.info("正在启动 $CLIENT_NAME $CLIENT_VERSION...")
+
+        ConfigManager
         EventManager
         CommandManager
         ModuleManager
+        ConfigManager.loadAllConfigs()
 
-        TestModule.state = true
-        logger.info("Successfully loaded!")
         Display.setTitle("$CLIENT_NAME $CLIENT_VERSION | 1.8.9 - Cracked by AsOne & RedDragon0293")
+        logger.info("成功加载 $CLIENT_NAME !")
     }
 
     fun stopClient() {
-        logger.debug("Shutting down the client!")
+        logger.warn("##########正在关闭客户端!##########")
+        ConfigManager.saveAllConfigs()
+        Main.safelyQuit = true
     }
 }

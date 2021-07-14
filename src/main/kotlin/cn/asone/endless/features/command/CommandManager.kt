@@ -1,24 +1,24 @@
 package cn.asone.endless.features.command
 
-import cn.asone.endless.features.command.commands.BindCommand
-import cn.asone.endless.features.command.commands.TestCommand
-import cn.asone.endless.features.module.Module
+import cn.asone.endless.features.command.commands.CommandBind
+import cn.asone.endless.features.command.commands.CommandToggle
+import cn.asone.endless.features.module.AbstractModule
 import cn.asone.endless.utils.ClientUtils
 
 object CommandManager {
-    val commands = mutableListOf<Command>()
+    val commands = mutableListOf<AbstractCommand>()
     var prefix = "."
 
     init {
         arrayOf(
-                BindCommand,
-                TestCommand
+                CommandBind,
+                CommandToggle
         ).forEach {
             commands.add(it)
         }
     }
 
-    fun registerModuleCommand(module: Module) {
+    fun registerModuleCommand(module: AbstractModule) {
         commands.add(ModuleCommand(module))
     }
 
@@ -67,6 +67,6 @@ object CommandManager {
             }
         }
 
-        ClientUtils.chatError("找不到命令。输入 §f${prefix}help §c获取所有命令。")
+        ClientUtils.chatError("找不到命令. 输入 §f${prefix}help §c获取所有命令.")
     }
 }

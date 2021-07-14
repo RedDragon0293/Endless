@@ -1,25 +1,24 @@
 package cn.asone.endless.features.module
 
 import cn.asone.endless.event.*
+import cn.asone.endless.utils.playSound
 import cn.asone.endless.value.Value
 import net.minecraft.client.Minecraft
-import net.minecraft.client.audio.PositionedSoundRecord
-import net.minecraft.util.ResourceLocation
 import org.lwjgl.input.Keyboard
 
-abstract class Module(
+abstract class AbstractModule(
         var name: String,
         var description: String,
         var category: ModuleCategory,
         var keyBind: Int = Keyboard.CHAR_NONE) : Listenable {
 
-    val mc = Minecraft.getMinecraft()!!
+    protected val mc = Minecraft.getMinecraft()!!
     var state = false
         set(value) {
             if (field == value)
                 return
             if (mc.thePlayer != null && mc.theWorld != null) {
-                mc.soundHandler.playSound(PositionedSoundRecord.create(ResourceLocation("random.click"), 1F))
+                mc.soundHandler.playSound("random.click", 1F)
                 if (value)
                     onEnable()
                 else
@@ -28,7 +27,9 @@ abstract class Module(
             field = value
         }
 
-    open fun values(): List<Value<*>> = arrayListOf()
+    open val values: List<Value<*>> = arrayListOf()
+
+    fun getValue(value: String) = values.find { it.name.equals(value, true) }
 
     fun toggle() {
         state = !state

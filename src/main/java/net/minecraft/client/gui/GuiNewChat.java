@@ -14,11 +14,11 @@ import java.util.Iterator;
 import java.util.List;
 
 public class GuiNewChat extends Gui {
-    private static final Logger logger = LogManager.getLogger();
+    private static final Logger logger = LogManager.getLogger("MCChat");
     private final Minecraft mc;
     private final List<String> sentMessages = Lists.newArrayList();
     private final List<ChatLine> chatLines = Lists.newArrayList();
-    private final List<ChatLine> field_146253_i = Lists.newArrayList();
+    private final List<ChatLine> drawnChatLines = Lists.newArrayList();
     private int scrollPos;
     private boolean isScrolled;
 
@@ -32,7 +32,7 @@ public class GuiNewChat extends Gui {
             int i = this.getLineCount();
             boolean flag = false;
             int j = 0;
-            int k = this.field_146253_i.size();
+            int k = this.drawnChatLines.size();
             float f = this.mc.gameSettings.chatOpacity * 0.9F + 0.1F;
 
             if (k > 0)
@@ -48,17 +48,14 @@ public class GuiNewChat extends Gui {
                 GlStateManager.translate(2.0F, 20.0F, 0.0F);
                 GlStateManager.scale(f1, f1, 1.0F);
 
-                for (int i1 = 0; i1 + this.scrollPos < this.field_146253_i.size() && i1 < i; ++i1)
-                {
-                    ChatLine chatline = this.field_146253_i.get(i1 + this.scrollPos);
+                for (int i1 = 0; i1 + this.scrollPos < this.drawnChatLines.size() && i1 < i; ++i1) {
+                    ChatLine chatline = this.drawnChatLines.get(i1 + this.scrollPos);
 
-                    if (chatline != null)
-                    {
+                    if (chatline != null) {
                         int j1 = p_146230_1_ - chatline.getUpdatedCounter();
 
-                        if (j1 < 200 || flag)
-                        {
-                            double d0 = (double)j1 / 200.0D;
+                        if (j1 < 200 || flag) {
+                            double d0 = (double) j1 / 200.0D;
                             d0 = 1.0D - d0;
                             d0 = d0 * 10.0D;
                             d0 = MathHelper.clamp_double(d0, 0.0D, 1.0D);
@@ -116,7 +113,7 @@ public class GuiNewChat extends Gui {
      */
     public void clearChatMessages()
     {
-        this.field_146253_i.clear();
+        this.drawnChatLines.clear();
         this.chatLines.clear();
         this.sentMessages.clear();
     }
@@ -130,7 +127,7 @@ public class GuiNewChat extends Gui {
      */
     public void printChatMessageWithOptionalDeletion(IChatComponent component, int p_146234_2_) {
         this.setChatLine(component, p_146234_2_, this.mc.ingameGUI.getUpdateCounter(), false);
-        logger.info("[CHAT] " + component.getUnformattedText());
+        logger.info(component.getUnformattedText());
     }
 
     private void setChatLine(IChatComponent component, int p_146237_2_, int p_146237_3_, boolean p_146237_4_) {
@@ -150,12 +147,11 @@ public class GuiNewChat extends Gui {
                 this.scroll(1);
             }
 
-            this.field_146253_i.add(0, new ChatLine(p_146237_3_, ichatcomponent, p_146237_2_));
+            this.drawnChatLines.add(0, new ChatLine(p_146237_3_, ichatcomponent, p_146237_2_));
         }
 
-        while (this.field_146253_i.size() > 100)
-        {
-            this.field_146253_i.remove(this.field_146253_i.size() - 1);
+        while (this.drawnChatLines.size() > 100) {
+            this.drawnChatLines.remove(this.drawnChatLines.size() - 1);
         }
 
         if (!p_146237_4_)
@@ -171,7 +167,7 @@ public class GuiNewChat extends Gui {
 
     public void refreshChat()
     {
-        this.field_146253_i.clear();
+        this.drawnChatLines.clear();
         this.resetScroll();
 
         for (int i = this.chatLines.size() - 1; i >= 0; --i)
@@ -211,7 +207,7 @@ public class GuiNewChat extends Gui {
     public void scroll(int p_146229_1_)
     {
         this.scrollPos += p_146229_1_;
-        int i = this.field_146253_i.size();
+        int i = this.drawnChatLines.size();
 
         if (this.scrollPos > i - this.getLineCount())
         {
@@ -246,22 +242,19 @@ public class GuiNewChat extends Gui {
 
             if (j >= 0 && k >= 0)
             {
-                int l = Math.min(this.getLineCount(), this.field_146253_i.size());
+                int l = Math.min(this.getLineCount(), this.drawnChatLines.size());
 
                 if (j <= MathHelper.floor_float((float)this.getChatWidth() / this.getChatScale()) && k < this.mc.fontRendererObj.FONT_HEIGHT * l + l)
                 {
                     int i1 = k / this.mc.fontRendererObj.FONT_HEIGHT + this.scrollPos;
 
-                    if (i1 >= 0 && i1 < this.field_146253_i.size())
-                    {
-                        ChatLine chatline = this.field_146253_i.get(i1);
+                    if (i1 >= 0 && i1 < this.drawnChatLines.size()) {
+                        ChatLine chatline = this.drawnChatLines.get(i1);
                         int j1 = 0;
 
-                        for (IChatComponent ichatcomponent : chatline.getChatComponent())
-                        {
-                            if (ichatcomponent instanceof ChatComponentText)
-                            {
-                                j1 += this.mc.fontRendererObj.getStringWidth(GuiUtilRenderComponents.func_178909_a(((ChatComponentText)ichatcomponent).getChatComponentText_TextValue(), false));
+                        for (IChatComponent ichatcomponent : chatline.getChatComponent()) {
+                            if (ichatcomponent instanceof ChatComponentText) {
+                                j1 += this.mc.fontRendererObj.getStringWidth(GuiUtilRenderComponents.func_178909_a(((ChatComponentText) ichatcomponent).getChatComponentText_TextValue(), false));
 
                                 if (j1 > j)
                                 {
@@ -298,7 +291,7 @@ public class GuiNewChat extends Gui {
      */
     public void deleteChatLine(int p_146242_1_)
     {
-        Iterator<ChatLine> iterator = this.field_146253_i.iterator();
+        Iterator<ChatLine> iterator = this.drawnChatLines.iterator();
 
         while (iterator.hasNext())
         {
