@@ -4,7 +4,7 @@ import cn.asone.endless.features.command.AbstractCommand
 import cn.asone.endless.features.module.ModuleManager
 import cn.asone.endless.utils.ClientUtils
 
-object CommandToggle : AbstractCommand("Toggle", "t") {
+class CommandToggle : AbstractCommand("Toggle", "t") {
     override fun onExecute(command: String) {
         val args = command.split(' ').toTypedArray()
         if (args.isEmpty() || (args.size == 1 && args[0] == "")) {

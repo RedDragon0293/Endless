@@ -2,6 +2,7 @@ package cn.asone.endless.config
 
 import cn.asone.endless.Endless
 import cn.asone.endless.config.configs.ModulesConfig
+import cn.asone.endless.config.configs.ValuesConfig
 import cn.asone.endless.utils.mc
 import java.io.File
 
@@ -15,6 +16,7 @@ object ConfigManager {
 
     init {
         configs.add(ModulesConfig())
+        configs.add(ValuesConfig())
     }
 
     fun loadAllConfigs() = configs.forEach {

@@ -5,7 +5,7 @@ import cn.asone.endless.features.module.ModuleManager
 import cn.asone.endless.utils.ClientUtils
 import org.lwjgl.input.Keyboard
 
-object CommandBind : AbstractCommand("bind") {
+class CommandBind : AbstractCommand("bind") {
     override fun onExecute(command: String) {
         val args = command.split(' ').toTypedArray()
         if (args.isEmpty() || (args.size == 1 && args[0] == "")) {

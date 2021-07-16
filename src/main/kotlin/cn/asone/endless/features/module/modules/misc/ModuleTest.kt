@@ -25,9 +25,18 @@ object ModuleTest : AbstractModule(
     private val staticYaw = FloatValue("StaticYaw", 45F, 0F, 180F)
     private val staticPitch = FloatValue("StaticPitch", 90F, -90F, 90F)
 
-    override val values: List<Value<*>> = arrayListOf(
+    override val values: ArrayList<Value<*>> = arrayListOf(
             checkServerSide,
             rotationMode
+    )
+
+    override fun getAllValue(): ArrayList<Value<*>> = arrayListOf(
+            checkServerSide,
+            checkServerSideOnlyGround,
+            rotationMode,
+            rotationSpeed,
+            staticYaw,
+            staticPitch
     )
 
     init {
@@ -38,7 +47,6 @@ object ModuleTest : AbstractModule(
     }
 
     override val handledEvents: List<Class<out Event>> = arrayListOf(
-            SendPacketEvent::class.java,
             Render2DEvent::class.java,
             Render3DEvent::class.java
     )

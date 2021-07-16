@@ -25,7 +25,7 @@ object Endless {
         ConfigManager.loadAllConfigs()
 
         Display.setTitle("$CLIENT_NAME $CLIENT_VERSION | 1.8.9 - Cracked by AsOne & RedDragon0293")
-        logger.info("成功加载 $CLIENT_NAME !")
+        logger.info("成功加载 $CLIENT_NAME!")
     }
 
     fun stopClient() {

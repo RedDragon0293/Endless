@@ -448,7 +448,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
         this.fontRendererObj = new FontRenderer(this.gameSettings, new ResourceLocation("textures/font/ascii.png"), this.renderEngine, false);
 
         if (this.gameSettings.language != null) {
-            this.fontRendererObj.setUnicodeFlag(this.isUnicode());
+            this.fontRendererObj.setUnicodeFlag(this.gameSettings.forceUnicodeFont);
             this.fontRendererObj.setBidiFlag(this.mcLanguageManager.isCurrentLanguageBidirectional());
         }
 
@@ -459,7 +459,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
         this.mcResourceManager.registerReloadListener(new FoliageColorReloadListener());
         AchievementList.openInventory.setStatStringFormatter(p_74535_1_ -> {
             try {
-                return String.format(p_74535_1_, new Object[]{GameSettings.getKeyDisplayString(Minecraft.this.gameSettings.keyBindInventory.getKeyCode())});
+                return String.format(p_74535_1_, GameSettings.getKeyDisplayString(Minecraft.this.gameSettings.keyBindInventory.getKeyCode()));
             } catch (Exception exception) {
                 return "Error: " + exception.getLocalizedMessage();
             }

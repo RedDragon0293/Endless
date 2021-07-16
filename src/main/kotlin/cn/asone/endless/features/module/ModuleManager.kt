@@ -26,6 +26,7 @@ object ModuleManager : ListenableManager() {
             if (!it.values.isNullOrEmpty())
                 CommandManager.registerModuleCommand(it)
         }
+        ClientUtils.logger.info("成功初始化 ${modules.size} 个功能.")
     }
 
     private fun registerModule(module: AbstractModule) {

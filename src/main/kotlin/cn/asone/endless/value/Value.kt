@@ -1,5 +1,6 @@
 package cn.asone.endless.value
 
+import cn.asone.endless.utils.ClientUtils
 import com.google.gson.JsonElement
 import com.google.gson.JsonPrimitive
 import java.util.*
@@ -18,7 +19,9 @@ abstract class Value<T>(val name: String, protected var value: T) {
     }
 
     abstract fun toJson(): JsonElement?
-    abstract fun fromJson(element: JsonElement)
+    open fun fromJson(element: JsonElement) {
+        ClientUtils.logger.error("在选项 $name 的配置文件中找到不可识别的值 ${element.asString}.跳过此选项的解析.")
+    }
 }
 
 open class BoolValue(name: String, value: Boolean)
@@ -30,6 +33,8 @@ open class BoolValue(name: String, value: Boolean)
     override fun fromJson(element: JsonElement) {
         if (element.isJsonPrimitive)
             value = element.asBoolean || element.asString.equals("true", ignoreCase = true)
+        else
+            super.fromJson(element)
     }
 }
 
@@ -45,6 +50,8 @@ open class IntValue(name: String, value: Int, minValue: Int = 0, maxValue: Int =
     override fun fromJson(element: JsonElement) {
         if (element.isJsonPrimitive)
             value = element.asInt
+        else
+            super.fromJson(element)
     }
 }
 
@@ -60,6 +67,8 @@ open class FloatValue(name: String, value: Float, val minValue: Float = 0F, val 
     override fun fromJson(element: JsonElement) {
         if (element.isJsonPrimitive)
             value = element.asFloat
+        else
+            super.fromJson(element)
     }
 }
 
@@ -71,6 +80,8 @@ open class TextValue(name: String, value: String)
     override fun fromJson(element: JsonElement) {
         if (element.isJsonPrimitive)
             value = element.asString
+        else
+            super.fromJson(element)
     }
 }
 
@@ -112,14 +123,18 @@ open class ListValue(name: String, val values: Array<String>, value: String) : V
         for (element in values) {
             if (element.equals(newValue, ignoreCase = true)) {
                 this.value = element
-                break
+                return
             }
         }
+        ClientUtils.logger.error("在选项 $name 的配置文件中找到不存在的值 $newValue.跳过此选项的解析.")
     }
 
     override fun toJson() = JsonPrimitive(value)
 
     override fun fromJson(element: JsonElement) {
-        if (element.isJsonPrimitive) changeValue(element.asString)
+        if (element.isJsonPrimitive)
+            changeValue(element.asString)
+        else
+            super.fromJson(element)
     }
 }

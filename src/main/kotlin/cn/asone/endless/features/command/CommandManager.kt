@@ -7,19 +7,21 @@ import cn.asone.endless.utils.ClientUtils
 
 object CommandManager {
     val commands = mutableListOf<AbstractCommand>()
+    private val moduleCommands = mutableListOf<ModuleCommand>()
     var prefix = "."
 
     init {
         arrayOf(
-                CommandBind,
-                CommandToggle
+                CommandBind(),
+                CommandToggle()
         ).forEach {
             commands.add(it)
         }
+        ClientUtils.logger.info("成功初始化 ${commands.size} 个命令.")
     }
 
     fun registerModuleCommand(module: AbstractModule) {
-        commands.add(ModuleCommand(module))
+        moduleCommands.add(ModuleCommand(module))
     }
 
     /*
@@ -64,6 +66,17 @@ object CommandManager {
                     )
                     return
                 }
+            }
+        }
+        for (command in moduleCommands) {
+            if (command.name.equals(name, true)) {
+                command.onExecute(
+                        if (spaceIndex == -1)
+                            ""
+                        else
+                            args.substring(args.indexOf(' ') + 1, args.length)
+                )
+                return
             }
         }
 

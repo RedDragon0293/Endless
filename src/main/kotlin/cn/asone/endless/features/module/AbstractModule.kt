@@ -27,9 +27,11 @@ abstract class AbstractModule(
             field = value
         }
 
-    open val values: List<Value<*>> = arrayListOf()
+    open val values: ArrayList<Value<*>> = arrayListOf()
 
-    fun getValue(value: String) = values.find { it.name.equals(value, true) }
+    open fun getAllValue(): ArrayList<Value<*>> = arrayListOf()
+
+    fun getValue(value: String) = getAllValue().find { it.name.equals(value, true) }
 
     fun toggle() {
         state = !state

@@ -21,15 +21,22 @@ object ModuleSprint : AbstractModule(
     private val allDirectionsValue = BoolValue("AllDirections", false)
     private val blindnessValue = BoolValue("Blindness", true)
     private val foodValue = BoolValue("Food", true)
-
     private val checkServerSide = BoolValue("CheckServerSide", false)
     private val checkServerSideGround = BoolValue("CheckServerSideOnlyGround", false)
 
-    override val values: List<Value<*>> = arrayListOf(
+    override val values: ArrayList<Value<*>> = arrayListOf(
             allDirectionsValue,
             blindnessValue,
             foodValue,
             checkServerSide
+    )
+
+    override fun getAllValue(): ArrayList<Value<*>> = arrayListOf(
+            allDirectionsValue,
+            blindnessValue,
+            foodValue,
+            checkServerSide,
+            checkServerSideGround
     )
 
     init {
