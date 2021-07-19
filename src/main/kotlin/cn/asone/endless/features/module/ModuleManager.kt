@@ -8,11 +8,11 @@ import cn.asone.endless.features.module.modules.misc.ModuleTest
 import cn.asone.endless.features.module.modules.movement.ModuleSprint
 import cn.asone.endless.features.module.modules.render.ModuleSimpleArrayList
 import cn.asone.endless.utils.ClientUtils
-import cn.asone.endless.utils.ListenableManager
+import cn.asone.endless.utils.ListenableClass
 import java.util.*
 
-object ModuleManager : ListenableManager() {
-    override val handledEvents: List<Class<out Event>> = arrayListOf(KeyEvent::class.java)
+object ModuleManager : ListenableClass() {
+    override val handledEvents: ArrayList<Class<out Event>> = arrayListOf(KeyEvent::class.java)
     val modules = TreeSet<AbstractModule> { module1, module2 -> module1.name.compareTo(module2.name) }
 
     init {

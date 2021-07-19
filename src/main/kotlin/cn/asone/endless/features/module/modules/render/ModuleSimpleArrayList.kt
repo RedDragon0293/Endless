@@ -12,7 +12,7 @@ object ModuleSimpleArrayList : AbstractModule(
         "A pretty simple arraylist just to be continued",
         ModuleCategory.RENDER
 ) {
-    override val handledEvents: List<Class<out Event>> = arrayListOf(
+    override val handledEvents: ArrayList<Class<out Event>> = arrayListOf(
             Render2DEvent::class.java
     )
 

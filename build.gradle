@@ -41,7 +41,7 @@ idea {
     }
 }
 group 'net.minecraft'
-version 'v1.0.0'
+version 'beta 1.0'
 
 allprojects {
     repositories {

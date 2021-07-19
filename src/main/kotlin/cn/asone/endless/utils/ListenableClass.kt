@@ -1,8 +1,11 @@
 package cn.asone.endless.utils
 
 import cn.asone.endless.event.*
+import net.minecraft.client.Minecraft
 
-abstract class ListenableManager : Listenable {
+abstract class ListenableClass : Listenable {
+    protected val mc: Minecraft = Minecraft.getMinecraft()
+
     override fun onUpdate() {}
     override fun onPreMotion(event: PreMotionEvent) {}
     override fun onPostMotion(event: PostMotionEvent) {}

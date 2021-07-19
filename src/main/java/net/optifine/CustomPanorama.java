@@ -1,15 +1,16 @@
 package net.optifine;
 
+import net.minecraft.src.Config;
+import net.minecraft.util.ResourceLocation;
+import net.optifine.util.MathUtils;
+import net.optifine.util.PropertiesOrdered;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.Random;
-import net.minecraft.src.Config;
-import net.minecraft.util.ResourceLocation;
-import net.optifine.util.MathUtils;
-import net.optifine.util.PropertiesOrdered;
 
 public class CustomPanorama
 {
@@ -66,7 +67,7 @@ public class CustomPanorama
             }
         }
 
-        String[] astring = (String[])((String[])list.toArray(new String[list.size()]));
+        String[] astring = list.toArray(new String[list.size()]);
         return astring;
     }
 

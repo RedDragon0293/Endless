@@ -10,7 +10,7 @@ import org.lwjgl.opengl.Display
 
 object Endless {
     const val CLIENT_NAME = "Endless"
-    private const val CLIENT_VERSION = "Beta 1.0"
+    const val CLIENT_VERSION = "Beta 1.0"
     const val MINECRAFT_VERSION = "1.8.9"
 
     val logger = LogManager.getLogger(CLIENT_NAME)!!
@@ -29,7 +29,6 @@ object Endless {
     }
 
     fun stopClient() {
-        logger.warn("##########正在关闭客户端!##########")
         ConfigManager.saveAllConfigs()
         Main.safelyQuit = true
     }

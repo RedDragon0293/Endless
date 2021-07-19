@@ -1,8 +1,6 @@
 package net.minecraft.client.gui.inventory;
 
 import com.google.common.collect.Sets;
-import java.io.IOException;
-import java.util.Set;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
@@ -19,15 +17,23 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.input.Keyboard;
 
-public abstract class GuiContainer extends GuiScreen
-{
-    /** The location of the inventory background texture */
+import java.io.IOException;
+import java.util.Set;
+
+public abstract class GuiContainer extends GuiScreen {
+    /**
+     * The location of the inventory background texture
+     */
     protected static final ResourceLocation inventoryBackground = new ResourceLocation("textures/gui/container/inventory.png");
 
-    /** The X size of the inventory window in pixels. */
+    /**
+     * The X size of the inventory window in pixels.
+     */
     protected int xSize = 176;
 
-    /** The Y size of the inventory window in pixels. */
+    /**
+     * The Y size of the inventory window in pixels.
+     */
     protected int ySize = 166;
 
     /** A list of the players inventory slots */
@@ -182,16 +188,16 @@ public abstract class GuiContainer extends GuiScreen
             int l2 = this.returningStackDestSlot.xDisplayPosition - this.touchUpX;
             int i3 = this.returningStackDestSlot.yDisplayPosition - this.touchUpY;
             int l1 = this.touchUpX + (int)((float)l2 * f);
-            int i2 = this.touchUpY + (int)((float)i3 * f);
-            this.drawItemStack(this.returningStack, l1, i2, (String)null);
+            int i2 = this.touchUpY + (int) ((float) i3 * f);
+            this.drawItemStack(this.returningStack, l1, i2, null);
         }
 
         GlStateManager.popMatrix();
 
-        if (inventoryplayer.getItemStack() == null && this.theSlot != null && this.theSlot.getHasStack())
-        {
+        if (inventoryplayer.getItemStack() == null && this.theSlot != null && this.theSlot.getHasStack()) {
             ItemStack itemstack1 = this.theSlot.getStack();
-            this.renderToolTip(itemstack1, mouseX, mouseY);
+            if (itemstack1 != null)
+                this.renderToolTip(itemstack1, mouseX, mouseY);
         }
 
         GlStateManager.enableLighting();

@@ -3,22 +3,20 @@ package net.minecraft.realms;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.mojang.authlib.GameProfile;
 import com.mojang.util.UUIDTypeAdapter;
-import java.net.Proxy;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.util.Session;
 import net.minecraft.world.WorldSettings;
 
-public class Realms
-{
-    public static boolean isTouchScreen()
-    {
+import java.net.Proxy;
+
+public class Realms {
+    public static boolean isTouchScreen() {
         return Minecraft.getMinecraft().gameSettings.touchscreen;
     }
 
-    public static Proxy getProxy()
-    {
+    public static Proxy getProxy() {
         return Minecraft.getMinecraft().getProxy();
     }
 
@@ -91,7 +89,7 @@ public class Realms
 
     public static void setConnectedToRealms(boolean p_setConnectedToRealms_0_)
     {
-        Minecraft.getMinecraft().func_181537_a(p_setConnectedToRealms_0_);
+        Minecraft.getMinecraft().setConnectedToRealms(p_setConnectedToRealms_0_);
     }
 
     public static ListenableFuture<Object> downloadResourcePack(String p_downloadResourcePack_0_, String p_downloadResourcePack_1_)

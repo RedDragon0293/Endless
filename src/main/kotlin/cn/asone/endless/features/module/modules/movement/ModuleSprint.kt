@@ -15,7 +15,7 @@ object ModuleSprint : AbstractModule(
         "Automatically sprints all the time.",
         ModuleCategory.MOVEMENT
 ) {
-    override val handledEvents: List<Class<out Event>> = arrayListOf(
+    override val handledEvents: ArrayList<Class<out Event>> = arrayListOf(
             UpdateEvent::class.java
     )
     private val allDirectionsValue = BoolValue("AllDirections", false)

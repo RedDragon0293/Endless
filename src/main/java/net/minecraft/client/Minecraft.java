@@ -577,24 +577,24 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
     }
 
     private void setWindowIcon() {
-        Util.EnumOS util$enumos = Util.getOSType();
+        Util.EnumOS osType = Util.getOSType();
 
-        if (util$enumos != Util.EnumOS.OSX) {
-            InputStream inputstream = null;
-            InputStream inputstream1 = null;
-
+        if (osType != Util.EnumOS.OSX) {
+            InputStream x16Stream = null;
+            InputStream x32Stream = null;
             try {
-                inputstream = this.mcDefaultResourcePack.getInputStreamAssets(new ResourceLocation("icons/icon_16x16.png"));
-                inputstream1 = this.mcDefaultResourcePack.getInputStreamAssets(new ResourceLocation("icons/icon_32x32.png"));
-
-                if (inputstream != null && inputstream1 != null) {
-                    Display.setIcon(new ByteBuffer[]{this.readImageToBuffer(inputstream), this.readImageToBuffer(inputstream1)});
+                x16Stream = Minecraft.class.getResourceAsStream("/assets/minecraft/" + Endless.CLIENT_NAME.toLowerCase() + "/icon_16.png");
+                x32Stream = Minecraft.class.getResourceAsStream("/assets/minecraft/" + Endless.CLIENT_NAME.toLowerCase() + "/icon_32.png");
+                ByteBuffer bufferedIcon16 = readImageToBuffer(x16Stream);
+                ByteBuffer bufferedIcon32 = readImageToBuffer(x32Stream);
+                if (x16Stream != null && x32Stream != null) {
+                    Display.setIcon(new ByteBuffer[]{bufferedIcon16, bufferedIcon32});
                 }
             } catch (IOException ioexception) {
                 logger.error("Couldn't set icon", ioexception);
             } finally {
-                IOUtils.closeQuietly(inputstream);
-                IOUtils.closeQuietly(inputstream1);
+                IOUtils.closeQuietly(x16Stream);
+                IOUtils.closeQuietly(x32Stream);
             }
         }
     }
@@ -697,11 +697,13 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
     }
 
     private ByteBuffer readImageToBuffer(InputStream imageStream) throws IOException {
+        if (imageStream == null)
+            return null;
         BufferedImage bufferedimage = ImageIO.read(imageStream);
-        int[] aint = bufferedimage.getRGB(0, 0, bufferedimage.getWidth(), bufferedimage.getHeight(), (int[]) null, 0, bufferedimage.getWidth());
-        ByteBuffer bytebuffer = ByteBuffer.allocate(4 * aint.length);
+        int[] rgb = bufferedimage.getRGB(0, 0, bufferedimage.getWidth(), bufferedimage.getHeight(), (int[]) null, 0, bufferedimage.getWidth());
+        ByteBuffer bytebuffer = ByteBuffer.allocate(4 * rgb.length);
 
-        for (int i : aint) {
+        for (int i : rgb) {
             bytebuffer.putInt(i << 8 | i >> 24 & 255);
         }
 
@@ -874,7 +876,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
     public void shutdownMinecraftApplet() {
         try {
             this.stream.shutdownStream();
-            logger.info("Stopping!");
+            logger.warn("##########正在关闭客户端!##########");
             Endless.INSTANCE.stopClient();
             try {
                 this.loadWorld(null);
@@ -1044,7 +1046,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
     }
 
     public int getLimitFramerate() {
-        return this.theWorld == null && this.currentScreen != null ? 30 : this.gameSettings.limitFramerate;
+        return this.theWorld == null && this.currentScreen != null ? 60 : this.gameSettings.limitFramerate;
     }
 
     public boolean isFramerateLimitBelowMax() {
@@ -1131,17 +1133,16 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
             double d0 = 0.0D;
 
             for (Profiler.Result result : list) {
-                Profiler.Result profiler$result1 = result;
-                int i1 = MathHelper.floor_double(profiler$result1.field_76332_a / 4.0D) + 1;
+                int i1 = MathHelper.floor_double(result.field_76332_a / 4.0D) + 1;
                 worldrenderer.begin(6, DefaultVertexFormats.POSITION_COLOR);
-                int j1 = profiler$result1.func_76329_a();
+                int j1 = result.func_76329_a();
                 int k1 = j1 >> 16 & 255;
                 int l1 = j1 >> 8 & 255;
                 int i2 = j1 & 255;
                 worldrenderer.pos(j, k, 0.0D).color(k1, l1, i2, 255).endVertex();
 
                 for (int j2 = i1; j2 >= 0; --j2) {
-                    float f = (float) ((d0 + profiler$result1.field_76332_a * (double) j2 / (double) i1) * Math.PI * 2.0D / 100.0D);
+                    float f = (float) ((d0 + result.field_76332_a * (double) j2 / (double) i1) * Math.PI * 2.0D / 100.0D);
                     float f1 = MathHelper.sin(f) * (float) i;
                     float f2 = MathHelper.cos(f) * (float) i * 0.5F;
                     worldrenderer.pos(((float) j + f1), ((float) k - f2), 0.0D).color(k1, l1, i2, 255).endVertex();
@@ -1151,7 +1152,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
                 worldrenderer.begin(5, DefaultVertexFormats.POSITION_COLOR);
 
                 for (int i3 = i1; i3 >= 0; --i3) {
-                    float f3 = (float) ((d0 + profiler$result1.field_76332_a * (double) i3 / (double) i1) * Math.PI * 2.0D / 100.0D);
+                    float f3 = (float) ((d0 + result.field_76332_a * (double) i3 / (double) i1) * Math.PI * 2.0D / 100.0D);
                     float f4 = MathHelper.sin(f3) * (float) i;
                     float f5 = MathHelper.cos(f3) * (float) i * 0.5F;
                     worldrenderer.pos((float) j + f4, (float) k - f5, 0.0D).color(k1 >> 1, l1 >> 1, i2 >> 1, 255).endVertex();
@@ -1159,7 +1160,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
                 }
 
                 tessellator.draw();
-                d0 += profiler$result1.field_76332_a;
+                d0 += result.field_76332_a;
             }
 
             DecimalFormat decimalformat = new DecimalFormat("##0.00");
@@ -2610,7 +2611,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
         return this.field_181541_X;
     }
 
-    public void func_181537_a(boolean p_181537_1_) {
+    public void setConnectedToRealms(boolean p_181537_1_) {
         this.field_181541_X = p_181537_1_;
     }
 }

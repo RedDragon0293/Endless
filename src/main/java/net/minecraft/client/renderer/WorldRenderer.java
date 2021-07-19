@@ -274,10 +274,10 @@ public class WorldRenderer {
         }
     }
 
-    public WorldRenderer tex(double p_181673_1_, double p_181673_3_) {
+    public WorldRenderer tex(double x, double y) {
         if (this.quadSprite != null && this.quadSprites != null) {
-            p_181673_1_ = this.quadSprite.toSingleU((float) p_181673_1_);
-            p_181673_3_ = this.quadSprite.toSingleV((float) p_181673_3_);
+            x = this.quadSprite.toSingleU((float) x);
+            y = this.quadSprite.toSingleV((float) y);
             this.quadSprites[this.vertexCount / 4] = this.quadSprite;
         }
 
@@ -285,26 +285,26 @@ public class WorldRenderer {
 
         switch (this.vertexFormatElement.getType()) {
             case FLOAT:
-                this.byteBuffer.putFloat(i, (float) p_181673_1_);
-                this.byteBuffer.putFloat(i + 4, (float) p_181673_3_);
+                this.byteBuffer.putFloat(i, (float) x);
+                this.byteBuffer.putFloat(i + 4, (float) y);
                 break;
 
             case UINT:
             case INT:
-                this.byteBuffer.putInt(i, (int) p_181673_1_);
-                this.byteBuffer.putInt(i + 4, (int) p_181673_3_);
+                this.byteBuffer.putInt(i, (int) x);
+                this.byteBuffer.putInt(i + 4, (int) y);
                 break;
 
             case USHORT:
             case SHORT:
-                this.byteBuffer.putShort(i, (short) ((int) p_181673_3_));
-                this.byteBuffer.putShort(i + 2, (short) ((int) p_181673_1_));
+                this.byteBuffer.putShort(i, (short) ((int) y));
+                this.byteBuffer.putShort(i + 2, (short) ((int) x));
                 break;
 
             case UBYTE:
             case BYTE:
-                this.byteBuffer.put(i, (byte) ((int) p_181673_3_));
-                this.byteBuffer.put(i + 1, (byte) ((int) p_181673_1_));
+                this.byteBuffer.put(i, (byte) ((int) y));
+                this.byteBuffer.put(i + 1, (byte) ((int) x));
         }
 
         this.nextVertexFormatIndex();

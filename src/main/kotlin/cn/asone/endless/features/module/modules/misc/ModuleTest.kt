@@ -6,7 +6,9 @@ import cn.asone.endless.features.module.ModuleCategory
 import cn.asone.endless.utils.ClientUtils
 import cn.asone.endless.utils.RenderUtils
 import cn.asone.endless.value.*
-import net.minecraft.network.play.client.C01PacketChatMessage
+import io.netty.buffer.Unpooled
+import net.minecraft.network.PacketBuffer
+import net.minecraft.network.play.client.C17PacketCustomPayload
 import net.minecraft.util.Vec3
 import org.lwjgl.input.Keyboard
 import org.lwjgl.opengl.GL11
@@ -46,16 +48,18 @@ object ModuleTest : AbstractModule(
         rotationMode.subValue["Static"]!!.add(staticPitch)
     }
 
-    override val handledEvents: List<Class<out Event>> = arrayListOf(
+    override val handledEvents: ArrayList<Class<out Event>> = arrayListOf(
             Render2DEvent::class.java,
             Render3DEvent::class.java
     )
 
     override fun onSendPacket(event: SendPacketEvent) {
         val packet = event.packet
-        if (packet is C01PacketChatMessage) {
-            ClientUtils.displayChatMessage("WDNMD C01!")
-            packet.message = "WDNMD"
+        if (packet is C17PacketCustomPayload) {
+            if (packet.channelName.equals("MC|Brand", true)) {
+                ClientUtils.logger.info("Modifying custom payload packet...")
+                packet.data = PacketBuffer(Unpooled.buffer()).writeString("fml,forge")
+            }
         }
     }
 

@@ -1,6 +1,6 @@
 package net.minecraft.client.gui;
 
-import com.google.common.base.Strings;
+import cn.asone.endless.ui.gui.GuiFakeForge;
 import com.google.common.collect.Lists;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
@@ -48,11 +48,15 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
      */
     private float updateCounter;
 
-    /** The splash message. */
+    /**
+     * The splash message.
+     */
     private String splashText;
     private GuiButton buttonResetDemo;
 
-    /** Timer used to rotate the panorama, increases every tick. */
+    /**
+     * Timer used to rotate the panorama, increases every tick.
+     */
     private int panoramaTimer;
 
     /**
@@ -66,19 +70,27 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
      */
     private final Object threadLock = new Object();
 
-    /** OpenGL graphics card warning. */
+    /**
+     * OpenGL graphics card warning.
+     */
     private String openGLWarning1;
 
-    /** OpenGL graphics card warning. */
+    /**
+     * OpenGL graphics card warning.
+     */
     private String openGLWarning2;
 
-    /** Link to the Mojang Support about minimum requirements */
+    /**
+     * Link to the Mojang Support about minimum requirements
+     */
     private String openGLWarningLink;
     private static final ResourceLocation splashTexts = new ResourceLocation("texts/splashes.txt");
     private static final ResourceLocation minecraftTitleTextures = new ResourceLocation("textures/gui/title/minecraft.png");
 
-    /** An array of all the paths to the panorama pictures. */
-    private static final ResourceLocation[] titlePanoramaPaths = new ResourceLocation[] {new ResourceLocation("textures/gui/title/background/panorama_0.png"), new ResourceLocation("textures/gui/title/background/panorama_1.png"), new ResourceLocation("textures/gui/title/background/panorama_2.png"), new ResourceLocation("textures/gui/title/background/panorama_3.png"), new ResourceLocation("textures/gui/title/background/panorama_4.png"), new ResourceLocation("textures/gui/title/background/panorama_5.png")};
+    /**
+     * An array of all the paths to the panorama pictures.
+     */
+    private static final ResourceLocation[] titlePanoramaPaths = new ResourceLocation[]{new ResourceLocation("textures/gui/title/background/panorama_0.png"), new ResourceLocation("textures/gui/title/background/panorama_1.png"), new ResourceLocation("textures/gui/title/background/panorama_2.png"), new ResourceLocation("textures/gui/title/background/panorama_3.png"), new ResourceLocation("textures/gui/title/background/panorama_4.png"), new ResourceLocation("textures/gui/title/background/panorama_5.png")};
     public static final String field_96138_a = "Please click " + EnumChatFormatting.UNDERLINE + "here" + EnumChatFormatting.RESET + " for more information.";
     private int field_92024_r;
     private int field_92023_s;
@@ -88,63 +100,50 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
     private int field_92019_w;
     private ResourceLocation backgroundTexture;
 
-    /** Minecraft Realms button. */
+    /**
+     * Minecraft Realms button.
+     */
     private GuiButton realmsButton;
     private boolean field_183502_L;
-    private GuiScreen field_183503_M;
+    private GuiScreen realmsScreen;
     private GuiButton modButton;
     private GuiScreen modUpdateNotification;
 
-    public GuiMainMenu()
-    {
+    public GuiMainMenu() {
         this.openGLWarning2 = field_96138_a;
         this.field_183502_L = false;
         this.splashText = "missingno";
         BufferedReader bufferedreader = null;
 
-        try
-        {
-            List<String> list = Lists.<String>newArrayList();
+        try {
+            List<String> list = Lists.newArrayList();
             bufferedreader = new BufferedReader(new InputStreamReader(Minecraft.getMinecraft().getResourceManager().getResource(splashTexts).getInputStream(), Charsets.UTF_8));
             String s;
 
-            while ((s = bufferedreader.readLine()) != null)
-            {
+            while ((s = bufferedreader.readLine()) != null) {
                 s = s.trim();
 
-                if (!s.isEmpty())
-                {
+                if (!s.isEmpty()) {
                     list.add(s);
                 }
             }
 
-            if (!list.isEmpty())
-            {
-                while (true)
-                {
-                    this.splashText = (String)list.get(RANDOM.nextInt(list.size()));
+            if (!list.isEmpty()) {
+                while (true) {
+                    this.splashText = list.get(RANDOM.nextInt(list.size()));
 
-                    if (this.splashText.hashCode() != 125780783)
-                    {
+                    if (this.splashText.hashCode() != 125780783) {
                         break;
                     }
                 }
             }
-        }
-        catch (IOException var12)
-        {
+        } catch (IOException var12) {
             ;
-        }
-        finally
-        {
-            if (bufferedreader != null)
-            {
-                try
-                {
+        } finally {
+            if (bufferedreader != null) {
+                try {
                     bufferedreader.close();
-                }
-                catch (IOException var11)
-                {
+                } catch (IOException var11) {
                     ;
                 }
             }
@@ -153,37 +152,32 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
         this.updateCounter = RANDOM.nextFloat();
         this.openGLWarning1 = "";
 
-        if (!GLContext.getCapabilities().OpenGL20 && !OpenGlHelper.areShadersSupported())
-        {
+        if (!GLContext.getCapabilities().OpenGL20 && !OpenGlHelper.areShadersSupported()) {
             this.openGLWarning1 = I18n.format("title.oldgl1", new Object[0]);
             this.openGLWarning2 = I18n.format("title.oldgl2", new Object[0]);
             this.openGLWarningLink = "https://help.mojang.com/customer/portal/articles/325948?ref=game";
         }
     }
 
-    private boolean func_183501_a()
-    {
-        return Minecraft.getMinecraft().gameSettings.getOptionOrdinalValue(GameSettings.Options.REALMS_NOTIFICATIONS) && this.field_183503_M != null;
+    private boolean func_183501_a() {
+        return Minecraft.getMinecraft().gameSettings.getOptionOrdinalValue(GameSettings.Options.REALMS_NOTIFICATIONS) && this.realmsScreen != null;
     }
 
     /**
      * Called from the main game loop to update the screen.
      */
-    public void updateScreen()
-    {
+    public void updateScreen() {
         ++this.panoramaTimer;
 
-        if (this.func_183501_a())
-        {
-            this.field_183503_M.updateScreen();
+        if (this.func_183501_a()) {
+            this.realmsScreen.updateScreen();
         }
     }
 
     /**
      * Returns true if this GUI should pause the game when it is displayed in single-player
      */
-    public boolean doesGuiPauseGame()
-    {
+    public boolean doesGuiPauseGame() {
         return false;
     }
 
@@ -191,43 +185,33 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
      * Fired when a key is typed (except F11 which toggles full screen). This is the equivalent of
      * KeyListener.keyTyped(KeyEvent e). Args : character (character on the key), keyCode (lwjgl Keyboard key code)
      */
-    protected void keyTyped(char typedChar, int keyCode) throws IOException
-    {
+    protected void keyTyped(char typedChar, int keyCode) throws IOException {
     }
 
     /**
      * Adds the buttons (and other controls) to the screen in question. Called when the GUI is displayed and when the
      * window resizes, the buttonList is cleared beforehand.
      */
-    public void initGui()
-    {
+    public void initGui() {
         this.viewportTexture = new DynamicTexture(256, 256);
         this.backgroundTexture = this.mc.getTextureManager().getDynamicTextureLocation("background", this.viewportTexture);
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
 
-        if (calendar.get(2) + 1 == 12 && calendar.get(5) == 24)
-        {
+        if (calendar.get(2) + 1 == 12 && calendar.get(5) == 24) {
             this.splashText = "Merry X-mas!";
-        }
-        else if (calendar.get(2) + 1 == 1 && calendar.get(5) == 1)
-        {
+        } else if (calendar.get(2) + 1 == 1 && calendar.get(5) == 1) {
             this.splashText = "Happy new year!";
-        }
-        else if (calendar.get(2) + 1 == 10 && calendar.get(5) == 31)
-        {
+        } else if (calendar.get(2) + 1 == 10 && calendar.get(5) == 31) {
             this.splashText = "OOoooOOOoooo! Spooky!";
         }
 
         int i = 24;
         int j = this.height / 4 + 48;
 
-        if (this.mc.isDemo())
-        {
+        if (this.mc.isDemo()) {
             this.addDemoButtons(j, 24);
-        }
-        else
-        {
+        } else {
             this.addSingleplayerMultiplayerButtons(j, 24);
         }
 
@@ -235,64 +219,50 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
         this.buttonList.add(new GuiButton(4, this.width / 2 + 2, j + 72 + 12, 98, 20, I18n.format("menu.quit", new Object[0])));
         this.buttonList.add(new GuiButtonLanguage(5, this.width / 2 - 124, j + 72 + 12));
 
-        synchronized (this.threadLock)
-        {
+        synchronized (this.threadLock) {
             this.field_92023_s = this.fontRendererObj.getStringWidth(this.openGLWarning1);
             this.field_92024_r = this.fontRendererObj.getStringWidth(this.openGLWarning2);
             int k = Math.max(this.field_92023_s, this.field_92024_r);
             this.field_92022_t = (this.width - k) / 2;
-            this.field_92021_u = ((GuiButton)this.buttonList.get(0)).yPosition - 24;
+            this.field_92021_u = this.buttonList.get(0).yPosition - 24;
             this.field_92020_v = this.field_92022_t + k;
             this.field_92019_w = this.field_92021_u + 24;
         }
 
-        this.mc.func_181537_a(false);
+        this.mc.setConnectedToRealms(false);
 
-        if (Minecraft.getMinecraft().gameSettings.getOptionOrdinalValue(GameSettings.Options.REALMS_NOTIFICATIONS) && !this.field_183502_L)
-        {
+        if (Minecraft.getMinecraft().gameSettings.getOptionOrdinalValue(GameSettings.Options.REALMS_NOTIFICATIONS) && !this.field_183502_L) {
             RealmsBridge realmsbridge = new RealmsBridge();
-            this.field_183503_M = realmsbridge.getNotificationScreen(this);
+            this.realmsScreen = realmsbridge.getNotificationScreen(this);
             this.field_183502_L = true;
         }
 
-        if (this.func_183501_a())
-        {
-            this.field_183503_M.func_183500_a(this.width, this.height);
-            this.field_183503_M.initGui();
+        if (this.func_183501_a()) {
+            this.realmsScreen.setGuiSize(this.width, this.height);
+            this.realmsScreen.initGui();
         }
     }
 
     /**
      * Adds Singleplayer and Multiplayer buttons on Main Menu for players who have bought the game.
      */
-    private void addSingleplayerMultiplayerButtons(int p_73969_1_, int p_73969_2_)
-    {
+    private void addSingleplayerMultiplayerButtons(int p_73969_1_, int p_73969_2_) {
         this.buttonList.add(new GuiButton(1, this.width / 2 - 100, p_73969_1_, I18n.format("menu.singleplayer", new Object[0])));
-        this.buttonList.add(new GuiButton(2, this.width / 2 - 100, p_73969_1_ + p_73969_2_ * 1, I18n.format("menu.multiplayer", new Object[0])));
-
-        if (Reflector.GuiModList_Constructor.exists())
-        {
-            this.buttonList.add(this.realmsButton = new GuiButton(14, this.width / 2 + 2, p_73969_1_ + p_73969_2_ * 2, 98, 20, I18n.format("menu.online", new Object[0]).replace("Minecraft", "").trim()));
-            this.buttonList.add(this.modButton = new GuiButton(6, this.width / 2 - 100, p_73969_1_ + p_73969_2_ * 2, 98, 20, I18n.format("fml.menu.mods", new Object[0])));
-        }
-        else
-        {
-            this.buttonList.add(this.realmsButton = new GuiButton(14, this.width / 2 - 100, p_73969_1_ + p_73969_2_ * 2, I18n.format("menu.online", new Object[0])));
-        }
+        this.buttonList.add(new GuiButton(2, this.width / 2 - 100, p_73969_1_ + p_73969_2_, I18n.format("menu.multiplayer", new Object[0])));
+        //this.buttonList.add(this.realmsButton = new GuiButton(14, this.width / 2 - 100, p_73969_1_ + p_73969_2_ * 2, I18n.format("menu.online", new Object[0])));
+        this.buttonList.add(new GuiButton(14, this.width / 2 - 100, p_73969_1_ + p_73969_2_ * 2, "FakeForge"));
     }
 
     /**
      * Adds Demo buttons on Main Menu for players who are playing Demo.
      */
-    private void addDemoButtons(int p_73972_1_, int p_73972_2_)
-    {
+    private void addDemoButtons(int p_73972_1_, int p_73972_2_) {
         this.buttonList.add(new GuiButton(11, this.width / 2 - 100, p_73972_1_, I18n.format("menu.playdemo", new Object[0])));
         this.buttonList.add(this.buttonResetDemo = new GuiButton(12, this.width / 2 - 100, p_73972_1_ + p_73972_2_ * 1, I18n.format("menu.resetdemo", new Object[0])));
         ISaveFormat isaveformat = this.mc.getSaveLoader();
         WorldInfo worldinfo = isaveformat.getWorldInfo("Demo_World");
 
-        if (worldinfo == null)
-        {
+        if (worldinfo == null) {
             this.buttonResetDemo.enabled = false;
         }
     }
@@ -300,88 +270,68 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
     /**
      * Called by the controls from the buttonList when activated. (Mouse pressed for buttons)
      */
-    protected void actionPerformed(GuiButton button) throws IOException
-    {
-        if (button.id == 0)
-        {
-            this.mc.displayGuiScreen(new GuiOptions(this, this.mc.gameSettings));
+    protected void actionPerformed(GuiButton button) throws IOException {
+        if (button.id == 0) {
+            mc.displayGuiScreen(new GuiOptions(this, this.mc.gameSettings));
         }
 
-        if (button.id == 5)
-        {
-            this.mc.displayGuiScreen(new GuiLanguage(this, this.mc.gameSettings, this.mc.getLanguageManager()));
+        if (button.id == 5) {
+            mc.displayGuiScreen(new GuiLanguage(this, this.mc.gameSettings, this.mc.getLanguageManager()));
         }
 
-        if (button.id == 1)
-        {
-            this.mc.displayGuiScreen(new GuiSelectWorld(this));
+        if (button.id == 1) {
+            mc.displayGuiScreen(new GuiSelectWorld(this));
         }
 
-        if (button.id == 2)
-        {
-            this.mc.displayGuiScreen(new GuiMultiplayer(this));
+        if (button.id == 2) {
+            mc.displayGuiScreen(new GuiMultiplayer(this));
         }
 
-        if (button.id == 14 && this.realmsButton.visible)
-        {
-            this.switchToRealms();
+        if (button.id == 14) {
+            mc.displayGuiScreen(new GuiFakeForge(this));
         }
 
-        if (button.id == 4)
-        {
-            this.mc.shutdown();
+        if (button.id == 4) {
+            mc.shutdown();
         }
 
-        if (button.id == 6 && Reflector.GuiModList_Constructor.exists())
-        {
-            this.mc.displayGuiScreen((GuiScreen)Reflector.newInstance(Reflector.GuiModList_Constructor, new Object[] {this}));
+        if (button.id == 6 && Reflector.GuiModList_Constructor.exists()) {
+            mc.displayGuiScreen((GuiScreen) Reflector.newInstance(Reflector.GuiModList_Constructor, new Object[]{this}));
         }
 
-        if (button.id == 11)
-        {
-            this.mc.launchIntegratedServer("Demo_World", "Demo_World", DemoWorldServer.demoWorldSettings);
+        if (button.id == 11) {
+            mc.launchIntegratedServer("Demo_World", "Demo_World", DemoWorldServer.demoWorldSettings);
         }
 
-        if (button.id == 12)
-        {
-            ISaveFormat isaveformat = this.mc.getSaveLoader();
+        if (button.id == 12) {
+            ISaveFormat isaveformat = mc.getSaveLoader();
             WorldInfo worldinfo = isaveformat.getWorldInfo("Demo_World");
 
-            if (worldinfo != null)
-            {
+            if (worldinfo != null) {
                 GuiYesNo guiyesno = GuiSelectWorld.func_152129_a(this, worldinfo.getWorldName(), 12);
-                this.mc.displayGuiScreen(guiyesno);
+                mc.displayGuiScreen(guiyesno);
             }
         }
     }
 
-    private void switchToRealms()
-    {
+    private void switchToRealms() {
         RealmsBridge realmsbridge = new RealmsBridge();
         realmsbridge.switchToRealms(this);
     }
 
-    public void confirmClicked(boolean result, int id)
-    {
-        if (result && id == 12)
-        {
+    public void confirmClicked(boolean result, int id) {
+        if (result && id == 12) {
             ISaveFormat isaveformat = this.mc.getSaveLoader();
             isaveformat.flushCache();
             isaveformat.deleteWorldDirectory("Demo_World");
             this.mc.displayGuiScreen(this);
-        }
-        else if (id == 13)
-        {
-            if (result)
-            {
-                try
-                {
+        } else if (id == 13) {
+            if (result) {
+                try {
                     Class<?> oclass = Class.forName("java.awt.Desktop");
-                    Object object = oclass.getMethod("getDesktop", new Class[0]).invoke((Object)null, new Object[0]);
-                    oclass.getMethod("browse", new Class[] {URI.class}).invoke(object, new Object[] {new URI(this.openGLWarningLink)});
-                }
-                catch (Throwable throwable)
-                {
+                    Object object = oclass.getMethod("getDesktop", new Class[0]).invoke((Object) null, new Object[0]);
+                    oclass.getMethod("browse", new Class[]{URI.class}).invoke(object, new Object[]{new URI(this.openGLWarningLink)});
+                } catch (Throwable throwable) {
                     logger.error("Couldn\'t open link", throwable);
                 }
             }
@@ -393,8 +343,7 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
     /**
      * Draws the main menu panorama
      */
-    private void drawPanorama(int p_73970_1_, int p_73970_2_, float p_73970_3_)
-    {
+    private void drawPanorama(int p_73970_1_, int p_73970_2_, float p_73970_3_) {
         Tessellator tessellator = Tessellator.getInstance();
         WorldRenderer worldrenderer = tessellator.getWorldRenderer();
         GlStateManager.matrixMode(5889);
@@ -416,47 +365,39 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
         int j = 64;
         CustomPanoramaProperties custompanoramaproperties = CustomPanorama.getCustomPanoramaProperties();
 
-        if (custompanoramaproperties != null)
-        {
+        if (custompanoramaproperties != null) {
             j = custompanoramaproperties.getBlur1();
         }
 
-        for (int k = 0; k < j; ++k)
-        {
+        for (int k = 0; k < j; ++k) {
             GlStateManager.pushMatrix();
-            float f = ((float)(k % i) / (float)i - 0.5F) / 64.0F;
-            float f1 = ((float)(k / i) / (float)i - 0.5F) / 64.0F;
+            float f = ((float) (k % i) / (float) i - 0.5F) / 64.0F;
+            float f1 = ((float) (k / i) / (float) i - 0.5F) / 64.0F;
             float f2 = 0.0F;
             GlStateManager.translate(f, f1, f2);
-            GlStateManager.rotate(MathHelper.sin(((float)this.panoramaTimer + p_73970_3_) / 400.0F) * 25.0F + 20.0F, 1.0F, 0.0F, 0.0F);
-            GlStateManager.rotate(-((float)this.panoramaTimer + p_73970_3_) * 0.1F, 0.0F, 1.0F, 0.0F);
+            GlStateManager.rotate(MathHelper.sin(((float) this.panoramaTimer + p_73970_3_) / 400.0F) * 25.0F + 20.0F, 1.0F, 0.0F, 0.0F);
+            GlStateManager.rotate(-((float) this.panoramaTimer + p_73970_3_) * 0.1F, 0.0F, 1.0F, 0.0F);
 
-            for (int l = 0; l < 6; ++l)
-            {
+            for (int l = 0; l < 6; ++l) {
                 GlStateManager.pushMatrix();
 
-                if (l == 1)
-                {
+                if (l == 1) {
                     GlStateManager.rotate(90.0F, 0.0F, 1.0F, 0.0F);
                 }
 
-                if (l == 2)
-                {
+                if (l == 2) {
                     GlStateManager.rotate(180.0F, 0.0F, 1.0F, 0.0F);
                 }
 
-                if (l == 3)
-                {
+                if (l == 3) {
                     GlStateManager.rotate(-90.0F, 0.0F, 1.0F, 0.0F);
                 }
 
-                if (l == 4)
-                {
+                if (l == 4) {
                     GlStateManager.rotate(90.0F, 1.0F, 0.0F, 0.0F);
                 }
 
-                if (l == 5)
-                {
+                if (l == 5) {
                     GlStateManager.rotate(-90.0F, 1.0F, 0.0F, 0.0F);
                 }
 
@@ -496,8 +437,7 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
     /**
      * Rotate and blurs the skybox view in the main menu
      */
-    private void rotateAndBlurSkybox(float p_73968_1_)
-    {
+    private void rotateAndBlurSkybox(float p_73968_1_) {
         this.mc.getTextureManager().bindTexture(this.backgroundTexture);
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
@@ -510,23 +450,17 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
         worldrenderer.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR);
         GlStateManager.disableAlpha();
         int i = 3;
-        int j = 3;
-        CustomPanoramaProperties custompanoramaproperties = CustomPanorama.getCustomPanoramaProperties();
+        int blurLevel = 1;
 
-        if (custompanoramaproperties != null)
-        {
-            j = custompanoramaproperties.getBlur2();
-        }
-
-        for (int k = 0; k < j; ++k) {
-            float f = 1.0F / (float) (k + 1);
-            int l = this.width;
-            int i1 = this.height;
-            float f1 = (float) (k - i / 2) / 256.0F;
-            worldrenderer.pos((double) l, (double) i1, (double) this.zLevel).tex((double) (0.0F + f1), 1.0D).color(1.0F, 1.0F, 1.0F, f).endVertex();
-            worldrenderer.pos((double) l, 0.0D, (double) this.zLevel).tex((double) (1.0F + f1), 1.0D).color(1.0F, 1.0F, 1.0F, f).endVertex();
-            worldrenderer.pos(0.0D, 0.0D, (double) this.zLevel).tex((double) (1.0F + f1), 0.0D).color(1.0F, 1.0F, 1.0F, f).endVertex();
-            worldrenderer.pos(0.0D, (double) i1, (double) this.zLevel).tex((double) (0.0F + f1), 0.0D).color(1.0F, 1.0F, 1.0F, f).endVertex();
+        for (int index = 0; index < blurLevel; ++index) {
+            float alpha = 1.0F / (float) (index + 1);
+            int width = this.width;
+            int height = this.height;
+            float offset = (float) (index - i / 2) / 256.0F;
+            worldrenderer.pos(width, height, this.zLevel).tex(0.0F + offset, 1.0D).color(1.0F, 1.0F, 1.0F, alpha).endVertex();
+            worldrenderer.pos(width, 0.0D, this.zLevel).tex(1.0F + offset, 1.0D).color(1.0F, 1.0F, 1.0F, alpha).endVertex();
+            worldrenderer.pos(0.0D, 0.0D, this.zLevel).tex(1.0F + offset, 0.0D).color(1.0F, 1.0F, 1.0F, alpha).endVertex();
+            worldrenderer.pos(0.0D, height, this.zLevel).tex(0.0F + offset, 0.0D).color(1.0F, 1.0F, 1.0F, alpha).endVertex();
         }
 
         tessellator.draw();
@@ -537,8 +471,7 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
     /**
      * Renders the skybox in the main menu
      */
-    private void renderSkybox(int p_73971_1_, int p_73971_2_, float p_73971_3_)
-    {
+    private void renderSkybox(int p_73971_1_, int p_73971_2_, float p_73971_3_) {
         this.mc.getFramebuffer().unbindFramebuffer();
         GlStateManager.viewport(0, 0, 256, 256);
         this.drawPanorama(p_73971_1_, p_73971_2_, p_73971_3_);
@@ -546,13 +479,11 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
         int i = 3;
         CustomPanoramaProperties custompanoramaproperties = CustomPanorama.getCustomPanoramaProperties();
 
-        if (custompanoramaproperties != null)
-        {
+        if (custompanoramaproperties != null) {
             i = custompanoramaproperties.getBlur3();
         }
 
-        for (int j = 0; j < i; ++j)
-        {
+        for (int j = 0; j < i; ++j) {
             this.rotateAndBlurSkybox(p_73971_3_);
             this.rotateAndBlurSkybox(p_73971_3_);
         }
@@ -567,18 +498,17 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
         Tessellator tessellator = Tessellator.getInstance();
         WorldRenderer worldrenderer = tessellator.getWorldRenderer();
         worldrenderer.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR);
-        worldrenderer.pos(0.0D, (double) l, (double) this.zLevel).tex((double) (0.5F - f), (double) (0.5F + f1)).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
-        worldrenderer.pos((double) k, (double) l, (double) this.zLevel).tex((double) (0.5F - f), (double) (0.5F - f1)).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
-        worldrenderer.pos((double) k, 0.0D, (double) this.zLevel).tex((double) (0.5F + f), (double) (0.5F - f1)).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
-        worldrenderer.pos(0.0D, 0.0D, (double) this.zLevel).tex((double) (0.5F + f), (double) (0.5F + f1)).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
+        worldrenderer.pos(0.0D, l, this.zLevel).tex(0.5F - f, 0.5F + f1).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
+        worldrenderer.pos(k, l, this.zLevel).tex(0.5F - f, 0.5F - f1).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
+        worldrenderer.pos(k, 0.0D, this.zLevel).tex(0.5F + f, 0.5F - f1).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
+        worldrenderer.pos(0.0D, 0.0D, this.zLevel).tex(0.5F + f, 0.5F + f1).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
         tessellator.draw();
     }
 
     /**
      * Draws the screen and all the components in it. Args : mouseX, mouseY, renderPartialTicks
      */
-    public void drawScreen(int mouseX, int mouseY, float partialTicks)
-    {
+    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         GlStateManager.disableAlpha();
         this.renderSkybox(mouseX, mouseY, partialTicks);
         GlStateManager.enableAlpha();
@@ -593,100 +523,67 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
         int k1 = Integer.MIN_VALUE;
         CustomPanoramaProperties custompanoramaproperties = CustomPanorama.getCustomPanoramaProperties();
 
-        if (custompanoramaproperties != null)
-        {
+        if (custompanoramaproperties != null) {
             l = custompanoramaproperties.getOverlay1Top();
             i1 = custompanoramaproperties.getOverlay1Bottom();
             j1 = custompanoramaproperties.getOverlay2Top();
             k1 = custompanoramaproperties.getOverlay2Bottom();
         }
 
-        if (l != 0 || i1 != 0)
-        {
+        if (l != 0 || i1 != 0) {
             this.drawGradientRect(0, 0, this.width, this.height, l, i1);
         }
 
-        if (j1 != 0 || k1 != 0)
-        {
+        if (j1 != 0 || k1 != 0) {
             this.drawGradientRect(0, 0, this.width, this.height, j1, k1);
         }
 
         this.mc.getTextureManager().bindTexture(minecraftTitleTextures);
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 
-        if ((double)this.updateCounter < 1.0E-4D)
-        {
-            this.drawTexturedModalRect(j + 0, k + 0, 0, 0, 99, 44);
-            this.drawTexturedModalRect(j + 99, k + 0, 129, 0, 27, 44);
-            this.drawTexturedModalRect(j + 99 + 26, k + 0, 126, 0, 3, 44);
-            this.drawTexturedModalRect(j + 99 + 26 + 3, k + 0, 99, 0, 26, 44);
-            this.drawTexturedModalRect(j + 155, k + 0, 0, 45, 155, 44);
-        }
-        else
-        {
-            this.drawTexturedModalRect(j + 0, k + 0, 0, 0, 155, 44);
-            this.drawTexturedModalRect(j + 155, k + 0, 0, 45, 155, 44);
+        if ((double) this.updateCounter < 1.0E-4D) {
+            this.drawTexturedModalRect(j, k, 0, 0, 99, 44);
+            this.drawTexturedModalRect(j + 99, k, 129, 0, 27, 44);
+            this.drawTexturedModalRect(j + 99 + 26, k, 126, 0, 3, 44);
+            this.drawTexturedModalRect(j + 99 + 26 + 3, k, 99, 0, 26, 44);
+            this.drawTexturedModalRect(j + 155, k, 0, 45, 155, 44);
+        } else {
+            this.drawTexturedModalRect(j, k, 0, 0, 155, 44);
+            this.drawTexturedModalRect(j + 155, k, 0, 45, 155, 44);
         }
 
         GlStateManager.pushMatrix();
-        GlStateManager.translate((float)(this.width / 2 + 90), 70.0F, 0.0F);
+        GlStateManager.translate((float) (this.width / 2 + 90), 70.0F, 0.0F);
         GlStateManager.rotate(-20.0F, 0.0F, 0.0F, 1.0F);
-        float f = 1.8F - MathHelper.abs(MathHelper.sin((float)(Minecraft.getSystemTime() % 1000L) / 1000.0F * (float)Math.PI * 2.0F) * 0.1F);
-        f = f * 100.0F / (float)(this.fontRendererObj.getStringWidth(this.splashText) + 32);
+        float f = 1.8F - MathHelper.abs(MathHelper.sin((float) (Minecraft.getSystemTime() % 1000L) / 1000.0F * (float) Math.PI * 2.0F) * 0.1F);
+        f = f * 100.0F / (float) (this.fontRendererObj.getStringWidth(this.splashText) + 32);
         GlStateManager.scale(f, f, f);
         this.drawCenteredString(this.fontRendererObj, this.splashText, 0, -8, -256);
         GlStateManager.popMatrix();
         String s = "Minecraft 1.8.9";
 
-        if (this.mc.isDemo())
-        {
+        if (this.mc.isDemo()) {
             s = s + " Demo";
         }
 
-        if (Reflector.FMLCommonHandler_getBrandings.exists())
-        {
-            Object object = Reflector.call(Reflector.FMLCommonHandler_instance, new Object[0]);
-            List<String> list = Lists.<String>reverse((List)Reflector.call(object, Reflector.FMLCommonHandler_getBrandings, new Object[] {Boolean.valueOf(true)}));
-
-            for (int l1 = 0; l1 < list.size(); ++l1)
-            {
-                String s1 = (String)list.get(l1);
-
-                if (!Strings.isNullOrEmpty(s1))
-                {
-                    this.drawString(this.fontRendererObj, s1, 2, this.height - (10 + l1 * (this.fontRendererObj.FONT_HEIGHT + 1)), 16777215);
-                }
-            }
-
-            if (Reflector.ForgeHooksClient_renderMainMenu.exists())
-            {
-                Reflector.call(Reflector.ForgeHooksClient_renderMainMenu, new Object[] {this, this.fontRendererObj, Integer.valueOf(this.width), Integer.valueOf(this.height)});
-            }
-        }
-        else
-        {
-            this.drawString(this.fontRendererObj, s, 2, this.height - 10, -1);
-        }
+        this.drawString(this.fontRendererObj, s, 2, this.height - 10, -1);
 
         String s2 = "Copyright Mojang AB. Do not distribute!";
         this.drawString(this.fontRendererObj, s2, this.width - this.fontRendererObj.getStringWidth(s2) - 2, this.height - 10, -1);
 
-        if (this.openGLWarning1 != null && this.openGLWarning1.length() > 0)
-        {
+        if (this.openGLWarning1 != null && this.openGLWarning1.length() > 0) {
             drawRect(this.field_92022_t - 2, this.field_92021_u - 2, this.field_92020_v + 2, this.field_92019_w - 1, 1428160512);
             this.drawString(this.fontRendererObj, this.openGLWarning1, this.field_92022_t, this.field_92021_u, -1);
-            this.drawString(this.fontRendererObj, this.openGLWarning2, (this.width - this.field_92024_r) / 2, ((GuiButton)this.buttonList.get(0)).yPosition - 12, -1);
+            this.drawString(this.fontRendererObj, this.openGLWarning2, (this.width - this.field_92024_r) / 2, this.buttonList.get(0).yPosition - 12, -1);
         }
 
         super.drawScreen(mouseX, mouseY, partialTicks);
 
-        if (this.func_183501_a())
-        {
-            this.field_183503_M.drawScreen(mouseX, mouseY, partialTicks);
+        if (this.func_183501_a()) {
+            this.realmsScreen.drawScreen(mouseX, mouseY, partialTicks);
         }
 
-        if (this.modUpdateNotification != null)
-        {
+        if (this.modUpdateNotification != null) {
             this.modUpdateNotification.drawScreen(mouseX, mouseY, partialTicks);
         }
     }
@@ -694,34 +591,28 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
     /**
      * Called when the mouse is clicked. Args : mouseX, mouseY, clickedButton
      */
-    protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException
-    {
+    protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
         super.mouseClicked(mouseX, mouseY, mouseButton);
 
-        synchronized (this.threadLock)
-        {
-            if (this.openGLWarning1.length() > 0 && mouseX >= this.field_92022_t && mouseX <= this.field_92020_v && mouseY >= this.field_92021_u && mouseY <= this.field_92019_w)
-            {
+        synchronized (this.threadLock) {
+            if (this.openGLWarning1.length() > 0 && mouseX >= this.field_92022_t && mouseX <= this.field_92020_v && mouseY >= this.field_92021_u && mouseY <= this.field_92019_w) {
                 GuiConfirmOpenLink guiconfirmopenlink = new GuiConfirmOpenLink(this, this.openGLWarningLink, 13, true);
                 guiconfirmopenlink.disableSecurityWarning();
                 this.mc.displayGuiScreen(guiconfirmopenlink);
             }
         }
 
-        if (this.func_183501_a())
-        {
-            this.field_183503_M.mouseClicked(mouseX, mouseY, mouseButton);
+        if (this.func_183501_a()) {
+            this.realmsScreen.mouseClicked(mouseX, mouseY, mouseButton);
         }
     }
 
     /**
      * Called when the screen is unloaded. Used to disable keyboard repeat events
      */
-    public void onGuiClosed()
-    {
-        if (this.field_183503_M != null)
-        {
-            this.field_183503_M.onGuiClosed();
+    public void onGuiClosed() {
+        if (this.realmsScreen != null) {
+            this.realmsScreen.onGuiClosed();
         }
     }
 }

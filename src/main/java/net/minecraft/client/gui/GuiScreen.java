@@ -109,7 +109,7 @@ public abstract class GuiScreen extends Gui implements GuiYesNoCallback {
      * KeyListener.keyTyped(KeyEvent e). Args : character (character on the key), keyCode (lwjgl Keyboard key code)
      */
     protected void keyTyped(char typedChar, int keyCode) throws IOException {
-        if (keyCode == 1) {
+        if (keyCode == Keyboard.KEY_ESCAPE) {
             this.mc.displayGuiScreen(null);
 
             if (this.mc.currentScreen == null) {
@@ -405,16 +405,12 @@ public abstract class GuiScreen extends Gui implements GuiYesNoCallback {
     /**
      * Called when the mouse is clicked. Args : mouseX, mouseY, clickedButton
      */
-    protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException
-    {
-        if (mouseButton == 0)
-        {
-            for (int i = 0; i < this.buttonList.size(); ++i)
-            {
+    protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
+        if (mouseButton == 0) {
+            for (int i = 0; i < this.buttonList.size(); ++i) {
                 GuiButton guibutton = this.buttonList.get(i);
 
-                if (guibutton.mousePressed(this.mc, mouseX, mouseY))
-                {
+                if (guibutton.mousePressed(this.mc, mouseX, mouseY)) {
                     this.selectedButton = guibutton;
                     guibutton.playPressSound(this.mc.getSoundHandler());
                     this.actionPerformed(guibutton);
@@ -460,7 +456,7 @@ public abstract class GuiScreen extends Gui implements GuiYesNoCallback {
         this.initGui();
     }
 
-    public void func_183500_a(int p_183500_1_, int p_183500_2_) {
+    public void setGuiSize(int p_183500_1_, int p_183500_2_) {
         this.width = p_183500_1_;
         this.height = p_183500_2_;
     }
@@ -551,7 +547,7 @@ public abstract class GuiScreen extends Gui implements GuiYesNoCallback {
 
     public void drawWorldBackground(int tint) {
         if (this.mc.theWorld != null) {
-            this.drawGradientRect(0, 0, this.width, this.height, -1072689136, -804253680);
+            this.drawGradientRect(0, 0, this.width, this.height, new Color(16, 16, 16, 192).getRGB(), new Color(16, 16, 16, 208).getRGB());
         } else {
             this.drawBackground(tint);
         }

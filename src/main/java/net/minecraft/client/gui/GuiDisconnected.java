@@ -1,12 +1,12 @@
 package net.minecraft.client.gui;
 
-import java.io.IOException;
-import java.util.List;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.IChatComponent;
 
-public class GuiDisconnected extends GuiScreen
-{
+import java.io.IOException;
+import java.util.List;
+
+public class GuiDisconnected extends GuiScreen {
     private String reason;
     private IChatComponent message;
     private List<String> multilineMessage;
@@ -16,7 +16,7 @@ public class GuiDisconnected extends GuiScreen
     public GuiDisconnected(GuiScreen screen, String reasonLocalizationKey, IChatComponent chatComp)
     {
         this.parentScreen = screen;
-        this.reason = I18n.format(reasonLocalizationKey, new Object[0]);
+        this.reason = I18n.format(reasonLocalizationKey);
         this.message = chatComp;
     }
 
