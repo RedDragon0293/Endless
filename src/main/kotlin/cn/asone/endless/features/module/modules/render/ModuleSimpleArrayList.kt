@@ -5,6 +5,7 @@ import cn.asone.endless.event.Render2DEvent
 import cn.asone.endless.features.module.AbstractModule
 import cn.asone.endless.features.module.ModuleCategory
 import cn.asone.endless.features.module.ModuleManager
+import cn.asone.endless.ui.font.Fonts
 import java.awt.Color
 
 object ModuleSimpleArrayList : AbstractModule(
@@ -20,7 +21,7 @@ object ModuleSimpleArrayList : AbstractModule(
         var offsetY = 0
         for (module in ModuleManager.modules) {
             if (module.state) {
-                mc.fontRendererObj.drawString(module.name, 10F, 10F + offsetY, Color.blue.rgb, false)
+                Fonts.font24.drawString(module.name, 2F, 2F + offsetY, Color.blue.rgb, true)
                 offsetY += 10
             }
         }
