@@ -1,10 +1,10 @@
 package cn.asone.endless.features.module
 
-enum class ModuleCategory(val displayName: String) {
-    COMBAT("Combat"),
-    PLAYER("Player"),
-    MOVEMENT("Movement"),
-    RENDER("Render"),
-    WORLD("World"),
-    MISC("Misc")
+object ModuleCategory {
+    const val COMBAT = 0
+    const val PLAYER = 1
+    const val MOVEMENT = 2
+    const val RENDER = 3
+    const val WORLD = 4
+    const val MISC = 5
 }

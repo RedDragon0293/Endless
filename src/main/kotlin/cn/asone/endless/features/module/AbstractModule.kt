@@ -7,10 +7,11 @@ import net.minecraft.client.Minecraft
 import org.lwjgl.input.Keyboard
 
 abstract class AbstractModule(
-        var name: String,
-        var description: String,
-        var category: ModuleCategory,
-        var keyBind: Int = Keyboard.CHAR_NONE) : Listenable {
+    var name: String,
+    var description: String,
+    var category: Int,
+    var keyBind: Int = Keyboard.CHAR_NONE
+) : Listenable {
 
     protected val mc = Minecraft.getMinecraft()!!
     var state = false

@@ -16,10 +16,10 @@ import org.lwjgl.opengl.GL11
 import java.awt.Color
 
 object ModuleTest : AbstractModule(
-        "TestModule",
-        "Hello, world!",
-        ModuleCategory.MISC,
-        Keyboard.KEY_R
+    "TestModule",
+    "Hello, world!",
+    ModuleCategory.MISC,
+    Keyboard.KEY_R
 ) {
     private val checkServerSide = BoolValue("CheckServerSide", true)
     private val checkServerSideOnlyGround = BoolValue("CheckServerSideOnlyGround", false)
@@ -29,17 +29,17 @@ object ModuleTest : AbstractModule(
     private val staticPitch = FloatValue("StaticPitch", 90F, -90F, 90F)
 
     override val values: ArrayList<Value<*>> = arrayListOf(
-            checkServerSide,
-            rotationMode
+        checkServerSide,
+        rotationMode
     )
 
     override fun getAllValue(): ArrayList<Value<*>> = arrayListOf(
-            checkServerSide,
-            checkServerSideOnlyGround,
-            rotationMode,
-            rotationSpeed,
-            staticYaw,
-            staticPitch
+        checkServerSide,
+        checkServerSideOnlyGround,
+        rotationMode,
+        rotationSpeed,
+        staticYaw,
+        staticPitch
     )
 
     init {
@@ -55,8 +55,8 @@ object ModuleTest : AbstractModule(
     }
 
     override val handledEvents: ArrayList<Class<out Event>> = arrayListOf(
-            Render2DEvent::class.java,
-            Render3DEvent::class.java
+        Render2DEvent::class.java,
+        Render3DEvent::class.java
     )
 
     override fun onKey(event: KeyEvent) {

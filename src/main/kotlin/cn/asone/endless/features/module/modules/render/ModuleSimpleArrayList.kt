@@ -9,12 +9,12 @@ import cn.asone.endless.ui.font.Fonts
 import java.awt.Color
 
 object ModuleSimpleArrayList : AbstractModule(
-        "SimpleArrayList",
-        "A pretty simple arraylist just to be continued",
-        ModuleCategory.RENDER
+    "SimpleArrayList",
+    "A pretty simple arraylist just to be continued",
+    ModuleCategory.RENDER
 ) {
     override val handledEvents: ArrayList<Class<out Event>> = arrayListOf(
-            Render2DEvent::class.java
+        Render2DEvent::class.java
     )
 
     override fun onRender2D(event: Render2DEvent) {

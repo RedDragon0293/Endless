@@ -11,12 +11,12 @@ import net.minecraft.potion.Potion
 
 
 object ModuleSprint : AbstractModule(
-        "Sprint",
-        "Automatically sprints all the time.",
-        ModuleCategory.MOVEMENT
+    "Sprint",
+    "Automatically sprints all the time.",
+    ModuleCategory.MOVEMENT
 ) {
     override val handledEvents: ArrayList<Class<out Event>> = arrayListOf(
-            UpdateEvent::class.java
+        UpdateEvent::class.java
     )
     private val allDirectionsValue = BoolValue("AllDirections", false)
     private val blindnessValue = BoolValue("Blindness", true)
@@ -25,18 +25,18 @@ object ModuleSprint : AbstractModule(
     private val checkServerSideGround = BoolValue("CheckServerSideOnlyGround", false)
 
     override val values: ArrayList<Value<*>> = arrayListOf(
-            allDirectionsValue,
-            blindnessValue,
-            foodValue,
-            checkServerSide
+        allDirectionsValue,
+        blindnessValue,
+        foodValue,
+        checkServerSide
     )
 
     override fun getAllValue(): ArrayList<Value<*>> = arrayListOf(
-            allDirectionsValue,
-            blindnessValue,
-            foodValue,
-            checkServerSide,
-            checkServerSideGround
+        allDirectionsValue,
+        blindnessValue,
+        foodValue,
+        checkServerSide,
+        checkServerSideGround
     )
 
     init {
@@ -49,8 +49,9 @@ object ModuleSprint : AbstractModule(
             return
         }
         if (!MovementUtils.isMoving() || mc.thePlayer.isSneaking
-                || (blindnessValue.get() && mc.thePlayer.isPotionActive(Potion.blindness))
-                || (foodValue.get() && !(mc.thePlayer.foodStats.foodLevel > 6.0F || mc.thePlayer.capabilities.allowFlying))) {
+            || (blindnessValue.get() && mc.thePlayer.isPotionActive(Potion.blindness))
+            || (foodValue.get() && !(mc.thePlayer.foodStats.foodLevel > 6.0F || mc.thePlayer.capabilities.allowFlying))
+        ) {
             mc.thePlayer.isSprinting = false
             return
         }
