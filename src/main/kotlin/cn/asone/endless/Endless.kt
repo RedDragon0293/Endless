@@ -22,6 +22,7 @@ object Endless {
         EventManager
         CommandManager
         ModuleManager
+        EventManager.sort()
         ConfigManager.loadAllConfigs()
 
         Display.setTitle("$CLIENT_NAME $CLIENT_VERSION | 1.8.9 - Cracked by AsOne & RedDragon0293")

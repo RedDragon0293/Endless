@@ -1,6 +1,6 @@
 package cn.asone.endless.features.module.modules.movement
 
-import cn.asone.endless.event.Event
+import cn.asone.endless.event.EventHook
 import cn.asone.endless.event.UpdateEvent
 import cn.asone.endless.features.module.AbstractModule
 import cn.asone.endless.features.module.ModuleCategory
@@ -9,14 +9,13 @@ import cn.asone.endless.value.BoolValue
 import cn.asone.endless.value.Value
 import net.minecraft.potion.Potion
 
-
 object ModuleSprint : AbstractModule(
     "Sprint",
     "Automatically sprints all the time.",
     ModuleCategory.MOVEMENT
 ) {
-    override val handledEvents: ArrayList<Class<out Event>> = arrayListOf(
-        UpdateEvent::class.java
+    override val handledEvents: ArrayList<EventHook> = arrayListOf(
+        EventHook(UpdateEvent::class.java)
     )
     private val allDirectionsValue = BoolValue("AllDirections", false)
     private val blindnessValue = BoolValue("Blindness", true)

@@ -1,6 +1,6 @@
 package cn.asone.endless.features.special
 
-import cn.asone.endless.event.Event
+import cn.asone.endless.event.EventHook
 import cn.asone.endless.event.EventManager
 import cn.asone.endless.event.SendPacketEvent
 import cn.asone.endless.utils.ClientUtils
@@ -22,8 +22,8 @@ object FakeForge : ListenableClass() {
     @JvmField
     var payload = false
 
-    override val handledEvents: ArrayList<Class<out Event>> = arrayListOf(
-            SendPacketEvent::class.java
+    override val handledEvents: ArrayList<EventHook> = arrayListOf(
+        EventHook(SendPacketEvent::class.java, 100)
     )
 
     init {

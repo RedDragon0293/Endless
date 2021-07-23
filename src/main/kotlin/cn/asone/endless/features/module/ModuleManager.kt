@@ -1,6 +1,6 @@
 package cn.asone.endless.features.module
 
-import cn.asone.endless.event.Event
+import cn.asone.endless.event.EventHook
 import cn.asone.endless.event.EventManager
 import cn.asone.endless.event.KeyEvent
 import cn.asone.endless.features.command.CommandManager
@@ -12,7 +12,7 @@ import cn.asone.endless.utils.ListenableClass
 import java.util.*
 
 object ModuleManager : ListenableClass() {
-    override val handledEvents: ArrayList<Class<out Event>> = arrayListOf(KeyEvent::class.java)
+    override val handledEvents: ArrayList<EventHook> = arrayListOf(EventHook(KeyEvent::class.java, 100))
     val modules = TreeSet<AbstractModule> { module1, module2 -> module1.name.compareTo(module2.name) }
 
     init {

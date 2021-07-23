@@ -1,7 +1,7 @@
 package cn.asone.endless.event
 
 interface Listenable {
-    val handledEvents: ArrayList<Class<out Event>>
+    val handledEvents: ArrayList<EventHook>
     fun isHandleEvents(): Boolean
 
     fun onUpdate()

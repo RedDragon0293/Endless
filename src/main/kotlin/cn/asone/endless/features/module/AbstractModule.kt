@@ -10,7 +10,8 @@ abstract class AbstractModule(
     var name: String,
     var description: String,
     var category: Int,
-    var keyBind: Int = Keyboard.CHAR_NONE
+    var keyBind: Int = Keyboard.CHAR_NONE,
+    var canEnable: Boolean = true
 ) : Listenable {
 
     protected val mc = Minecraft.getMinecraft()!!
@@ -25,8 +26,14 @@ abstract class AbstractModule(
                 else
                     onDisable()
             }
+            if (!canEnable) {
+                field = false
+                return
+            }
             field = value
         }
+
+    override val handledEvents: ArrayList<EventHook> = arrayListOf()
 
     open val values: ArrayList<Value<*>> = arrayListOf()
 

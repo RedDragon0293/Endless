@@ -5,16 +5,16 @@ import cn.asone.endless.utils.ClientUtils
 
 object EventManager {
     private val availableEvents = arrayListOf(
-            KeyEvent::class.java,
-            PreMotionEvent::class.java,
-            PostMotionEvent::class.java,
-            ReceivePacketEvent::class.java,
-            SendPacketEvent::class.java,
-            Render2DEvent::class.java,
-            Render3DEvent::class.java,
-            UpdateEvent::class.java
+        KeyEvent::class.java,
+        PreMotionEvent::class.java,
+        PostMotionEvent::class.java,
+        ReceivePacketEvent::class.java,
+        SendPacketEvent::class.java,
+        Render2DEvent::class.java,
+        Render3DEvent::class.java,
+        UpdateEvent::class.java
     )
-    private val registry = mutableMapOf<Class<out Event>, ArrayList<Listenable>>()
+    private val registry = mutableMapOf<Class<out Event>, ArrayList<EventTarget>>()
 
     init {
         for (event in availableEvents) {
@@ -23,24 +23,28 @@ object EventManager {
     }
 
     fun registerListener(listener: Listenable) {
-        for (event in listener.handledEvents) {
-            registry[event]!!.add(listener)
+        for (eventHook in listener.handledEvents) {
+            registry[eventHook.event]!!.add(EventTarget(listener, eventHook.priority))
         }
+    }
+
+    fun sort() = registry.forEach { (_, u) ->
+        u.sortBy { -it.priority }
     }
 
     fun <T : Event> callEvent(event: T) {
         /**
          * 当前event对应的Listenable List
          */
-        val targetClass = registry[event.javaClass] ?: return
+        val eventTarget = registry[event.javaClass] ?: return
 
         when (event) {
             is UpdateEvent -> {
-                for (target in targetClass) {
-                    if (!target.isHandleEvents())
+                for (target in eventTarget) {
+                    if (!target.targetClass.isHandleEvents())
                         continue
                     runCatching {
-                        target.onUpdate()
+                        target.targetClass.onUpdate()
                     }.onFailure {
                         it.printStackTrace()
                     }
@@ -48,11 +52,11 @@ object EventManager {
             }
 
             is PreMotionEvent -> {
-                for (target in targetClass) {
-                    if (!target.isHandleEvents())
+                for (target in eventTarget) {
+                    if (!target.targetClass.isHandleEvents())
                         continue
                     runCatching {
-                        target.onPreMotion(event)
+                        target.targetClass.onPreMotion(event)
                     }.onFailure {
                         it.printStackTrace()
                     }
@@ -60,11 +64,11 @@ object EventManager {
             }
 
             is PostMotionEvent -> {
-                for (target in targetClass) {
-                    if (!target.isHandleEvents())
+                for (target in eventTarget) {
+                    if (!target.targetClass.isHandleEvents())
                         continue
                     runCatching {
-                        target.onPostMotion(event)
+                        target.targetClass.onPostMotion(event)
                     }.onFailure {
                         it.printStackTrace()
                     }
@@ -72,40 +76,40 @@ object EventManager {
             }
 
             is Render2DEvent -> {
-                for (target in targetClass) {
-                    if (!target.isHandleEvents())
+                for (target in eventTarget) {
+                    if (!target.targetClass.isHandleEvents())
                         continue
                     runCatching {
-                        target.onRender2D(event)
+                        target.targetClass.onRender2D(event)
                     }.onFailure {
                         it.printStackTrace()
-                        if (target is AbstractModule)
-                            target.state = false
+                        if (target.targetClass is AbstractModule)
+                            target.targetClass.state = false
                     }
 
                 }
             }
 
             is Render3DEvent -> {
-                for (target in targetClass) {
-                    if (!target.isHandleEvents())
+                for (target in eventTarget) {
+                    if (!target.targetClass.isHandleEvents())
                         continue
                     runCatching {
-                        target.onRender3D(event)
+                        target.targetClass.onRender3D(event)
                     }.onFailure {
                         it.printStackTrace()
-                        if (target is AbstractModule)
-                            target.state = false
+                        if (target.targetClass is AbstractModule)
+                            target.targetClass.state = false
                     }
                 }
             }
 
             is KeyEvent -> {
-                for (target in targetClass) {
-                    if (!target.isHandleEvents())
+                for (target in eventTarget) {
+                    if (!target.targetClass.isHandleEvents())
                         continue
                     runCatching {
-                        target.onKey(event)
+                        target.targetClass.onKey(event)
                     }.onFailure {
                         it.printStackTrace()
                     }
@@ -113,11 +117,11 @@ object EventManager {
             }
 
             is ReceivePacketEvent -> {
-                for (target in targetClass) {
-                    if (!target.isHandleEvents())
+                for (target in eventTarget) {
+                    if (!target.targetClass.isHandleEvents())
                         continue
                     runCatching {
-                        target.onReceivePacket(event)
+                        target.targetClass.onReceivePacket(event)
                     }.onFailure {
                         it.printStackTrace()
                     }
@@ -126,11 +130,11 @@ object EventManager {
             }
 
             is SendPacketEvent -> {
-                for (target in targetClass) {
-                    if (!target.isHandleEvents())
+                for (target in eventTarget) {
+                    if (!target.targetClass.isHandleEvents())
                         continue
                     runCatching {
-                        target.onSendPacket(event)
+                        target.targetClass.onSendPacket(event)
                     }.onFailure {
                         it.printStackTrace()
                     }

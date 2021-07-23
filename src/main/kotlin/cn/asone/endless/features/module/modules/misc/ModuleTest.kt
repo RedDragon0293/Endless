@@ -1,6 +1,6 @@
 package cn.asone.endless.features.module.modules.misc
 
-import cn.asone.endless.event.Event
+import cn.asone.endless.event.EventHook
 import cn.asone.endless.event.KeyEvent
 import cn.asone.endless.event.Render2DEvent
 import cn.asone.endless.event.Render3DEvent
@@ -54,9 +54,9 @@ object ModuleTest : AbstractModule(
         //ClientUtils.logger.info("Done!")
     }
 
-    override val handledEvents: ArrayList<Class<out Event>> = arrayListOf(
-        Render2DEvent::class.java,
-        Render3DEvent::class.java
+    override val handledEvents: ArrayList<EventHook> = arrayListOf(
+        EventHook(Render2DEvent::class.java),
+        EventHook(Render3DEvent::class.java)
     )
 
     override fun onKey(event: KeyEvent) {
