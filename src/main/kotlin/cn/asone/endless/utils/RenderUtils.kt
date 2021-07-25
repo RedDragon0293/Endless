@@ -94,13 +94,21 @@ object RenderUtils {
         val xEnd = x2 - radius
         val yEnd = y2 - radius
 
+        //GL11.glEnable(GL11.GL_POLYGON_SMOOTH)
+        //GL11.glHint(GL11.GL_POLYGON_SMOOTH_HINT, GL11.GL_NICEST)
+        //GL11.glShadeModel(GL11.GL_SMOOTH)
         GL11.glBegin(GL11.GL_POLYGON)
         val degree = Math.PI / 180
         for (i in 0..90) GL11.glVertex2d(xEnd + sin((i * degree)) * radius, yEnd + cos((i * degree)) * radius)
+        //for (i in IntRange(floor(yEnd).toInt(), ceil(yStart).toInt())) GL11.glVertex2d(x2.toDouble(), i.toDouble())
         for (i in 90..180) GL11.glVertex2d(xEnd + sin((i * degree)) * radius, yStart + cos((i * degree)) * radius)
+        //for (i in IntRange())
         for (i in 180..270) GL11.glVertex2d(xStart + sin((i * degree)) * radius, yStart + cos((i * degree)) * radius)
         for (i in 270..360) GL11.glVertex2d(xStart + sin((i * degree)) * radius, yEnd + cos((i * degree)) * radius)
+        //for (i in IntRange(ceil(xStart).toInt(), floor(xEnd).toInt())) GL11.glVertex2d(i.toDouble(), y2.toDouble())
         GL11.glEnd()
+        //GL11.glDisable(GL11.GL_POLYGON_SMOOTH)
+        //GL11.glShadeModel(GL11.GL_FLAT)
     }
 
     @JvmStatic
@@ -127,6 +135,21 @@ object RenderUtils {
         GL11.glVertex2f(x2, y2)
 
         GL11.glEnd()
+    }
+
+    @JvmStatic
+    fun drawCircle(x: Float, y: Float, radius: Float, color: Int) {
+        quickGLColor(color)
+        GL11.glEnable(GL11.GL_POLYGON_SMOOTH)
+        GL11.glHint(GL11.GL_POLYGON_SMOOTH_HINT, GL11.GL_NICEST)
+        GL11.glBegin(GL11.GL_POLYGON)
+        for (i in 0..360)
+            GL11.glVertex2f(
+                (x + sin(Math.toRadians(i.toDouble())) * radius).toFloat(),
+                (y + cos(Math.toRadians(i.toDouble())) * radius).toFloat()
+            )
+        GL11.glEnd()
+        GL11.glDisable(GL11.GL_POLYGON_SMOOTH)
     }
 
     @JvmStatic

@@ -9,8 +9,11 @@ import java.io.FileInputStream
 import java.util.*
 
 object Fonts {
-    @JvmField
-    val fontsDir = File(ConfigManager.rootDir, "fonts")
+    private val fontsDir: File = File(ConfigManager.rootDir, "fonts").apply {
+        if (!exists())
+            if (!mkdir())
+                throw Exception("无法创建字体文件夹!")
+    }
 
     @JvmField
     val font20 = CFontRenderer(getAssetsFont("Roboto-Regular.ttf", 20), true, true)

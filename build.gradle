@@ -54,7 +54,8 @@ allprojects {
 }
 
 dependencies {
-    compile group: 'net.minecraft', name: 'minecraft', version: '1.8.9'//游戏本体
+    compile group: 'javax.vecmath', name: 'vecmath', version: '1.5.2'
+    compile group: 'net.minecraft', name: 'minecraft', version: '1.8.9'//游戏assets
     compile group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib', version: kotlin_version
     compile fileTree(include: ['*.jar'], dir: 'libs')
 }
@@ -62,6 +63,7 @@ shadowJar {
     dependencies {
         include(dependency('net.minecraft:minecraft'))
         include(dependency('org.jetbrains.kotlin:kotlin-stdlib'))
+        include(dependency('javax.vecmath:vecmath'))
     }
 }
 configurations {

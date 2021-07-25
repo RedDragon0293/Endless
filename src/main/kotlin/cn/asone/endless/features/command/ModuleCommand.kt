@@ -6,11 +6,12 @@ import cn.asone.endless.utils.ClientUtils
 import cn.asone.endless.utils.StringUtils
 import cn.asone.endless.value.*
 import net.minecraft.block.Block
+import java.util.*
 
 class ModuleCommand(val module: AbstractModule) : AbstractCommand(module.name) {
     override fun onExecute(command: String) {
         val valueNames = module.getAllValue()
-                .joinToString(separator = "/") { it.name.toLowerCase() }
+            .joinToString(separator = "/") { it.name.lowercase(Locale.getDefault()) }
 
         val args = command.split(' ').toTypedArray()
         if (args.isEmpty() || (args.size == 1 && args[0] == "")) {
@@ -32,9 +33,14 @@ class ModuleCommand(val module: AbstractModule) : AbstractCommand(module.name) {
             } else {
                 if (args.size < 2) {
                     if (currentValue is IntValue || currentValue is FloatValue || currentValue is TextValue)
-                        chatSyntax("${args[0].toLowerCase()} <值>")
+                        chatSyntax("${args[0].lowercase(Locale.getDefault())} <值>")
                     else if (currentValue is ListValue)
-                        chatSyntax("${args[0].toLowerCase()} <${currentValue.values.joinToString(separator = "/").toLowerCase()}>")
+                        chatSyntax(
+                            "${args[0].lowercase(Locale.getDefault())} <${
+                                currentValue.values.joinToString(separator = "/")
+                                    .lowercase(Locale.getDefault())
+                            }>"
+                        )
                     return
                 }
                 try {
@@ -52,7 +58,13 @@ class ModuleCommand(val module: AbstractModule) : AbstractCommand(module.name) {
                             }
 
                             currentValue.set(id)
-                            ClientUtils.chatSuccess("设置功能 §b${module.name} §7${args[0].toLowerCase()}§a 的方块为 §8${BlockUtils.getBlockName(id)}§a.")
+                            ClientUtils.chatSuccess(
+                                "设置功能 §b${module.name} §7${args[0].lowercase(Locale.getDefault())}§a 的方块为 §8${
+                                    BlockUtils.getBlockName(
+                                        id
+                                    )
+                                }§a."
+                            )
                             playEditSound()
                             return
                         }
@@ -60,7 +72,13 @@ class ModuleCommand(val module: AbstractModule) : AbstractCommand(module.name) {
                         is FloatValue -> currentValue.set(args[1].toFloat())
                         is ListValue -> {
                             if (!currentValue.contains(args[1])) {
-                                chatSyntax("${args[0].toLowerCase()} <${currentValue.values.joinToString(separator = "/").toLowerCase()}>")
+                                chatSyntax(
+                                    "${args[0].lowercase(Locale.getDefault())} <${
+                                        currentValue.values.joinToString(
+                                            separator = "/"
+                                        ).lowercase(Locale.getDefault())
+                                    }>"
+                                )
                                 return
                             }
                             currentValue.set(args[1])

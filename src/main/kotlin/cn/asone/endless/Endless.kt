@@ -4,6 +4,7 @@ import cn.asone.endless.config.ConfigManager
 import cn.asone.endless.event.EventManager
 import cn.asone.endless.features.command.CommandManager
 import cn.asone.endless.features.module.ModuleManager
+import cn.asone.endless.ui.font.Fonts
 import net.minecraft.client.main.Main
 import org.apache.logging.log4j.LogManager
 import org.lwjgl.opengl.Display
@@ -19,6 +20,7 @@ object Endless {
         logger.info("正在启动 $CLIENT_NAME $CLIENT_VERSION...")
 
         ConfigManager
+        Fonts
         EventManager
         CommandManager
         ModuleManager

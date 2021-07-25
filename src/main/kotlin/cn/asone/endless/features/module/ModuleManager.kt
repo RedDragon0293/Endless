@@ -6,6 +6,7 @@ import cn.asone.endless.event.KeyEvent
 import cn.asone.endless.features.command.CommandManager
 import cn.asone.endless.features.module.modules.misc.ModuleTest
 import cn.asone.endless.features.module.modules.movement.ModuleSprint
+import cn.asone.endless.features.module.modules.render.ModuleClickGUI
 import cn.asone.endless.features.module.modules.render.ModuleSimpleArrayList
 import cn.asone.endless.utils.ClientUtils
 import cn.asone.endless.utils.ListenableClass
@@ -18,9 +19,10 @@ object ModuleManager : ListenableClass() {
     init {
         EventManager.registerListener(this)
         arrayOf(
-                ModuleTest,
-                ModuleSimpleArrayList,
-                ModuleSprint
+            ModuleTest,
+            ModuleSimpleArrayList,
+            ModuleSprint,
+            ModuleClickGUI
         ).forEach {
             registerModule(it)
             if (!it.values.isNullOrEmpty())
@@ -39,10 +41,10 @@ object ModuleManager : ListenableClass() {
     override fun onKey(event: KeyEvent) {
         if (event.state)
             modules.filter { it.keyBind == event.key }
-                    .forEach {
-                        ClientUtils.displayChatMessage("[ModuleManager] Toggle module ${it.name}")
-                        it.toggle()
-                    }
+                .forEach {
+                    ClientUtils.displayChatMessage("[ModuleManager] Toggle module ${it.name}")
+                    it.toggle()
+                }
     }
 
     override fun isHandleEvents() = true

@@ -4,6 +4,7 @@ import cn.asone.endless.features.command.AbstractCommand
 import cn.asone.endless.features.module.ModuleManager
 import cn.asone.endless.utils.ClientUtils
 import org.lwjgl.input.Keyboard
+import java.util.*
 
 class CommandBind : AbstractCommand("bind") {
     override fun onExecute(command: String) {
@@ -21,7 +22,7 @@ class CommandBind : AbstractCommand("bind") {
             chatSyntax(arrayOf("${module.name} <key>", "${module.name} none"))
             return
         }
-        module.keyBind = Keyboard.getKeyIndex(args[1].toUpperCase())
+        module.keyBind = Keyboard.getKeyIndex(args[1].uppercase(Locale.getDefault()))
         ClientUtils.chatSuccess("绑定快捷键 §9§l${Keyboard.getKeyName(module.keyBind)} §a至功能 §9§l${module.name}§a.")
         playEditSound()
     }
