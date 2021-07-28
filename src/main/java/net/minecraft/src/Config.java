@@ -27,7 +27,6 @@ import net.optifine.util.DisplayModeComparator;
 import net.optifine.util.PropertiesOrdered;
 import net.optifine.util.TextureUtils;
 import net.optifine.util.TimedEvent;
-import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.LWJGLException;
@@ -1890,14 +1889,14 @@ public class Config
                         Display.create();
                         Display.setResizable(false);
                         Display.setResizable(true);
-                    }
-                    catch (LWJGLException lwjglexception)
-                    {
+                    } catch (LWJGLException lwjglexception) {
                         lwjglexception.printStackTrace();
                     }
                 }
             }
-
+            if (!Minecraft.isRunningOnMac)
+                Minecraft.getMinecraft().setWindowIcon();
+/*
             if (!Minecraft.isRunningOnMac && getDefaultResourcePack() != null)
             {
                 InputStream inputstream = null;
@@ -1922,7 +1921,7 @@ public class Config
                     IOUtils.closeQuietly(inputstream);
                     IOUtils.closeQuietly(inputstream1);
                 }
-            }
+            }*/
         }
     }
 

@@ -1,10 +1,11 @@
 package cn.asone.endless.features.module.modules.render
 
+import cn.asone.endless.Endless
 import cn.asone.endless.event.EventHook
 import cn.asone.endless.event.SendPacketEvent
 import cn.asone.endless.features.module.AbstractModule
 import cn.asone.endless.features.module.ModuleCategory
-import cn.asone.endless.ui.gui.ClickGUI
+import cn.asone.endless.ui.gui.clickgui.ClickGUI
 import cn.asone.endless.utils.ClientUtils
 import net.minecraft.network.play.client.C0DPacketCloseWindow
 import org.lwjgl.input.Keyboard
@@ -16,14 +17,13 @@ object ModuleClickGUI : AbstractModule(
     Keyboard.KEY_RSHIFT,
     false
 ) {
-    private val clickGUI = ClickGUI()
     override val handledEvents: ArrayList<EventHook> = arrayListOf(
         EventHook(SendPacketEvent::class.java, 100)
     )
 
     override fun onEnable() {
         ClientUtils.displayChatMessage("OnEnable.")
-        mc.displayGuiScreen(clickGUI)
+        mc.displayGuiScreen(Endless.clickGUI)
     }
 
     override fun onSendPacket(event: SendPacketEvent) {

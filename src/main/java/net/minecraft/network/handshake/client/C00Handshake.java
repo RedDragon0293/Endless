@@ -39,7 +39,7 @@ public class C00Handshake implements Packet<INetHandlerHandshakeServer> {
      */
     public void writePacketData(PacketBuffer buf) throws IOException {
         buf.writeVarIntToBuffer(this.protocolVersion);
-        buf.writeString(this.ip + (FakeForge.enabled && FakeForge.fml ? "\0FML\0" : ""));
+        buf.writeString(this.ip + (FakeForge.enabled.get() && FakeForge.fml.get() ? "\0FML\0" : ""));
         buf.writeShort(this.port);
         buf.writeVarIntToBuffer(this.requestedState.getId());
     }

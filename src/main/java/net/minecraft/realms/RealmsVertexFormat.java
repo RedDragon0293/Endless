@@ -88,7 +88,7 @@ public class RealmsVertexFormat {
 
     public int getOffset(int p_getOffset_1_)
     {
-        return this.v.func_181720_d(p_getOffset_1_);
+        return this.v.getOffset(p_getOffset_1_);
     }
 
     public int getNormalOffset()

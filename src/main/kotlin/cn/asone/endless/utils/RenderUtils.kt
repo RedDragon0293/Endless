@@ -1,6 +1,9 @@
 package cn.asone.endless.utils
 
+import net.minecraft.client.gui.Gui
 import net.minecraft.client.gui.ScaledResolution
+import net.minecraft.client.renderer.GlStateManager
+import net.minecraft.util.ResourceLocation
 import net.minecraft.util.Vec3
 import org.lwjgl.opengl.GL11
 import java.awt.Color
@@ -46,43 +49,35 @@ object RenderUtils {
 
     @JvmStatic
     fun pre3D() {
-        GL11.glEnable(GL11.GL_BLEND)
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA)
-        //GL11.glShadeModel(GL11.GL_SMOOTH)
-        GL11.glDisable(GL11.GL_TEXTURE_2D)
-        GL11.glEnable(GL11.GL_LINE_SMOOTH)
-        GL11.glDisable(GL11.GL_DEPTH_TEST)
-        GL11.glDisable(GL11.GL_LIGHTING)
-        GL11.glDepthMask(false)
-        GL11.glHint(GL11.GL_LINE_SMOOTH_HINT, GL11.GL_NICEST)
+        GlStateManager.enableBlend()
+        GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA)
+        GlStateManager.disableTexture2D()
+        GlStateManager.disableDepth()
+        GlStateManager.disableLighting()
+        GlStateManager.depthMask(false)
     }
 
     @JvmStatic
     fun post3D() {
-        GL11.glDepthMask(true)
-        GL11.glEnable(GL11.GL_DEPTH_TEST)
-        GL11.glDisable(GL11.GL_LINE_SMOOTH)
-        GL11.glEnable(GL11.GL_TEXTURE_2D)
-        GL11.glDisable(GL11.GL_BLEND)
-        //GL11.glColor4f(1f, 1f, 1f, 1f)
+        GlStateManager.depthMask(true)
+        GlStateManager.enableDepth()
+        GlStateManager.enableTexture2D()
+        GlStateManager.disableBlend()
+        GlStateManager.color(1F, 1F, 1F, 1F)
     }
 
     @JvmStatic
     fun pre2D() {
-        GL11.glEnable(GL11.GL_BLEND)
-        //GL11.glEnable(GL11.GL_ALPHA);
-        GL11.glDisable(GL11.GL_TEXTURE_2D)
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA)
-        GL11.glEnable(GL11.GL_LINE_SMOOTH)
+        GlStateManager.enableBlend()
+        GlStateManager.disableTexture2D()
+        GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA)
     }
 
     @JvmStatic
     fun post2D() {
-        GL11.glEnable(GL11.GL_TEXTURE_2D)
-        GL11.glDisable(GL11.GL_BLEND)
-        //GL11.glDisable(GL11.GL_ALPHA)
-        GL11.glDisable(GL11.GL_LINE_SMOOTH)
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F)
+        GlStateManager.enableTexture2D()
+        GlStateManager.disableBlend()
+        GlStateManager.color(1F, 1F, 1F, 1F)
     }
 
     @JvmStatic
@@ -94,21 +89,75 @@ object RenderUtils {
         val xEnd = x2 - radius
         val yEnd = y2 - radius
 
-        //GL11.glEnable(GL11.GL_POLYGON_SMOOTH)
-        //GL11.glHint(GL11.GL_POLYGON_SMOOTH_HINT, GL11.GL_NICEST)
-        //GL11.glShadeModel(GL11.GL_SMOOTH)
         GL11.glBegin(GL11.GL_POLYGON)
-        val degree = Math.PI / 180
-        for (i in 0..90) GL11.glVertex2d(xEnd + sin((i * degree)) * radius, yEnd + cos((i * degree)) * radius)
-        //for (i in IntRange(floor(yEnd).toInt(), ceil(yStart).toInt())) GL11.glVertex2d(x2.toDouble(), i.toDouble())
-        for (i in 90..180) GL11.glVertex2d(xEnd + sin((i * degree)) * radius, yStart + cos((i * degree)) * radius)
-        //for (i in IntRange())
-        for (i in 180..270) GL11.glVertex2d(xStart + sin((i * degree)) * radius, yStart + cos((i * degree)) * radius)
-        for (i in 270..360) GL11.glVertex2d(xStart + sin((i * degree)) * radius, yEnd + cos((i * degree)) * radius)
-        //for (i in IntRange(ceil(xStart).toInt(), floor(xEnd).toInt())) GL11.glVertex2d(i.toDouble(), y2.toDouble())
+        for (i in 0..90) GL11.glVertex2d(
+            xEnd + sin(Math.toRadians(i.toDouble())) * radius,
+            yEnd + cos(Math.toRadians(i.toDouble())) * radius
+        )
+        for (i in 90..180) GL11.glVertex2d(
+            xEnd + sin(Math.toRadians(i.toDouble())) * radius,
+            yStart + cos(Math.toRadians(i.toDouble())) * radius
+        )
+        for (i in 180..270) GL11.glVertex2d(
+            xStart + sin(Math.toRadians(i.toDouble())) * radius,
+            yStart + cos(Math.toRadians(i.toDouble())) * radius
+        )
+        for (i in 270..360) GL11.glVertex2d(
+            xStart + sin(Math.toRadians(i.toDouble())) * radius,
+            yEnd + cos(Math.toRadians(i.toDouble())) * radius
+        )
         GL11.glEnd()
-        //GL11.glDisable(GL11.GL_POLYGON_SMOOTH)
-        //GL11.glShadeModel(GL11.GL_FLAT)
+    }
+
+    @JvmStatic
+    fun drawAntiAliasingRoundedRect(x1: Float, y1: Float, x2: Float, y2: Float, radius: Float, color: Int) {
+        quickGLColor(color)
+
+        val xStart = x1 + radius
+        val yStart = y1 + radius
+        val xEnd = x2 - radius
+        val yEnd = y2 - radius
+
+        GL11.glBegin(GL11.GL_POLYGON)
+        for (i in 0..90) GL11.glVertex2d(
+            xEnd + sin(Math.toRadians(i.toDouble())) * radius,
+            yEnd + cos(Math.toRadians(i.toDouble())) * radius
+        )
+        for (i in 90..180) GL11.glVertex2d(
+            xEnd + sin(Math.toRadians(i.toDouble())) * radius,
+            yStart + cos(Math.toRadians(i.toDouble())) * radius
+        )
+        for (i in 180..270) GL11.glVertex2d(
+            xStart + sin(Math.toRadians(i.toDouble())) * radius,
+            yStart + cos(Math.toRadians(i.toDouble())) * radius
+        )
+        for (i in 270..360) GL11.glVertex2d(
+            xStart + sin(Math.toRadians(i.toDouble())) * radius,
+            yEnd + cos(Math.toRadians(i.toDouble())) * radius
+        )
+        GL11.glEnd()
+
+        GL11.glLineWidth(1F)
+        GL11.glEnable(GL11.GL_LINE_SMOOTH)
+        GL11.glBegin(GL11.GL_LINE_LOOP)
+        for (i in 0..90) GL11.glVertex2d(
+            xEnd + sin(Math.toRadians(i.toDouble())) * radius,
+            yEnd + cos(Math.toRadians(i.toDouble())) * radius
+        )
+        for (i in 90..180) GL11.glVertex2d(
+            xEnd + sin(Math.toRadians(i.toDouble())) * radius,
+            yStart + cos(Math.toRadians(i.toDouble())) * radius
+        )
+        for (i in 180..270) GL11.glVertex2d(
+            xStart + sin(Math.toRadians(i.toDouble())) * radius,
+            yStart + cos(Math.toRadians(i.toDouble())) * radius
+        )
+        for (i in 270..360) GL11.glVertex2d(
+            xStart + sin(Math.toRadians(i.toDouble())) * radius,
+            yEnd + cos(Math.toRadians(i.toDouble())) * radius
+        )
+        GL11.glEnd()
+        GL11.glEnable(GL11.GL_LINE_SMOOTH)
     }
 
     @JvmStatic
@@ -122,6 +171,40 @@ object RenderUtils {
         GL11.glVertex2f(x2, y2)
         GL11.glVertex2f(x1, y2)
         GL11.glEnd()
+        GL11.glLineWidth(1F)
+    }
+
+    @JvmStatic
+    fun drawRoundedBorder(x1: Float, y1: Float, x2: Float, y2: Float, radius: Float, width: Float, color: Int) {
+        quickGLColor(color)
+
+        val xStart = x1 + radius
+        val yStart = y1 + radius
+        val xEnd = x2 - radius
+        val yEnd = y2 - radius
+
+        GL11.glLineWidth(width)
+        GL11.glEnable(GL11.GL_LINE_SMOOTH)
+        GL11.glBegin(GL11.GL_LINE_LOOP)
+        for (i in 0..90) GL11.glVertex2d(
+            xEnd + sin(Math.toRadians(i.toDouble())) * radius,
+            yEnd + cos(Math.toRadians(i.toDouble())) * radius
+        )
+        for (i in 90..180) GL11.glVertex2d(
+            xEnd + sin(Math.toRadians(i.toDouble())) * radius,
+            yStart + cos(Math.toRadians(i.toDouble())) * radius
+        )
+        for (i in 180..270) GL11.glVertex2d(
+            xStart + sin(Math.toRadians(i.toDouble())) * radius,
+            yStart + cos(Math.toRadians(i.toDouble())) * radius
+        )
+        for (i in 270..360) GL11.glVertex2d(
+            xStart + sin(Math.toRadians(i.toDouble())) * radius,
+            yEnd + cos(Math.toRadians(i.toDouble())) * radius
+        )
+        GL11.glEnd()
+        GL11.glDisable(GL11.GL_LINE_SMOOTH)
+        GL11.glLineWidth(1F)
     }
 
     @JvmStatic
@@ -164,12 +247,26 @@ object RenderUtils {
     }
 
     @JvmStatic
+    fun drawImage(image: ResourceLocation, x: Int, y: Int, width: Int, height: Int) {
+        /*GL11.glDisable(GL11.GL_DEPTH_TEST)
+        GL11.glEnable(GL11.GL_BLEND)
+        GL11.glDepthMask(false)
+        GL14.glBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO)
+        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F)*/
+        mc.textureManager.bindTexture(image)
+        Gui.drawModalRectWithCustomSizedTexture(x, y, 0f, 0f, width, height, width.toFloat(), height.toFloat())
+        /*GL11.glDepthMask(true)
+        GL11.glDisable(GL11.GL_BLEND)
+        GL11.glEnable(GL11.GL_DEPTH_TEST)*/
+    }
+
+    @JvmStatic
     fun quickGLColor(hex: Int) {
         val alpha = (hex shr 24 and 0xFF) / 255F
         val red = (hex shr 16 and 0xFF) / 255F
         val green = (hex shr 8 and 0xFF) / 255F
         val blue = (hex and 0xFF) / 255F
-        GL11.glColor4f(red, green, blue, alpha)
+        GlStateManager.color(red, green, blue, alpha)
     }
 
     @JvmStatic

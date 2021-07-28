@@ -10,19 +10,19 @@ import java.io.File
 class GlobalConfig : AbstractConfig(File(ConfigManager.rootDir, "global.json")) {
     override fun configParser(entry: Map.Entry<String, JsonElement>) {
         when (entry.key) {
-            "FakeForge" -> FakeForge.enabled = entry.value.asBoolean
+            "FakeForge" -> FakeForge.enabled.set(entry.value.asBoolean)
 
-            "FakeFML" -> FakeForge.fml = entry.value.asBoolean
+            "FakeFML" -> FakeForge.fml.set(entry.value.asBoolean)
 
-            "FakePayload" -> FakeForge.payload = entry.value.asBoolean
+            "FakePayload" -> FakeForge.payload.set(entry.value.asBoolean)
         }
     }
 
     override fun serializer(): JsonObject {
         val jsonObject = JsonObject()
-        jsonObject.addProperty("FakeForge", FakeForge.enabled)
-        jsonObject.addProperty("FakeFML", FakeForge.fml)
-        jsonObject.addProperty("FakePayload", FakeForge.payload)
+        jsonObject.addProperty("FakeForge", FakeForge.enabled.get())
+        jsonObject.addProperty("FakeFML", FakeForge.fml.get())
+        jsonObject.addProperty("FakePayload", FakeForge.payload.get())
         return jsonObject
     }
 }

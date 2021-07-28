@@ -5,22 +5,23 @@ import cn.asone.endless.event.EventManager
 import cn.asone.endless.event.SendPacketEvent
 import cn.asone.endless.utils.ClientUtils
 import cn.asone.endless.utils.ListenableClass
+import cn.asone.endless.value.BoolValue
 import io.netty.buffer.Unpooled
 import net.minecraft.network.PacketBuffer
 import net.minecraft.network.play.client.C17PacketCustomPayload
 
 object FakeForge : ListenableClass() {
     @JvmField
-    var enabled = false
+    var enabled = BoolValue("enabled", false)
 
     @JvmField
-    var fml = false
+    var fml = BoolValue("fml", false)
 
     @JvmField
-    var fmlProxy = false
+    var fmlProxy = BoolValue("fmlProxy", false)
 
     @JvmField
-    var payload = false
+    var payload = BoolValue("payload", false)
 
     override val handledEvents: ArrayList<EventHook> = arrayListOf(
         EventHook(SendPacketEvent::class.java, 100)
@@ -28,12 +29,15 @@ object FakeForge : ListenableClass() {
 
     init {
         EventManager.registerListener(this)
+        enabled.subValue.add(fml)
+        enabled.subValue.add(fmlProxy)
+        enabled.subValue.add(payload)
     }
 
     override fun onSendPacket(event: SendPacketEvent) {
-        if (enabled && !mc.isIntegratedServerRunning) {
+        if (enabled.get() && !mc.isIntegratedServerRunning) {
             val packet = event.packet
-            if (payload && packet is C17PacketCustomPayload) {
+            if (payload.get() && packet is C17PacketCustomPayload) {
                 if (packet.channelName.equals("MC|Brand", true)) {
                     ClientUtils.logger.info("Modifying custom payload packet...")
                     packet.data = PacketBuffer(Unpooled.buffer()).writeString("fml,forge")

@@ -576,7 +576,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
         }
     }
 
-    private void setWindowIcon() {
+    public void setWindowIcon() {
         Util.EnumOS osType = Util.getOSType();
 
         if (osType != Util.EnumOS.OSX) {
@@ -2179,7 +2179,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
         });
         theCrash.getCategory().addCrashSectionCallable("Current Language", () -> Minecraft.this.mcLanguageManager.getCurrentLanguage().toString());
         theCrash.getCategory().addCrashSectionCallable("Profiler Position", () -> Minecraft.this.mcProfiler.profilingEnabled ? Minecraft.this.mcProfiler.getNameOfLastSection() : "N/A (disabled)");
-        theCrash.getCategory().addCrashSectionCallable("CPU", OpenGlHelper::func_183029_j);
+        theCrash.getCategory().addCrashSectionCallable("CPU", OpenGlHelper::getCpu);
 
         if (this.theWorld != null) {
             this.theWorld.addWorldInfoToCrashReport(theCrash);

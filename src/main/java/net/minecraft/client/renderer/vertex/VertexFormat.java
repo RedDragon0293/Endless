@@ -145,7 +145,7 @@ public class VertexFormat {
         return this.elements.get(index);
     }
 
-    public int func_181720_d(int p_181720_1_) {
+    public int getOffset(int p_181720_1_) {
         return this.offsets.get(p_181720_1_);
     }
 

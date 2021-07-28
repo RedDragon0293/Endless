@@ -16,10 +16,17 @@ object Fonts {
     }
 
     @JvmField
-    val font20 = CFontRenderer(getAssetsFont("Roboto-Regular.ttf", 20), true, true)
+    val font20: CFontRenderer
 
     @JvmField
-    val font24 = CFontRenderer(getAssetsFont("Roboto-Regular.ttf", 24), true, true)
+    val font24: CFontRenderer
+
+    init {
+        ClientUtils.logger.info("正在初始化默认字体...")
+        font20 = CFontRenderer(getAssetsFont("Roboto-Regular.ttf", 20), true, true)
+        font24 = CFontRenderer(getAssetsFont("Roboto-Regular.ttf", 24), true, true)
+        ClientUtils.logger.info("成功初始化默认字体.")
+    }
 
     @JvmStatic
     fun getFont(name: String, size: Int): Font {

@@ -7,9 +7,9 @@ import net.minecraft.client.Minecraft
 import org.lwjgl.input.Keyboard
 
 abstract class AbstractModule(
-    var name: String,
-    var description: String,
-    var category: Int,
+    val name: String,
+    val description: String,
+    val category: Int,
     var keyBind: Int = Keyboard.CHAR_NONE,
     var canEnable: Boolean = true
 ) : Listenable {

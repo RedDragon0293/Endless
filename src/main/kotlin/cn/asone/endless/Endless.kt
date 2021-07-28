@@ -5,6 +5,7 @@ import cn.asone.endless.event.EventManager
 import cn.asone.endless.features.command.CommandManager
 import cn.asone.endless.features.module.ModuleManager
 import cn.asone.endless.ui.font.Fonts
+import cn.asone.endless.ui.gui.clickgui.ClickGUI
 import net.minecraft.client.main.Main
 import org.apache.logging.log4j.LogManager
 import org.lwjgl.opengl.Display
@@ -13,6 +14,7 @@ object Endless {
     const val CLIENT_NAME = "Endless"
     const val CLIENT_VERSION = "Beta 1.0"
     const val MINECRAFT_VERSION = "1.8.9"
+    lateinit var clickGUI: ClickGUI
 
     val logger = LogManager.getLogger(CLIENT_NAME)!!
 
@@ -25,6 +27,7 @@ object Endless {
         CommandManager
         ModuleManager
         EventManager.sort()
+        clickGUI = ClickGUI()
         ConfigManager.loadAllConfigs()
 
         Display.setTitle("$CLIENT_NAME $CLIENT_VERSION | 1.8.9 - Cracked by AsOne & RedDragon0293")

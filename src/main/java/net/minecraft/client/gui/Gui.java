@@ -130,7 +130,7 @@ public class Gui {
         float f1 = 0.00390625F;
         Tessellator tessellator = Tessellator.getInstance();
         WorldRenderer worldrenderer = tessellator.getWorldRenderer();
-        worldrenderer.begin(7, DefaultVertexFormats.POSITION_TEX);
+        worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
         worldrenderer.pos(x, y + height, this.zLevel).tex((float) textureX * f, (float) (textureY + height) * f1).endVertex();
         worldrenderer.pos(x + width, y + height, this.zLevel).tex((float) (textureX + width) * f, (float) (textureY + height) * f1).endVertex();
         worldrenderer.pos(x + width, y, this.zLevel).tex((float) (textureX + width) * f, (float) textureY * f1).endVertex();
@@ -169,18 +169,27 @@ public class Gui {
     }
 
     /**
-     * Draws a textured rectangle at z = 0. Args: x, y, u, v, width, height, textureWidth, textureHeight
+     * Draws a textured rectangle at z = 0
+     *
+     * @param x      Start x position on the screen
+     * @param y      Start y position on the screen
+     * @param startX Start x position in the texture
+     * @param startY Start y position in the texture
      */
-    public static void drawModalRectWithCustomSizedTexture(int x, int y, float u, float v, int width, int height, float textureWidth, float textureHeight) {
+    public static void drawModalRectWithCustomSizedTexture(int x, int y, float startX, float startY, int width, int height, float textureWidth, float textureHeight) {
         float f = 1.0F / textureWidth;
         float f1 = 1.0F / textureHeight;
         Tessellator tessellator = Tessellator.getInstance();
         WorldRenderer worldrenderer = tessellator.getWorldRenderer();
-        worldrenderer.begin(7, DefaultVertexFormats.POSITION_TEX);
-        worldrenderer.pos(x, y + height, 0.0D).tex(u * f, (v + (float) height) * f1).endVertex();
-        worldrenderer.pos(x + width, y + height, 0.0D).tex((u + (float) width) * f, (v + (float) height) * f1).endVertex();
-        worldrenderer.pos(x + width, y, 0.0D).tex((u + (float) width) * f, v * f1).endVertex();
-        worldrenderer.pos(x, y, 0.0D).tex(u * f, v * f1).endVertex();
+        worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+        worldrenderer.pos(x, y + height, 0.0D)
+                .tex(startX * f, (startY + (float) height) * f1).endVertex();
+        worldrenderer.pos(x + width, y + height, 0.0D)
+                .tex((startX + (float) width) * f, (startY + (float) height) * f1).endVertex();
+        worldrenderer.pos(x + width, y, 0.0D)
+                .tex((startX + (float) width) * f, startY * f1).endVertex();
+        worldrenderer.pos(x, y, 0.0D)
+                .tex(startX * f, startY * f1).endVertex();
         tessellator.draw();
     }
 

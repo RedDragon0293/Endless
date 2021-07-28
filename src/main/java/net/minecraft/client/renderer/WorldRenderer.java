@@ -238,15 +238,15 @@ public class WorldRenderer {
         this.modeTriangles = false;
     }
 
-    public void begin(int p_181668_1_, VertexFormat p_181668_2_) {
+    public void begin(int drawMode, VertexFormat vertexFormat) {
         if (this.isDrawing) {
             throw new IllegalStateException("Already building!");
         } else {
             this.isDrawing = true;
             this.reset();
-            this.drawMode = p_181668_1_;
-            this.vertexFormat = p_181668_2_;
-            this.vertexFormatElement = p_181668_2_.getElement(this.vertexFormatIndex);
+            this.drawMode = drawMode;
+            this.vertexFormat = vertexFormat;
+            this.vertexFormatElement = vertexFormat.getElement(this.vertexFormatIndex);
             this.needsUpdate = false;
             this.byteBuffer.limit(this.byteBuffer.capacity());
 
@@ -281,7 +281,7 @@ public class WorldRenderer {
             this.quadSprites[this.vertexCount / 4] = this.quadSprite;
         }
 
-        int i = this.vertexCount * this.vertexFormat.getNextOffset() + this.vertexFormat.func_181720_d(this.vertexFormatIndex);
+        int i = this.vertexCount * this.vertexFormat.getNextOffset() + this.vertexFormat.getOffset(this.vertexFormatIndex);
 
         switch (this.vertexFormatElement.getType()) {
             case FLOAT:
@@ -312,7 +312,7 @@ public class WorldRenderer {
     }
 
     public WorldRenderer lightmap(int p_181671_1_, int p_181671_2_) {
-        int i = this.vertexCount * this.vertexFormat.getNextOffset() + this.vertexFormat.func_181720_d(this.vertexFormatIndex);
+        int i = this.vertexCount * this.vertexFormat.getNextOffset() + this.vertexFormat.getOffset(this.vertexFormatIndex);
 
         switch (this.vertexFormatElement.getType()) {
             case FLOAT:
@@ -435,7 +435,7 @@ public class WorldRenderer {
 
     public WorldRenderer color(int red, int green, int blue, int alpha) {
         if (!this.needsUpdate) {
-            int i = this.vertexCount * this.vertexFormat.getNextOffset() + this.vertexFormat.func_181720_d(this.vertexFormatIndex);
+            int i = this.vertexCount * this.vertexFormat.getNextOffset() + this.vertexFormat.getOffset(this.vertexFormatIndex);
 
             switch (this.vertexFormatElement.getType()) {
                 case FLOAT:
@@ -512,7 +512,7 @@ public class WorldRenderer {
             SVertexBuilder.beginAddVertex(this);
         }
 
-        int i = this.vertexCount * this.vertexFormat.getNextOffset() + this.vertexFormat.func_181720_d(this.vertexFormatIndex);
+        int i = this.vertexCount * this.vertexFormat.getNextOffset() + this.vertexFormat.getOffset(this.vertexFormatIndex);
 
         switch (this.vertexFormatElement.getType()) {
             case FLOAT:
@@ -570,7 +570,7 @@ public class WorldRenderer {
     }
 
     public WorldRenderer normal(float p_181663_1_, float p_181663_2_, float p_181663_3_) {
-        int i = this.vertexCount * this.vertexFormat.getNextOffset() + this.vertexFormat.func_181720_d(this.vertexFormatIndex);
+        int i = this.vertexCount * this.vertexFormat.getNextOffset() + this.vertexFormat.getOffset(this.vertexFormatIndex);
 
         switch (this.vertexFormatElement.getType()) {
             case FLOAT:
@@ -842,7 +842,7 @@ public class WorldRenderer {
     }
 
     public void quadsToTriangles() {
-        if (this.drawMode == 7) {
+        if (this.drawMode == GL11.GL_QUADS) {
             if (this.byteBufferTriangles == null) {
                 this.byteBufferTriangles = GLAllocation.createDirectByteBuffer(this.byteBuffer.capacity() * 2);
             }
