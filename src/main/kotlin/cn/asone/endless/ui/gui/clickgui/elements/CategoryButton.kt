@@ -7,19 +7,15 @@ import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiButton
 import java.awt.Color
 
-class CategoryButton(id: Int, x: Int, y: Int, text: String) : GuiButton(id, x, y, text) {
+class CategoryButton(id: Int, x: Int, y: Int, text: String) : GuiButton(id, x, y, 62, 18, text) {
     companion object {
         private val categoryFont = CFontRenderer(Fonts.getAssetsFont("Roboto-Medium.ttf", 21), true, true)
-    }
-
-    init {
-        height = 18
     }
 
     override fun drawButton(mc: Minecraft?, mouseX: Int, mouseY: Int) {
         categoryFont.drawCenteredString(
             displayString,
-            xPosition + 30F,
+            xPosition + 30.5F,
             yPosition + 5F,
             if (ClickGUI.categoryIndex == this.id)
                 Color(255, 255, 255).rgb

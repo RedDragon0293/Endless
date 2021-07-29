@@ -1,8 +1,9 @@
 package net.minecraft.util;
 
+import org.apache.logging.log4j.Logger;
+
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
-import org.apache.logging.log4j.Logger;
 
 public class Util
 {
@@ -12,16 +13,12 @@ public class Util
         return s.contains("win") ? Util.EnumOS.WINDOWS : (s.contains("mac") ? Util.EnumOS.OSX : (s.contains("solaris") ? Util.EnumOS.SOLARIS : (s.contains("sunos") ? Util.EnumOS.SOLARIS : (s.contains("linux") ? Util.EnumOS.LINUX : (s.contains("unix") ? Util.EnumOS.LINUX : Util.EnumOS.UNKNOWN)))));
     }
 
-    public static <V> V func_181617_a(FutureTask<V> p_181617_0_, Logger p_181617_1_)
-    {
-        try
-        {
+    public static <V> V runTask(FutureTask<V> p_181617_0_, Logger p_181617_1_) {
+        try {
             p_181617_0_.run();
             return p_181617_0_.get();
-        }
-        catch (ExecutionException executionexception)
-        {
-            p_181617_1_.fatal((String)"Error executing task", (Throwable)executionexception);
+        } catch (ExecutionException executionexception) {
+            p_181617_1_.fatal((String) "Error executing task", (Throwable) executionexception);
 
             if (executionexception.getCause() instanceof OutOfMemoryError)
             {

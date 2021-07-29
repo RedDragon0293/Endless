@@ -14,8 +14,8 @@ import java.util.Map;
 
 public class Profiler {
     private static final Logger logger = LogManager.getLogger();
-    private final List<String> sectionList = Lists.<String>newArrayList();
-    private final List<Long> timestampList = Lists.<Long>newArrayList();
+    private final List<String> sectionList = Lists.newArrayList();
+    private final List<Long> timestampList = Lists.newArrayList();
 
     /**
      * Flag profiling enabled
@@ -26,14 +26,9 @@ public class Profiler {
      * Current profiling section
      */
     private String profilingSection = "";
-    private final Map<String, Long> profilingMap = Maps.<String, Long>newHashMap();
+    private final Map<String, Long> profilingMap = Maps.newHashMap();
     public boolean profilerGlobalEnabled = true;
     private boolean profilerLocalEnabled;
-    private static final String SCHEDULED_EXECUTABLES = "scheduledExecutables";
-    private static final String TICK = "tick";
-    private static final String PRE_RENDER_ERRORS = "preRenderErrors";
-    private static final String RENDER = "render";
-    private static final String DISPLAY = "display";
     private static final int HASH_SCHEDULED_EXECUTABLES = "scheduledExecutables".hashCode();
     private static final int HASH_TICK = "tick".hashCode();
     private static final int HASH_PRE_RENDER_ERRORS = "preRenderErrors".hashCode();
@@ -41,7 +36,7 @@ public class Profiler {
     private static final int HASH_DISPLAY = "display".hashCode();
 
     public Profiler() {
-        this.profilerLocalEnabled = this.profilerGlobalEnabled;
+        this.profilerLocalEnabled = true;
     }
 
     /**
@@ -124,9 +119,9 @@ public class Profiler {
         if (!this.profilingEnabled) {
             return null;
         } else {
-            long i = this.profilingMap.containsKey("root") ? this.profilingMap.get("root") : 0L;
-            long j = this.profilingMap.containsKey(p_76321_1_) ? this.profilingMap.get(p_76321_1_) : -1L;
-            List<Profiler.Result> list = Lists.<Profiler.Result>newArrayList();
+            long i = this.profilingMap.getOrDefault("root", 0L);
+            long j = this.profilingMap.getOrDefault(p_76321_1_, -1L);
+            List<Profiler.Result> list = Lists.newArrayList();
 
             if (p_76321_1_.length() > 0) {
                 p_76321_1_ = p_76321_1_ + ".";
@@ -160,9 +155,7 @@ public class Profiler {
                 }
             }
 
-            for (String s3 : this.profilingMap.keySet()) {
-                this.profilingMap.put(s3, this.profilingMap.get(s3) * 950L / 1000L);
-            }
+            this.profilingMap.replaceAll((s, v) -> this.profilingMap.get(s) * 950L / 1000L);
 
             if ((float) k > f) {
                 list.add(new Profiler.Result("unspecified", (double) ((float) k - f) * 100.0D / (double) k, (double) ((float) k - f) * 100.0D / (double) i));

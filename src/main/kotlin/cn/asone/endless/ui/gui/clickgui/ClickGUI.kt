@@ -1,15 +1,20 @@
 package cn.asone.endless.ui.gui.clickgui
 
+import cn.asone.endless.features.module.AbstractModule
 import cn.asone.endless.features.module.ModuleManager
+import cn.asone.endless.features.special.FakeForge
 import cn.asone.endless.ui.gui.clickgui.elements.CategoryButton
 import cn.asone.endless.ui.gui.clickgui.elements.moduleslist.AbstractButton
 import cn.asone.endless.ui.gui.clickgui.elements.moduleslist.ModuleButton
 import cn.asone.endless.utils.RenderUtils
+import cn.asone.endless.utils.playSound
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiButton
 import net.minecraft.client.gui.GuiScreen
 import net.minecraft.client.renderer.GlStateManager
+import net.minecraft.client.resources.I18n
 import net.minecraft.util.ResourceLocation
+import org.lwjgl.input.Keyboard
 import org.lwjgl.input.Mouse
 import org.lwjgl.opengl.GL11
 import java.awt.Color
@@ -17,16 +22,32 @@ import java.awt.Color
 class ClickGUI : GuiScreen() {
 
     companion object {
-        var guiWidth = 500
+        var guiWidth = 520
         var guiHeight = 300
         var windowXStart = 0
         var windowYStart = 0
 
         var categoryIndex = 1
             private set
+        var keyBindModule: AbstractModule? = null
+        var currentInfoButton: AbstractButton? = null
+
+        private lateinit var backButton: GuiButton
+        fun settingKeyBind() {
+            backButton.visible = true
+        }
     }
 
-    private val buttonsMap: Map<Int, ArrayList<AbstractButton>> = mapOf()
+    private val buttonsMap: Map<Int, ArrayList<AbstractButton>> = mapOf(
+        Pair(0, ArrayList()), //Combat
+        Pair(1, ArrayList()), //Player
+        Pair(2, ArrayList()), //Movement
+        Pair(3, ArrayList()), //Render
+        Pair(4, ArrayList()), //World
+        Pair(5, ArrayList()), //Misc
+        Pair(6, ArrayList()), //Targets
+        Pair(7, ArrayList())  //Global
+    )
     private var diffY = 0F
     private val moduleButtons: ArrayList<AbstractButton> = ArrayList()
     private val endlessLogo = ResourceLocation("endless/endless_Logo.png")
@@ -36,6 +57,13 @@ class ClickGUI : GuiScreen() {
         for (module in ModuleManager.modules)
             buttonsMap[module.category]?.add(ModuleButton(module))
         buttonsMap[categoryIndex - 1]?.let { moduleButtons.addAll(it) }
+        buttonsMap[7]?.add(object : AbstractButton("FakeForge") {
+            override var state: Boolean
+                get() = FakeForge.enabled.get()
+                set(value) {
+                    FakeForge.enabled.set(value)
+                }
+        })
     }
 
     override fun initGui() {
@@ -48,7 +76,8 @@ class ClickGUI : GuiScreen() {
             override fun drawButton(mc: Minecraft, mouseX: Int, mouseY: Int) {}
         }
         buttonList.add(closeButton)
-        val categoryString = arrayOf("Combat", "Player", "Movement", "Render", "World", "Misc", "Target", "Global")
+        backButton = GuiButton(-1, width / 2 - 100, height - 40, I18n.format("gui.back"))
+        val categoryString = arrayOf("Combat", "Player", "Movement", "Render", "World", "Misc", "Targets", "Global")
         for (i in 0..categoryString.lastIndex) {
             buttonList.add(
                 CategoryButton(
@@ -60,20 +89,26 @@ class ClickGUI : GuiScreen() {
             )
         }
         moduleButtons.forEach { it.updateX(windowXStart + 68 + 4F) }
+        var y = 0
+        for (button in moduleButtons) {
+            button.updateY(windowYStart + 8F + y)
+            y += 33
+        }
     }
 
     override fun drawScreen(mouseX: Int, mouseY: Int, partialTicks: Float) {
-        GlStateManager.pushMatrix()
+        GL11.glPushMatrix()
         RenderUtils.pre2D()
         //Main background
         RenderUtils.drawRoundedRect(
             windowXStart.toFloat(),
             windowYStart.toFloat(),
-            windowXStart.toFloat() + guiWidth,
-            windowYStart.toFloat() + guiHeight,
+            guiWidth.toFloat(),
+            guiHeight.toFloat(),
             8F,
             Color(236, 236, 236).rgb
         )
+        //Main background border
         RenderUtils.drawRoundedBorder(
             windowXStart.toFloat(),
             windowYStart.toFloat(),
@@ -84,34 +119,59 @@ class ClickGUI : GuiScreen() {
             Color.white.rgb
         )
         //Close button
+        GL11.glEnable(GL11.GL_POLYGON_SMOOTH)
         RenderUtils.drawCircle(windowXStart + guiWidth - 10F, windowYStart + 10F, 4F, Color.RED.rgb)
+        GL11.glDisable(GL11.GL_POLYGON_SMOOTH)
         //Category background
         RenderUtils.drawRect(
             windowXStart + 2F,
             windowYStart.toFloat(),
-            windowXStart + 68F,
-            (windowYStart + guiHeight).toFloat(),
+            66F,
+            guiHeight.toFloat(),
             Color.white.rgb
         )
         //Current chosen category background
-        RenderUtils.drawAntiAliasingRoundedRect(
+        RenderUtils.drawRoundedRect(
             windowXStart + 2F,
             windowYStart + 4 + 64 + 2F + 22 * (categoryIndex - 1),
-            windowXStart + 64F,
-            windowYStart + 4 + 64 + 2F + 22 * categoryIndex - 4,
+            62F,
+            18F,
             4F,
             Color(0, 111, 255).rgb
         )
-        if (Mouse.hasWheel()) {
-            diffY += Mouse.getDWheel() / 7F
+        val wheel = Mouse.getDWheel() / 10F
+        if (mouseX in (windowXStart + 70)..(windowXStart + 72 + 132)
+            && mouseY in (windowYStart + 7)..(windowYStart + guiHeight - 7)
+        ) {
+            diffY += wheel
+            if (diffY < moduleButtons.size * -33 + guiHeight - 8)
+                diffY = moduleButtons.size * -33 - 8 + guiHeight.toFloat()
             if (diffY > 0)
                 diffY = 0F
+            moduleButtons.forEach { it.offset = diffY }
         }
 
-        //GL11.glEnable(GL11.GL_SCISSOR_TEST)
-        //for ()
-        //GL11.glDisable(GL11.GL_SCISSOR_TEST)
+        GL11.glEnable(GL11.GL_SCISSOR_TEST)
+        RenderUtils.doScissor(
+            windowXStart + 70,
+            windowYStart + 7,
+            windowXStart + 72 + 132,
+            windowYStart + guiHeight - 7
+        )
+        moduleButtons.forEach {
+            if (it.visible)
+                it.drawBox()
+        }
+        GL11.glDisable(GL11.GL_SCISSOR_TEST)
+        //module list与module info的分割线
+        RenderUtils.drawRect(
+            windowXStart + 202 + 4F, windowYStart.toFloat(), 5F, guiHeight.toFloat(), Color.white.rgb
+        )
 
+        //Module info
+        if (currentInfoButton != null) {
+            
+        }
         GlStateManager.enableTexture2D()
         GlStateManager.disableDepth()
         GlStateManager.depthMask(false)
@@ -124,16 +184,43 @@ class ClickGUI : GuiScreen() {
         GlStateManager.enableDepth()
         GlStateManager.disableBlend()
 
-        GlStateManager.pushMatrix()
+        GL11.glPushMatrix()
         for (guiButton in buttonList) {
             guiButton.drawButton(mc, mouseX, mouseY)
         }
-        for (guiLabel in labelList) {
-            guiLabel.drawLabel(mc, mouseX, mouseY)
+        GL11.glEnable(GL11.GL_SCISSOR_TEST)
+        RenderUtils.doScissor(
+            windowXStart + 70,
+            windowYStart + 7,
+            windowXStart + 72 + 132,
+            windowYStart + guiHeight - 7
+        )
+        moduleButtons.forEach {
+            if (it.visible)
+                it.drawText()
         }
-        GlStateManager.popMatrix()
+        GL11.glDisable(GL11.GL_SCISSOR_TEST)
+        GL11.glPopMatrix()
 
-        GlStateManager.popMatrix()
+        if (keyBindModule != null) {
+            drawDefaultBackground()
+            backButton.drawButton(mc, mouseX, mouseY)
+            mc.fontRendererObj.drawCenteredString(
+                "按下一个按键以绑定快捷键至功能 §a${keyBindModule!!.name}§r...",
+                width / 2F,
+                height / 2F,
+                Color.white.rgb,
+                false
+            )
+            mc.fontRendererObj.drawCenteredString(
+                "按下ESC或点击下方按钮以返回, 按下Delete键 (不是退格键! Not Backspace!) 以清除快捷键.",
+                width / 2F,
+                height / 2 + 10F,
+                Color.white.rgb,
+                false
+            )
+        }
+        GL11.glPopMatrix()
     }
 
     override fun actionPerformed(button: GuiButton) {
@@ -143,14 +230,56 @@ class ClickGUI : GuiScreen() {
                 diffY = 0F
                 if (categoryIndex != button.id) {
                     categoryIndex = button.id
-                    if (categoryIndex in 1..6) {
-                        moduleButtons.clear()
-                        buttonsMap[categoryIndex - 1]?.let { moduleButtons.addAll(it) }
-                        moduleButtons.forEach { it.updateX(windowXStart + 68 + 4F) }
+                    moduleButtons.clear()
+                    buttonsMap[categoryIndex - 1]?.let { moduleButtons.addAll(it) }
+                    moduleButtons.forEach { it.updateX(windowXStart + 68 + 4F) }
+                    var y = 0
+                    for (i in moduleButtons) {
+                        i.updateY(windowYStart + 8F + y)
+                        y += 33
                     }
+
                 }
             }
         }
+    }
+
+    override fun mouseClicked(mouseX: Int, mouseY: Int, mouseButton: Int) {
+        if (keyBindModule != null) {
+            if (backButton.mousePressed(mc, mouseX, mouseY)) {
+                backButton.playPressSound(mc.soundHandler)
+                keyBindModule = null
+            }
+            return
+        }
+
+        for (button in moduleButtons) {
+            if (button.isHovering(mouseX, mouseY)) {
+                button.mouseClicked(mouseX, mouseY, mouseButton)
+                break
+            }
+        }
+        super.mouseClicked(mouseX, mouseY, mouseButton)
+    }
+
+    override fun keyTyped(typedChar: Char, keyCode: Int) {
+        if (keyBindModule != null) {
+            backButton.visible = false
+            if (keyCode == Keyboard.KEY_ESCAPE) {
+                keyBindModule = null
+                return
+            }
+            if (keyCode == Keyboard.KEY_DELETE) {
+                keyBindModule!!.keyBind = Keyboard.KEY_NONE
+                keyBindModule = null
+                mc.soundHandler.playSound("random.anvil_use", 1F)
+                return
+            }
+            keyBindModule!!.keyBind = keyCode
+            keyBindModule = null
+            mc.soundHandler.playSound("random.anvil_use", 1F)
+        } else
+            super.keyTyped(typedChar, keyCode)
     }
 
     override fun doesGuiPauseGame() = false

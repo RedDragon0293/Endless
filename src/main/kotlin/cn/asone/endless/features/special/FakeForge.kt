@@ -12,16 +12,16 @@ import net.minecraft.network.play.client.C17PacketCustomPayload
 
 object FakeForge : ListenableClass() {
     @JvmField
-    var enabled = BoolValue("enabled", false)
+    val enabled = BoolValue("enabled", false)
 
     @JvmField
-    var fml = BoolValue("fml", false)
+    val fml = BoolValue("fml", false)
 
     @JvmField
-    var fmlProxy = BoolValue("fmlProxy", false)
+    val fmlProxy = BoolValue("fmlProxy", false)
 
     @JvmField
-    var payload = BoolValue("payload", false)
+    val payload = BoolValue("payload", false)
 
     override val handledEvents: ArrayList<EventHook> = arrayListOf(
         EventHook(SendPacketEvent::class.java, 100)

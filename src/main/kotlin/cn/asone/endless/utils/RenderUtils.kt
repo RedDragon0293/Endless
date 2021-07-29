@@ -7,9 +7,7 @@ import net.minecraft.util.ResourceLocation
 import net.minecraft.util.Vec3
 import org.lwjgl.opengl.GL11
 import java.awt.Color
-import kotlin.math.abs
-import kotlin.math.cos
-import kotlin.math.sin
+import kotlin.math.*
 
 /*
 glBegin:
@@ -42,8 +40,8 @@ object RenderUtils {
     fun doScissor(x1: Int, y1: Int, x2: Int, y2: Int) {
         val width = abs(x1 - x2) * 2
         val height = abs(y1 - y2) * 2
-        val xStart = x1.coerceAtMost(x2) * 2
-        val yStart = (scaledHeight - y1.coerceAtLeast(y2)) * 2
+        val xStart = min(x1, x2) * 2
+        val yStart = (scaledHeight - max(y1, y2)) * 2
         GL11.glScissor(xStart, yStart, width, height)
     }
 
@@ -81,13 +79,13 @@ object RenderUtils {
     }
 
     @JvmStatic
-    fun drawRoundedRect(x1: Float, y1: Float, x2: Float, y2: Float, radius: Float, color: Int) {
+    fun drawRoundedRect(x: Float, y: Float, width: Float, height: Float, radius: Float, color: Int) {
         quickGLColor(color)
 
-        val xStart = x1 + radius
-        val yStart = y1 + radius
-        val xEnd = x2 - radius
-        val yEnd = y2 - radius
+        val xStart = x + radius
+        val yStart = y + radius
+        val xEnd = x + width - radius
+        val yEnd = y + height - radius
 
         GL11.glBegin(GL11.GL_POLYGON)
         for (i in 0..90) GL11.glVertex2d(
@@ -110,13 +108,13 @@ object RenderUtils {
     }
 
     @JvmStatic
-    fun drawAntiAliasingRoundedRect(x1: Float, y1: Float, x2: Float, y2: Float, radius: Float, color: Int) {
+    fun drawAntiAliasingRoundedRect(x: Float, y: Float, width: Float, height: Float, radius: Float, color: Int) {
         quickGLColor(color)
 
-        val xStart = x1 + radius
-        val yStart = y1 + radius
-        val xEnd = x2 - radius
-        val yEnd = y2 - radius
+        val xStart = x + radius
+        val yStart = y + radius
+        val xEnd = x + width - radius
+        val yEnd = y + height - radius
 
         GL11.glBegin(GL11.GL_POLYGON)
         for (i in 0..90) GL11.glVertex2d(
@@ -139,6 +137,7 @@ object RenderUtils {
 
         GL11.glLineWidth(1F)
         GL11.glEnable(GL11.GL_LINE_SMOOTH)
+        GL11.glHint(GL11.GL_LINE_SMOOTH_HINT, GL11.GL_NICEST)
         GL11.glBegin(GL11.GL_LINE_LOOP)
         for (i in 0..90) GL11.glVertex2d(
             xEnd + sin(Math.toRadians(i.toDouble())) * radius,
@@ -164,13 +163,15 @@ object RenderUtils {
     fun drawBorder(x1: Float, y1: Float, x2: Float, y2: Float, width: Float, color: Int) {
         quickGLColor(color)
         GL11.glLineWidth(width)
-
+        GL11.glEnable(GL11.GL_LINE_SMOOTH)
+        GL11.glHint(GL11.GL_LINE_SMOOTH_HINT, GL11.GL_NICEST)
         GL11.glBegin(GL11.GL_LINE_LOOP)
         GL11.glVertex2f(x1, y1)
         GL11.glVertex2f(x2, y1)
         GL11.glVertex2f(x2, y2)
         GL11.glVertex2f(x1, y2)
         GL11.glEnd()
+        GL11.glDisable(GL11.GL_LINE_SMOOTH)
         GL11.glLineWidth(1F)
     }
 
@@ -208,14 +209,14 @@ object RenderUtils {
     }
 
     @JvmStatic
-    fun drawRect(x1: Float, y1: Float, x2: Float, y2: Float, color: Int) {
+    fun drawRect(x: Float, y: Float, width: Float, height: Float, color: Int) {
         quickGLColor(color)
 
         GL11.glBegin(GL11.GL_QUADS)
-        GL11.glVertex2f(x2, y1)
-        GL11.glVertex2f(x1, y1)
-        GL11.glVertex2f(x1, y2)
-        GL11.glVertex2f(x2, y2)
+        GL11.glVertex2f(x + width, y)
+        GL11.glVertex2f(x, y)
+        GL11.glVertex2f(x, y + height)
+        GL11.glVertex2f(x + width, y + height)
 
         GL11.glEnd()
     }
@@ -223,8 +224,6 @@ object RenderUtils {
     @JvmStatic
     fun drawCircle(x: Float, y: Float, radius: Float, color: Int) {
         quickGLColor(color)
-        GL11.glEnable(GL11.GL_POLYGON_SMOOTH)
-        GL11.glHint(GL11.GL_POLYGON_SMOOTH_HINT, GL11.GL_NICEST)
         GL11.glBegin(GL11.GL_POLYGON)
         for (i in 0..360)
             GL11.glVertex2f(
@@ -232,18 +231,43 @@ object RenderUtils {
                 (y + cos(Math.toRadians(i.toDouble())) * radius).toFloat()
             )
         GL11.glEnd()
-        GL11.glDisable(GL11.GL_POLYGON_SMOOTH)
+    }
+
+    @JvmStatic
+    fun drawAntiAliasingCircle(x: Float, y: Float, radius: Float, color: Int) {
+        quickGLColor(color)
+        GL11.glBegin(GL11.GL_POLYGON)
+        for (i in 0..360)
+            GL11.glVertex2f(
+                (x + sin(Math.toRadians(i.toDouble())) * radius).toFloat(),
+                (y + cos(Math.toRadians(i.toDouble())) * radius).toFloat()
+            )
+        GL11.glEnd()
+
+        GL11.glLineWidth(1F)
+        GL11.glEnable(GL11.GL_LINE_SMOOTH)
+        GL11.glHint(GL11.GL_LINE_SMOOTH_HINT, GL11.GL_NICEST)
+        GL11.glBegin(GL11.GL_LINE_LOOP)
+        for (i in 0..360)
+            GL11.glVertex2f(
+                (x + sin(Math.toRadians(i.toDouble())) * radius).toFloat(),
+                (y + cos(Math.toRadians(i.toDouble())) * radius).toFloat()
+            )
+        GL11.glEnd()
+        GL11.glDisable(GL11.GL_LINE_SMOOTH)
     }
 
     @JvmStatic
     fun drawLine(x1: Float, y1: Float, x2: Float, y2: Float, width: Float, color: Int) {
         quickGLColor(color)
         GL11.glLineWidth(width)
-
+        GL11.glEnable(GL11.GL_LINE_SMOOTH)
+        GL11.glHint(GL11.GL_LINE_SMOOTH_HINT, GL11.GL_NICEST)
         GL11.glBegin(GL11.GL_LINES)
         GL11.glVertex2f(x1, y1)
         GL11.glVertex2f(x2, y2)
         GL11.glEnd()
+        GL11.glDisable(GL11.GL_LINE_SMOOTH)
     }
 
     @JvmStatic

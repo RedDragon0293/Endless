@@ -4,22 +4,21 @@ import com.google.common.base.Objects;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.collect.Lists;
-import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.IntHashMap;
 
-public class GuiPageButtonList extends GuiListExtended
-{
-    private final List<GuiPageButtonList.GuiEntry> field_178074_u = Lists.<GuiPageButtonList.GuiEntry>newArrayList();
-    private final IntHashMap<Gui> field_178073_v = new IntHashMap();
+import java.util.List;
+
+public class GuiPageButtonList extends GuiListExtended {
+    private final List<GuiPageButtonList.GuiEntry> field_178074_u = Lists.newArrayList();
+    private final IntHashMap<Gui> field_178073_v = new IntHashMap<>();
     private final List<GuiTextField> field_178072_w = Lists.<GuiTextField>newArrayList();
     private final GuiPageButtonList.GuiListEntry[][] field_178078_x;
     private int field_178077_y;
     private GuiPageButtonList.GuiResponder field_178076_z;
     private Gui field_178075_A;
 
-    public GuiPageButtonList(Minecraft mcIn, int widthIn, int heightIn, int topIn, int bottomIn, int slotHeightIn, GuiPageButtonList.GuiResponder p_i45536_7_, GuiPageButtonList.GuiListEntry[]... p_i45536_8_)
-    {
+    public GuiPageButtonList(Minecraft mcIn, int widthIn, int heightIn, int topIn, int bottomIn, int slotHeightIn, GuiPageButtonList.GuiResponder p_i45536_7_, GuiPageButtonList.GuiListEntry[]... p_i45536_8_) {
         super(mcIn, widthIn, heightIn, topIn, bottomIn, slotHeightIn);
         this.field_178076_z = p_i45536_7_;
         this.field_178078_x = p_i45536_8_;
@@ -164,7 +163,7 @@ public class GuiPageButtonList extends GuiListExtended
 
     private Gui func_178058_a(GuiPageButtonList.GuiListEntry p_178058_1_, int p_178058_2_, boolean p_178058_3_)
     {
-        return (Gui)(p_178058_1_ instanceof GuiPageButtonList.GuiSlideEntry ? this.func_178067_a(this.width / 2 - 155 + p_178058_2_, 0, (GuiPageButtonList.GuiSlideEntry)p_178058_1_) : (p_178058_1_ instanceof GuiPageButtonList.GuiButtonEntry ? this.func_178065_a(this.width / 2 - 155 + p_178058_2_, 0, (GuiPageButtonList.GuiButtonEntry)p_178058_1_) : (p_178058_1_ instanceof GuiPageButtonList.EditBoxEntry ? this.func_178068_a(this.width / 2 - 155 + p_178058_2_, 0, (GuiPageButtonList.EditBoxEntry)p_178058_1_) : (p_178058_1_ instanceof GuiPageButtonList.GuiLabelEntry ? this.func_178063_a(this.width / 2 - 155 + p_178058_2_, 0, (GuiPageButtonList.GuiLabelEntry)p_178058_1_, p_178058_3_) : null))));
+        return p_178058_1_ instanceof GuiSlideEntry ? this.func_178067_a(this.width / 2 - 155 + p_178058_2_, 0, (GuiSlideEntry) p_178058_1_) : (p_178058_1_ instanceof GuiButtonEntry ? this.func_178065_a(this.width / 2 - 155 + p_178058_2_, 0, (GuiButtonEntry) p_178058_1_) : (p_178058_1_ instanceof EditBoxEntry ? this.func_178068_a(this.width / 2 - 155 + p_178058_2_, 0, (EditBoxEntry) p_178058_1_) : (p_178058_1_ instanceof GuiLabelEntry ? this.func_178063_a(this.width / 2 - 155 + p_178058_2_, 0, (GuiLabelEntry) p_178058_1_, p_178058_3_) : null)));
     }
 
     public void func_181155_a(boolean p_181155_1_)

@@ -35,7 +35,7 @@ public class GuiWinGame extends GuiScreen {
      */
     public void updateScreen()
     {
-        MusicTicker musicticker = this.mc.func_181535_r();
+        MusicTicker musicticker = this.mc.getMusicTicker();
         SoundHandler soundhandler = this.mc.getSoundHandler();
 
         if (this.field_146581_h == 0)

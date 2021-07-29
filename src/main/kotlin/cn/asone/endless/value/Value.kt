@@ -24,8 +24,7 @@ abstract class Value<T>(val name: String, protected var value: T) {
     }
 }
 
-open class BoolValue(name: String, value: Boolean)
-    : Value<Boolean>(name, value) {
+open class BoolValue(name: String, value: Boolean) : Value<Boolean>(name, value) {
     var subValue: ArrayList<Value<*>> = arrayListOf()
 
     override fun toJson() = JsonPrimitive(value)
@@ -38,11 +37,11 @@ open class BoolValue(name: String, value: Boolean)
     }
 }
 
-open class IntValue(name: String, value: Int, minValue: Int = 0, maxValue: Int = Integer.MAX_VALUE)
-    : Value<Int>(name, value) {
+open class IntValue(name: String, value: Int, minValue: Int = 0, maxValue: Int = Integer.MAX_VALUE) :
+    Value<Int>(name, value) {
 
     fun set(newValue: Number) {
-        set(newValue.toInt())
+        super.set(newValue.toInt())
     }
 
     override fun toJson() = JsonPrimitive(value)
@@ -55,11 +54,11 @@ open class IntValue(name: String, value: Int, minValue: Int = 0, maxValue: Int =
     }
 }
 
-open class FloatValue(name: String, value: Float, val minValue: Float = 0F, val maxValue: Float = Float.MAX_VALUE)
-    : Value<Float>(name, value) {
+open class FloatValue(name: String, value: Float, val minValue: Float = 0F, val maxValue: Float = Float.MAX_VALUE) :
+    Value<Float>(name, value) {
 
     fun set(newValue: Number) {
-        set(newValue.toFloat())
+        super.set(newValue.toFloat())
     }
 
     override fun toJson() = JsonPrimitive(value)
@@ -72,8 +71,7 @@ open class FloatValue(name: String, value: Float, val minValue: Float = 0F, val 
     }
 }
 
-open class TextValue(name: String, value: String)
-    : Value<String>(name, value) {
+open class TextValue(name: String, value: String) : Value<String>(name, value) {
 
     override fun toJson() = JsonPrimitive(value)
 
@@ -105,8 +103,6 @@ open class TextValue(name: String, value: String)
 open class BlockValue(name: String, value: Int) : IntValue(name, value, 1, 197)
 
 open class ListValue(name: String, val values: Array<String>, value: String) : Value<String>(name, value) {
-    @JvmField
-    var openList = false
     var subValue: MutableMap<String, ArrayList<Value<*>>> = mutableMapOf()
 
     init {

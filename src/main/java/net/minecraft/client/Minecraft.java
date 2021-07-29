@@ -358,11 +358,12 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
 
     public void run() {
         this.running = true;
-        if (displayWidth < 1067)
-            displayWidth = 1067;
+        // 16 : 9 resolution
+        if (displayWidth < 1104)
+            displayWidth = 1104;
 
-        if (displayHeight < 622)
-            displayHeight = 622;
+        if (displayHeight < 621)
+            displayHeight = 621;
 
         try {
             this.startGame();
@@ -918,7 +919,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
 
         synchronized (this.scheduledTasks) {
             while (!this.scheduledTasks.isEmpty()) {
-                Util.func_181617_a(this.scheduledTasks.poll(), logger);
+                Util.runTask(this.scheduledTasks.poll(), logger);
             }
         }
 
@@ -983,9 +984,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
         Thread.yield();
         this.mcProfiler.startSection("stream");
         this.mcProfiler.startSection("update");
-        this.stream.func_152935_j();
         this.mcProfiler.endStartSection("submit");
-        this.stream.func_152922_k();
         this.mcProfiler.endSection();
         this.mcProfiler.endSection();
         this.checkGLError("Post render");
@@ -1369,26 +1368,18 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
                 this.displayWidth = Display.getDisplayMode().getWidth();
                 this.displayHeight = Display.getDisplayMode().getHeight();
 
-                if (this.displayWidth <= 0) {
-                    this.displayWidth = 1;
-                }
-
-                if (this.displayHeight <= 0) {
-                    this.displayHeight = 1;
-                }
             } else {
                 Display.setDisplayMode(new DisplayMode(this.tempDisplayWidth, this.tempDisplayHeight));
                 this.displayWidth = this.tempDisplayWidth;
                 this.displayHeight = this.tempDisplayHeight;
 
-                if (this.displayWidth <= 0) {
-                    this.displayWidth = 1;
-                }
-
-                if (this.displayHeight <= 0) {
-                    this.displayHeight = 1;
-                }
             }
+
+            if (displayWidth < 1104)
+                displayWidth = 1104;
+
+            if (displayHeight < 621)
+                displayHeight = 621;
 
             if (this.currentScreen != null) {
                 this.resize(this.displayWidth, this.displayHeight);
@@ -1428,7 +1419,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
         }
     }
 
-    public MusicTicker func_181535_r() {
+    public MusicTicker getMusicTicker() {
         return this.mcMusicTicker;
     }
 
