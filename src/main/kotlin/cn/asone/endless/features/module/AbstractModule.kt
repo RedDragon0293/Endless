@@ -3,6 +3,7 @@ package cn.asone.endless.features.module
 import cn.asone.endless.event.*
 import cn.asone.endless.utils.playSound
 import cn.asone.endless.value.Value
+import cn.asone.endless.value.ValueRegister
 import net.minecraft.client.Minecraft
 import org.lwjgl.input.Keyboard
 
@@ -12,7 +13,7 @@ abstract class AbstractModule(
     val category: Int,
     var keyBind: Int = Keyboard.CHAR_NONE,
     var canEnable: Boolean = true
-) : Listenable {
+) : Listenable, ValueRegister {
 
     protected val mc = Minecraft.getMinecraft()!!
     var state = false
@@ -35,11 +36,10 @@ abstract class AbstractModule(
 
     override val handledEvents: ArrayList<EventHook> = arrayListOf()
 
-    open val values: ArrayList<Value<*>> = arrayListOf()
+    override val values: ArrayList<Value<*>> = arrayListOf()
 
-    open fun getAllValue(): ArrayList<Value<*>> = arrayListOf()
+    override fun getAllValue(): ArrayList<Value<*>> = arrayListOf()
 
-    fun getValue(value: String) = getAllValue().find { it.name.equals(value, true) }
 
     fun toggle() {
         state = !state

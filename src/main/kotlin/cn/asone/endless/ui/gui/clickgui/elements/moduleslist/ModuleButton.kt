@@ -12,6 +12,8 @@ class ModuleButton(val module: AbstractModule) :
         set(value) {
             module.state = value
         }
+    //override val infoValues: ArrayList<Value<*>>
+    //get() = module.values
 
     override fun mouseClicked(mouseX: Int, mouseY: Int, mouseButton: Int) {
         if (mouseButton == 1) {

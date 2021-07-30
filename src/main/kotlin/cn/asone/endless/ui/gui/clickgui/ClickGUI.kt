@@ -3,6 +3,8 @@ package cn.asone.endless.ui.gui.clickgui
 import cn.asone.endless.features.module.AbstractModule
 import cn.asone.endless.features.module.ModuleManager
 import cn.asone.endless.features.special.FakeForge
+import cn.asone.endless.ui.font.CFontRenderer
+import cn.asone.endless.ui.font.Fonts
 import cn.asone.endless.ui.gui.clickgui.elements.CategoryButton
 import cn.asone.endless.ui.gui.clickgui.elements.moduleslist.AbstractButton
 import cn.asone.endless.ui.gui.clickgui.elements.moduleslist.ModuleButton
@@ -22,8 +24,8 @@ import java.awt.Color
 class ClickGUI : GuiScreen() {
 
     companion object {
-        var guiWidth = 520
-        var guiHeight = 300
+        var guiWidth = 480
+        var guiHeight = 250
         var windowXStart = 0
         var windowYStart = 0
 
@@ -51,6 +53,8 @@ class ClickGUI : GuiScreen() {
     private var diffY = 0F
     private val moduleButtons: ArrayList<AbstractButton> = ArrayList()
     private val endlessLogo = ResourceLocation("endless/endless_Logo.png")
+    private val moduleInfoFont = CFontRenderer(Fonts.getAssetsFont("Roboto-Medium.ttf", 44), true, false)
+    private val descriptionFont = CFontRenderer(Fonts.getAssetsFont("Roboto-Thin.ttf", 16), true, true)
     private lateinit var closeButton: GuiButton
 
     init {
@@ -58,11 +62,14 @@ class ClickGUI : GuiScreen() {
             buttonsMap[module.category]?.add(ModuleButton(module))
         buttonsMap[categoryIndex - 1]?.let { moduleButtons.addAll(it) }
         buttonsMap[7]?.add(object : AbstractButton("FakeForge") {
+
             override var state: Boolean
                 get() = FakeForge.enabled.get()
                 set(value) {
                     FakeForge.enabled.set(value)
                 }
+            //override val infoValues: ArrayList<AbstractValueButton>
+            //get() = FakeForge.values
         })
     }
 
@@ -118,6 +125,9 @@ class ClickGUI : GuiScreen() {
             14F,
             Color.white.rgb
         )
+        if (currentInfoButton != null) {
+            RenderUtils.drawRect(windowXStart + 231F, windowYStart.toFloat(), guiWidth - 2F - 231, 44F, Color.white.rgb)
+        }
         //Close button
         GL11.glEnable(GL11.GL_POLYGON_SMOOTH)
         RenderUtils.drawCircle(windowXStart + guiWidth - 10F, windowYStart + 10F, 4F, Color.RED.rgb)
@@ -139,8 +149,9 @@ class ClickGUI : GuiScreen() {
             4F,
             Color(0, 111, 255).rgb
         )
+        //处理滚轮
         val wheel = Mouse.getDWheel() / 10F
-        if (mouseX in (windowXStart + 70)..(windowXStart + 72 + 132)
+        if (mouseX in (windowXStart + 68 + 4 - 2)..(windowXStart + 68 + 4 + 150 + 2)
             && mouseY in (windowYStart + 7)..(windowYStart + guiHeight - 7)
         ) {
             diffY += wheel
@@ -150,12 +161,12 @@ class ClickGUI : GuiScreen() {
                 diffY = 0F
             moduleButtons.forEach { it.offset = diffY }
         }
-
+        //渲染modules list
         GL11.glEnable(GL11.GL_SCISSOR_TEST)
         RenderUtils.doScissor(
             windowXStart + 70,
             windowYStart + 7,
-            windowXStart + 72 + 132,
+            windowXStart + 72 + 150 + 2,
             windowYStart + guiHeight - 7
         )
         moduleButtons.forEach {
@@ -165,13 +176,10 @@ class ClickGUI : GuiScreen() {
         GL11.glDisable(GL11.GL_SCISSOR_TEST)
         //module list与module info的分割线
         RenderUtils.drawRect(
-            windowXStart + 202 + 4F, windowYStart.toFloat(), 5F, guiHeight.toFloat(), Color.white.rgb
+            windowXStart + 222 + 4F, windowYStart.toFloat(), 5F, guiHeight.toFloat(), Color.white.rgb
         )
 
-        //Module info
-        if (currentInfoButton != null) {
-            
-        }
+        //Logo
         GlStateManager.enableTexture2D()
         GlStateManager.disableDepth()
         GlStateManager.depthMask(false)
@@ -184,15 +192,16 @@ class ClickGUI : GuiScreen() {
         GlStateManager.enableDepth()
         GlStateManager.disableBlend()
 
-        GL11.glPushMatrix()
+        //Category文字
         for (guiButton in buttonList) {
             guiButton.drawButton(mc, mouseX, mouseY)
         }
+        //modules list文字
         GL11.glEnable(GL11.GL_SCISSOR_TEST)
         RenderUtils.doScissor(
             windowXStart + 70,
             windowYStart + 7,
-            windowXStart + 72 + 132,
+            windowXStart + 72 + 150 + 2,
             windowYStart + guiHeight - 7
         )
         moduleButtons.forEach {
@@ -202,6 +211,37 @@ class ClickGUI : GuiScreen() {
         GL11.glDisable(GL11.GL_SCISSOR_TEST)
         GL11.glPopMatrix()
 
+
+        GL11.glPushMatrix()
+        //Module info
+        //x: windowXStart + 231 ~ windowXStart + guiWidth - 7
+        if (currentInfoButton != null) {
+            moduleInfoFont.drawCenteredString(
+                currentInfoButton!!.name,
+                windowXStart.toFloat() + (231 - 7 + guiWidth) / 2,
+                windowYStart + 8F,
+                Color.black.rgb
+            )
+            //Description
+            if (currentInfoButton is ModuleButton)
+                descriptionFont.drawString(
+                    (currentInfoButton as ModuleButton).module.description,
+                    windowXStart + 231 + 4F,
+                    windowYStart + 36F,
+                    Color.black.rgb
+                )
+            if (currentInfoButton!!.infoValues.isNotEmpty()) {
+
+            }
+        } else {
+            Fonts.font20.drawCenteredString(
+                "Left click a module to display more info.",
+                windowXStart.toFloat() + (231 - 7 + guiWidth) / 2,
+                windowYStart.toFloat() + guiHeight / 2,
+                Color.black.rgb
+            )
+        }
+        GL11.glPopMatrix()
         if (keyBindModule != null) {
             drawDefaultBackground()
             backButton.drawButton(mc, mouseX, mouseY)
@@ -220,7 +260,6 @@ class ClickGUI : GuiScreen() {
                 false
             )
         }
-        GL11.glPopMatrix()
     }
 
     override fun actionPerformed(button: GuiButton) {

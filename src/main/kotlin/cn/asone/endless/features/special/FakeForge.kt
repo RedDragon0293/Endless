@@ -2,15 +2,17 @@ package cn.asone.endless.features.special
 
 import cn.asone.endless.event.EventHook
 import cn.asone.endless.event.EventManager
+import cn.asone.endless.event.ListenableClass
 import cn.asone.endless.event.SendPacketEvent
 import cn.asone.endless.utils.ClientUtils
-import cn.asone.endless.utils.ListenableClass
 import cn.asone.endless.value.BoolValue
+import cn.asone.endless.value.Value
+import cn.asone.endless.value.ValueRegister
 import io.netty.buffer.Unpooled
 import net.minecraft.network.PacketBuffer
 import net.minecraft.network.play.client.C17PacketCustomPayload
 
-object FakeForge : ListenableClass() {
+object FakeForge : ListenableClass(), ValueRegister {
     @JvmField
     val enabled = BoolValue("enabled", false)
 
@@ -22,6 +24,10 @@ object FakeForge : ListenableClass() {
 
     @JvmField
     val payload = BoolValue("payload", false)
+
+    override val values: ArrayList<Value<*>> = arrayListOf(enabled)
+
+    override fun getAllValue(): ArrayList<Value<*>> = arrayListOf(enabled, fml, fmlProxy, payload)
 
     override val handledEvents: ArrayList<EventHook> = arrayListOf(
         EventHook(SendPacketEvent::class.java, 100)

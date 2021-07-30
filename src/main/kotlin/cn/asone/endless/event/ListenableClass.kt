@@ -1,6 +1,5 @@
-package cn.asone.endless.utils
+package cn.asone.endless.event
 
-import cn.asone.endless.event.*
 import net.minecraft.client.Minecraft
 
 abstract class ListenableClass : Listenable {

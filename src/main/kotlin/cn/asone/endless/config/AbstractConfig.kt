@@ -51,7 +51,7 @@ abstract class AbstractConfig(val file: File) {
     }
 
     /**
-     * @param entry 格式："Name":{"JsonElement"}
+     * @param entry 格式："Name" : {"JsonElement"}
      */
     abstract fun configParser(entry: Map.Entry<String, JsonElement>)
 

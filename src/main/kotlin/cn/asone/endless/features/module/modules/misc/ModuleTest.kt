@@ -24,9 +24,10 @@ object ModuleTest : AbstractModule(
     private val checkServerSide = BoolValue("CheckServerSide", true)
     private val checkServerSideOnlyGround = BoolValue("CheckServerSideOnlyGround", false)
     private val rotationMode = ListValue("RotationMode", arrayOf("Normal", "Static"), "Normal")
-    private val rotationSpeed = IntValue("RotationSpeed", 180, 1, 180)
-    private val staticYaw = FloatValue("StaticYaw", 45F, 0F, 180F)
-    private val staticPitch = FloatValue("StaticPitch", 90F, -90F, 90F)
+    private val normalRotationSpeed = IntValue("RotationSpeed", 180, 1..180)
+    private val staticRotationSpeed = IntValue("RotationSpeed", 180, 1..180)
+    private val staticYaw = FloatValue("StaticYaw", 45F, 0F..180F)
+    private val staticPitch = FloatValue("StaticPitch", 90F, -90F..90F)
 
     override val values: ArrayList<Value<*>> = arrayListOf(
         checkServerSide,
@@ -37,14 +38,15 @@ object ModuleTest : AbstractModule(
         checkServerSide,
         checkServerSideOnlyGround,
         rotationMode,
-        rotationSpeed,
+        normalRotationSpeed,
         staticYaw,
         staticPitch
     )
 
     init {
         checkServerSide.subValue.add(checkServerSideOnlyGround)
-        rotationMode.subValue["Normal"]!!.add(rotationSpeed)
+        rotationMode.subValue["Normal"]!!.add(normalRotationSpeed)
+        rotationMode.subValue["Static"]!!.add(staticRotationSpeed)
         rotationMode.subValue["Static"]!!.add(staticYaw)
         rotationMode.subValue["Static"]!!.add(staticPitch)
         //font.addGlyphs(0x0000, 0xFFFF)
@@ -65,7 +67,7 @@ object ModuleTest : AbstractModule(
 
     override fun onRender2D(event: Render2DEvent) {
         mc.fontRendererObj.drawStringWithShadow(rotationMode.get(), 200F, 10F, Color.green.rgb)
-        mc.fontRendererObj.drawStringWithShadow(rotationSpeed.get().toString(), 200F, 20F, Color.green.rgb)
+        mc.fontRendererObj.drawStringWithShadow(normalRotationSpeed.get().toString(), 200F, 20F, Color.green.rgb)
         mc.fontRendererObj.drawStringWithShadow(staticYaw.get().toString(), 200F, 30F, Color.green.rgb)
         mc.fontRendererObj.drawStringWithShadow(staticPitch.get().toString(), 200F, 40F, Color.green.rgb)
         Fonts.font20.drawString("ABCDEFGHIGKLMNOPQRSTUVWXYZ", 200F, 70F, Color.RED.rgb)

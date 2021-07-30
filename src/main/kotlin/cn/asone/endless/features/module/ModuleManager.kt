@@ -3,6 +3,7 @@ package cn.asone.endless.features.module
 import cn.asone.endless.event.EventHook
 import cn.asone.endless.event.EventManager
 import cn.asone.endless.event.KeyEvent
+import cn.asone.endless.event.ListenableClass
 import cn.asone.endless.features.command.CommandManager
 import cn.asone.endless.features.module.modules.combat.ModuleAura
 import cn.asone.endless.features.module.modules.combat.ModuleVelocity
@@ -12,7 +13,6 @@ import cn.asone.endless.features.module.modules.movement.ModuleSprint
 import cn.asone.endless.features.module.modules.render.ModuleClickGUI
 import cn.asone.endless.features.module.modules.render.ModuleSimpleArrayList
 import cn.asone.endless.utils.ClientUtils
-import cn.asone.endless.utils.ListenableClass
 import java.util.*
 
 object ModuleManager : ListenableClass() {
@@ -31,7 +31,7 @@ object ModuleManager : ListenableClass() {
             ModuleAntiBot
         ).forEach {
             registerModule(it)
-            if (!it.values.isNullOrEmpty())
+            if (it.values.isNotEmpty())
                 CommandManager.registerModuleCommand(it)
         }
         ClientUtils.logger.info("成功初始化 ${modules.size} 个功能.")

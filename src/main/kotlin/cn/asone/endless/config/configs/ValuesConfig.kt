@@ -37,9 +37,9 @@ class ValuesConfig : AbstractConfig(File(ConfigManager.rootDir, "values.json")) 
         val jsonObject = JsonObject()
 
         for (module in ModuleManager.modules) {
-            if (module.getAllValue().isNotEmpty()) {
+            if (module.values.isNotEmpty()) {
                 val jsonModule = JsonObject()
-                for (value in module.getAllValue()) {
+                for (value in module.values) {
                     jsonModule.add(value.name, value.toJson())
                 }
                 jsonObject.add(module.name, jsonModule)

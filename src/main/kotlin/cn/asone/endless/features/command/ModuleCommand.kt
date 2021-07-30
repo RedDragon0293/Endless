@@ -10,7 +10,7 @@ import java.util.*
 
 class ModuleCommand(val module: AbstractModule) : AbstractCommand(module.name) {
     override fun onExecute(command: String) {
-        val valueNames = module.getAllValue()
+        val valueNames = module.values
             .joinToString(separator = "/") { it.name.lowercase(Locale.getDefault()) }
 
         val args = command.split(' ').toTypedArray()
