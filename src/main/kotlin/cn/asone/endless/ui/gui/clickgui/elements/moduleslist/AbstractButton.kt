@@ -10,14 +10,15 @@ import cn.asone.endless.utils.playSound
 import java.awt.Color
 
 abstract class AbstractButton(open val name: String) {
-    var x = 0F
-    var y = 0F
+    protected var x = 0F
+    protected var y = 0F
+        get() = field + offset
     var offset = 0F
     open var state = false
-    open val infoValues: ArrayList<AbstractValueButton> = arrayListOf()
+    open val infoButtons: ArrayList<AbstractValueButton> = arrayListOf()
     val visible: Boolean
         get() = y < ClickGUI.windowYStart + ClickGUI.guiHeight - 7 && y + 23 > ClickGUI.windowYStart + 7
-    protected val font = CFontRenderer(Fonts.getAssetsFont("Roboto-Light.ttf", 24), true, true)
+    protected val font = CFontRenderer(Fonts.getAssetsFont("Roboto-Regular.ttf", 24), true, true)
 
     fun updateX(x: Float) {
         this.x = x
@@ -29,11 +30,11 @@ abstract class AbstractButton(open val name: String) {
 
     fun drawBox() {
         //Background
-        RenderUtils.drawAntiAliasingRoundedRect(x, y + offset, 150F, 23F, 5F, Color(253, 253, 253).rgb)
+        RenderUtils.drawAntiAliasingRoundedRect(x, y, 150F, 23F, 5F, Color(253, 253, 253).rgb)
         //Button
         RenderUtils.drawAntiAliasingRoundedRect(
             x + 150 - 3 - 17,
-            y + offset + 6,
+            y + 6,
             17F,
             11F,
             5.5F,
@@ -41,25 +42,35 @@ abstract class AbstractButton(open val name: String) {
         )
         RenderUtils.drawAntiAliasingCircle(
             if (state) x + 150 - 5 - 4 else x + 150 - 14,
-            y + offset + 11.5F,
+            y + 11.5F,
             4.5F,
             Color.white.rgb
         )
     }
 
     fun drawText() {
-        font.drawString(name, x + 4, y + 6 + offset, Color.black.rgb)
+        font.drawString(name, x + 4, y + 6, Color.black.rgb)
     }
 
-    fun isHovering(mouseX: Int, mouseY: Int): Boolean = mouseX > x && mouseX < x + 150 && mouseY > y && mouseY < y + 23
+    fun isHovering(mouseX: Int, mouseY: Int): Boolean =
+        mouseX >= x && mouseX <= x + 150 && mouseY >= y && mouseY <= y + 23
 
     open fun mouseClicked(mouseX: Int, mouseY: Int, mouseButton: Int) {
         if (mouseButton == 0) {
             mc.soundHandler.playSound("gui.button.press", 1F)
-            if (mouseX >= x + 150 - 3 - 17 && mouseX <= x + 150 - 3 && mouseY >= y + offset + 6 && mouseY <= y + offset + 17)
+            if (mouseX >= x + 150 - 3 - 17 && mouseX <= x + 150 - 3 && mouseY >= y + 6 && mouseY <= y + 17)
                 this.state = !this.state
-            else
+            else {
                 ClickGUI.currentInfoButton = this
+                if (infoButtons.isNotEmpty()) {
+                    var y = 0
+                    infoButtons.forEach {
+                        it.updateX(ClickGUI.windowXStart + 231 + 6F)
+                        it.updateY(ClickGUI.windowYStart + 44 + 6F + y)
+                        y += 26
+                    }
+                }
+            }
         }
     }
 }

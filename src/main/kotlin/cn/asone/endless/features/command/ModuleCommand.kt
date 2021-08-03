@@ -18,15 +18,19 @@ class ModuleCommand(val module: AbstractModule) : AbstractCommand(module.name) {
             chatSyntax("$valueNames <值>")
             return
         }
-        val currentValue = module.getValue(args[0])
+        val currentValue = module.values.find { it.name.equals(args[0], true) }
         if (currentValue == null) {
             ClientUtils.chatError("找不到选项.")
             chatSyntax("$valueNames <值>")
         } else {
             if (currentValue is BoolValue) {
-                if (args.size == 2)
+                if (args.size >= 2) {
+                    val subValue = currentValue.subValue.find { it.name.equals(args[1], true) }
+                    if (subValue != null) {
+
+                    }
                     currentValue.set(args[1] == "true")
-                else
+                } else
                     currentValue.set(!currentValue.get())
                 ClientUtils.chatSuccess("设置功能 §b${module.name} §7${args[0]}§a 的值为 §8${if (currentValue.get()) "true" else "false"} §a.")
                 playEditSound()

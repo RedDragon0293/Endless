@@ -50,7 +50,8 @@ class ClickGUI : GuiScreen() {
         Pair(6, ArrayList()), //Targets
         Pair(7, ArrayList())  //Global
     )
-    private var diffY = 0F
+    private var listDiffY = 0F
+    private var infoDiffY = 0F
     private val moduleButtons: ArrayList<AbstractButton> = ArrayList()
     private val endlessLogo = ResourceLocation("endless/endless_Logo.png")
     private val moduleInfoFont = CFontRenderer(Fonts.getAssetsFont("Roboto-Medium.ttf", 44), true, false)
@@ -60,7 +61,6 @@ class ClickGUI : GuiScreen() {
     init {
         for (module in ModuleManager.modules)
             buttonsMap[module.category]?.add(ModuleButton(module))
-        buttonsMap[categoryIndex - 1]?.let { moduleButtons.addAll(it) }
         buttonsMap[7]?.add(object : AbstractButton("FakeForge") {
 
             override var state: Boolean
@@ -74,8 +74,6 @@ class ClickGUI : GuiScreen() {
     }
 
     override fun initGui() {
-        windowXStart = (width / 2) - (guiWidth / 2)
-        windowYStart = (height / 2) - (guiHeight / 2)
         closeButton = object : GuiButton(
             0, windowXStart + guiWidth - 10 - 4,
             windowYStart + 10 - 4, 8, 8, ""
@@ -95,18 +93,16 @@ class ClickGUI : GuiScreen() {
                 )
             )
         }
-        moduleButtons.forEach { it.updateX(windowXStart + 68 + 4F) }
-        var y = 0
-        for (button in moduleButtons) {
-            button.updateY(windowYStart + 8F + y)
-            y += 33
-        }
+        moduleButtons.clear()
+        buttonsMap[categoryIndex - 1]?.let { moduleButtons.addAll(it) }
     }
 
     override fun drawScreen(mouseX: Int, mouseY: Int, partialTicks: Float) {
         GL11.glPushMatrix()
         RenderUtils.pre2D()
-        //Main background
+        /**
+         * Main background
+         */
         RenderUtils.drawRoundedRect(
             windowXStart.toFloat(),
             windowYStart.toFloat(),
@@ -115,7 +111,9 @@ class ClickGUI : GuiScreen() {
             8F,
             Color(236, 236, 236).rgb
         )
-        //Main background border
+        /**
+         * Main background border
+         */
         RenderUtils.drawRoundedBorder(
             windowXStart.toFloat(),
             windowYStart.toFloat(),
@@ -125,14 +123,21 @@ class ClickGUI : GuiScreen() {
             14F,
             Color.white.rgb
         )
+        /**
+         * Info button name background
+         */
         if (currentInfoButton != null) {
             RenderUtils.drawRect(windowXStart + 231F, windowYStart.toFloat(), guiWidth - 2F - 231, 44F, Color.white.rgb)
         }
-        //Close button
+        /**
+         * Close button
+         */
         GL11.glEnable(GL11.GL_POLYGON_SMOOTH)
         RenderUtils.drawCircle(windowXStart + guiWidth - 10F, windowYStart + 10F, 4F, Color.RED.rgb)
         GL11.glDisable(GL11.GL_POLYGON_SMOOTH)
-        //Category background
+        /**
+         * Category background
+         */
         RenderUtils.drawRect(
             windowXStart + 2F,
             windowYStart.toFloat(),
@@ -140,7 +145,9 @@ class ClickGUI : GuiScreen() {
             guiHeight.toFloat(),
             Color.white.rgb
         )
-        //Current chosen category background
+        /**
+         * Current chosen category background
+         */
         RenderUtils.drawRoundedRect(
             windowXStart + 2F,
             windowYStart + 4 + 64 + 2F + 22 * (categoryIndex - 1),
@@ -149,19 +156,26 @@ class ClickGUI : GuiScreen() {
             4F,
             Color(0, 111, 255).rgb
         )
-        //处理滚轮
+        /**
+         * 处理滚轮
+         */
         val wheel = Mouse.getDWheel() / 10F
         if (mouseX in (windowXStart + 68 + 4 - 2)..(windowXStart + 68 + 4 + 150 + 2)
             && mouseY in (windowYStart + 7)..(windowYStart + guiHeight - 7)
         ) {
-            diffY += wheel
-            if (diffY < moduleButtons.size * -33 + guiHeight - 8)
-                diffY = moduleButtons.size * -33 - 8 + guiHeight.toFloat()
-            if (diffY > 0)
-                diffY = 0F
-            moduleButtons.forEach { it.offset = diffY }
+            /**
+             * modules list滚轮
+             */
+            listDiffY += wheel
+            if (listDiffY < moduleButtons.size * -33 + guiHeight - 8)
+                listDiffY = moduleButtons.size * -33 - 8 + guiHeight.toFloat()
+            if (listDiffY > 0)
+                listDiffY = 0F
+            moduleButtons.forEach { it.offset = listDiffY }
         }
-        //渲染modules list
+        /**
+         * 渲染modules list
+         */
         GL11.glEnable(GL11.GL_SCISSOR_TEST)
         RenderUtils.doScissor(
             windowXStart + 70,
@@ -174,12 +188,16 @@ class ClickGUI : GuiScreen() {
                 it.drawBox()
         }
         GL11.glDisable(GL11.GL_SCISSOR_TEST)
-        //module list与module info的分割线
+        /**
+         * module list与module info的分割线
+         */
         RenderUtils.drawRect(
             windowXStart + 222 + 4F, windowYStart.toFloat(), 5F, guiHeight.toFloat(), Color.white.rgb
         )
 
-        //Logo
+        /**
+         * Logo
+         */
         GlStateManager.enableTexture2D()
         GlStateManager.disableDepth()
         GlStateManager.depthMask(false)
@@ -192,11 +210,15 @@ class ClickGUI : GuiScreen() {
         GlStateManager.enableDepth()
         GlStateManager.disableBlend()
 
-        //Category文字
+        /**
+         * Category文字
+         */
         for (guiButton in buttonList) {
             guiButton.drawButton(mc, mouseX, mouseY)
         }
-        //modules list文字
+        /**
+         * modules list文字
+         */
         GL11.glEnable(GL11.GL_SCISSOR_TEST)
         RenderUtils.doScissor(
             windowXStart + 70,
@@ -216,13 +238,46 @@ class ClickGUI : GuiScreen() {
         //Module info
         //x: windowXStart + 231 ~ windowXStart + guiWidth - 7
         if (currentInfoButton != null) {
+            if (currentInfoButton!!.infoButtons.isNotEmpty()) {
+                /**
+                 * Info list滚轮
+                 */
+                if (mouseX in (windowXStart + 231 + 2)..(windowXStart + guiWidth - 9) && mouseY in (windowYStart + 44 + 2)..(windowYStart + guiHeight - 9)) {
+                    infoDiffY += wheel
+                    if (infoDiffY < currentInfoButton!!.infoButtons.size * -26 + guiHeight - 8 - 44)
+                        infoDiffY = currentInfoButton!!.infoButtons.size * -26 + guiHeight - 8F - 44
+                    if (infoDiffY > 0)
+                        infoDiffY = 0F
+                    currentInfoButton!!.infoButtons.forEach { it.offset = infoDiffY }
+                }
+                RenderUtils.pre2D()
+                GL11.glEnable(GL11.GL_SCISSOR_TEST)
+                RenderUtils.doScissor(
+                    windowXStart + 231 + 2,
+                    windowYStart + 44 + 6,
+                    windowXStart + guiWidth - 7 - 2,
+                    windowYStart + guiHeight - 6
+                )
+                currentInfoButton!!.infoButtons.forEach {
+                    if (it.visible) {
+                        it.drawBox()
+                    }
+                }
+                GL11.glDisable(GL11.GL_SCISSOR_TEST)
+                RenderUtils.post2D()
+            }
+            /**
+             * Name
+             */
             moduleInfoFont.drawCenteredString(
                 currentInfoButton!!.name,
                 windowXStart.toFloat() + (231 - 7 + guiWidth) / 2,
                 windowYStart + 8F,
                 Color.black.rgb
             )
-            //Description
+            /**
+             * Description
+             */
             if (currentInfoButton is ModuleButton)
                 descriptionFont.drawString(
                     (currentInfoButton as ModuleButton).module.description,
@@ -230,9 +285,27 @@ class ClickGUI : GuiScreen() {
                     windowYStart + 36F,
                     Color.black.rgb
                 )
-            if (currentInfoButton!!.infoValues.isNotEmpty()) {
-
-            }
+            if (currentInfoButton!!.infoButtons.isNotEmpty()) {
+                GL11.glEnable(GL11.GL_SCISSOR_TEST)
+                RenderUtils.doScissor(
+                    windowXStart + 231 + 2,
+                    windowYStart + 44 + 6,
+                    windowXStart + guiWidth - 7 - 2,
+                    windowYStart + guiHeight - 6
+                )
+                currentInfoButton!!.infoButtons.forEach {
+                    if (it.visible) {
+                        it.drawText()
+                    }
+                }
+                GL11.glDisable(GL11.GL_SCISSOR_TEST)
+            } else
+                Fonts.font20.drawCenteredString(
+                    "Nothing to show...",
+                    windowXStart.toFloat() + (231 - 7 + guiWidth) / 2,
+                    windowYStart.toFloat() + guiHeight / 2,
+                    Color.black.rgb
+                )
         } else {
             Fonts.font20.drawCenteredString(
                 "Left click a module to display more info.",
@@ -266,18 +339,11 @@ class ClickGUI : GuiScreen() {
         when (button.id) {
             0 -> mc.displayGuiScreen(null)
             else -> {
-                diffY = 0F
+                listDiffY = 0F
                 if (categoryIndex != button.id) {
                     categoryIndex = button.id
                     moduleButtons.clear()
                     buttonsMap[categoryIndex - 1]?.let { moduleButtons.addAll(it) }
-                    moduleButtons.forEach { it.updateX(windowXStart + 68 + 4F) }
-                    var y = 0
-                    for (i in moduleButtons) {
-                        i.updateY(windowYStart + 8F + y)
-                        y += 33
-                    }
-
                 }
             }
         }
@@ -292,11 +358,18 @@ class ClickGUI : GuiScreen() {
             return
         }
 
-        for (button in moduleButtons) {
-            if (button.isHovering(mouseX, mouseY)) {
-                button.mouseClicked(mouseX, mouseY, mouseButton)
-                break
+        if (mouseX in (windowXStart + 70)..(windowXStart + 72 + 150 + 2)
+            && mouseY in (windowYStart + 7)..(windowYStart + guiHeight - 7)
+        ) {
+            for (button in moduleButtons) {
+                if (button.isHovering(mouseX, mouseY)) {
+                    button.mouseClicked(mouseX, mouseY, mouseButton)
+                    break
+                }
             }
+        }
+        if (currentInfoButton != null) {
+
         }
         super.mouseClicked(mouseX, mouseY, mouseButton)
     }
@@ -319,6 +392,28 @@ class ClickGUI : GuiScreen() {
             mc.soundHandler.playSound("random.anvil_use", 1F)
         } else
             super.keyTyped(typedChar, keyCode)
+    }
+
+    override fun setWorldAndResolution(mc: Minecraft, width: Int, height: Int) {
+        windowXStart = (width / 2) - (guiWidth / 2)
+        windowYStart = (height / 2) - (guiHeight / 2)
+        buttonsMap.values.forEach {
+            var y = 0
+            it.forEach { button ->
+                button.updateX(windowXStart + 68 + 4F)
+                button.updateY(windowYStart + 8F + y)
+                y += 33
+            }
+        }
+        if (currentInfoButton != null && currentInfoButton!!.infoButtons.isNotEmpty()) {
+            var y = 0
+            currentInfoButton!!.infoButtons.forEach {
+                it.updateX(windowXStart + 231 + 6F)
+                it.updateY(windowYStart + 44 + 6F + y)
+                y += 26
+            }
+        }
+        super.setWorldAndResolution(mc, width, height)
     }
 
     override fun doesGuiPauseGame() = false
