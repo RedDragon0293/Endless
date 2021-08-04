@@ -489,28 +489,28 @@ public abstract class GuiScreen extends Gui implements GuiYesNoCallback {
      * Handles mouse input.
      */
     public void handleMouseInput() throws IOException {
-        int i = Mouse.getEventX() * this.width / this.mc.displayWidth;
-        int j = this.height - Mouse.getEventY() * this.height / this.mc.displayHeight - 1;
-        int k = Mouse.getEventButton();
+        int scaledX = Mouse.getEventX() * this.width / this.mc.displayWidth;
+        int scaledY = this.height - Mouse.getEventY() * this.height / this.mc.displayHeight - 1;
+        int mouseButton = Mouse.getEventButton();
 
         if (Mouse.getEventButtonState()) {
             if (this.mc.gameSettings.touchscreen && this.touchValue++ > 0) {
                 return;
             }
 
-            this.eventButton = k;
+            this.eventButton = mouseButton;
             this.lastMouseEvent = Minecraft.getSystemTime();
-            this.mouseClicked(i, j, this.eventButton);
-        } else if (k != -1) {
+            this.mouseClicked(scaledX, scaledY, this.eventButton);
+        } else if (mouseButton != -1) {
             if (this.mc.gameSettings.touchscreen && --this.touchValue > 0) {
                 return;
             }
 
             this.eventButton = -1;
-            this.mouseReleased(i, j, k);
+            this.mouseReleased(scaledX, scaledY, mouseButton);
         } else if (this.eventButton != -1 && this.lastMouseEvent > 0L) {
-            long l = Minecraft.getSystemTime() - this.lastMouseEvent;
-            this.mouseClickMove(i, j, this.eventButton, l);
+            long duration = Minecraft.getSystemTime() - this.lastMouseEvent;
+            this.mouseClickMove(scaledX, scaledY, this.eventButton, duration);
         }
     }
 

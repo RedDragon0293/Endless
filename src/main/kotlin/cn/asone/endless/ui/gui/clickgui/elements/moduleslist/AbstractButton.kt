@@ -18,7 +18,7 @@ abstract class AbstractButton(open val name: String) {
     open val infoButtons: ArrayList<AbstractValueButton> = arrayListOf()
     val visible: Boolean
         get() = y < ClickGUI.windowYStart + ClickGUI.guiHeight - 7 && y + 23 > ClickGUI.windowYStart + 7
-    protected val font = CFontRenderer(Fonts.getAssetsFont("Roboto-Regular.ttf", 24), true, true)
+    protected val font = CFontRenderer(Fonts.getAssetsFont("Roboto-Regular.ttf", 26), true, true)
 
     fun updateX(x: Float) {
         this.x = x
@@ -63,11 +63,8 @@ abstract class AbstractButton(open val name: String) {
             else {
                 ClickGUI.currentInfoButton = this
                 if (infoButtons.isNotEmpty()) {
-                    var y = 0
                     infoButtons.forEach {
                         it.updateX(ClickGUI.windowXStart + 231 + 6F)
-                        it.updateY(ClickGUI.windowYStart + 44 + 6F + y)
-                        y += 26
                     }
                 }
             }

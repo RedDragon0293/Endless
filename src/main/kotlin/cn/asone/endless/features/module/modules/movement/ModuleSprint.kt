@@ -26,8 +26,8 @@ object ModuleSprint : AbstractModule(
     override val values: ArrayList<Value<*>> = arrayListOf(
         allDirectionsValue,
         blindnessValue,
-        foodValue,
-        checkServerSide
+        checkServerSide,
+        foodValue
     )
 
     override fun getAllValue(): ArrayList<Value<*>> = arrayListOf(

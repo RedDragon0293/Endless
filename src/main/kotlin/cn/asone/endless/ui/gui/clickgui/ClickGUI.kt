@@ -6,6 +6,9 @@ import cn.asone.endless.features.special.FakeForge
 import cn.asone.endless.ui.font.CFontRenderer
 import cn.asone.endless.ui.font.Fonts
 import cn.asone.endless.ui.gui.clickgui.elements.CategoryButton
+import cn.asone.endless.ui.gui.clickgui.elements.moduleinfo.BoolButton
+import cn.asone.endless.ui.gui.clickgui.elements.moduleinfo.FloatButton
+import cn.asone.endless.ui.gui.clickgui.elements.moduleinfo.IntButton
 import cn.asone.endless.ui.gui.clickgui.elements.moduleslist.AbstractButton
 import cn.asone.endless.ui.gui.clickgui.elements.moduleslist.ModuleButton
 import cn.asone.endless.utils.RenderUtils
@@ -62,6 +65,9 @@ class ClickGUI : GuiScreen() {
         for (module in ModuleManager.modules)
             buttonsMap[module.category]?.add(ModuleButton(module))
         buttonsMap[7]?.add(object : AbstractButton("FakeForge") {
+            init {
+                infoButtons.add(BoolButton(FakeForge.enabled, false))
+            }
 
             override var state: Boolean
                 get() = FakeForge.enabled.get()
@@ -157,7 +163,7 @@ class ClickGUI : GuiScreen() {
             Color(0, 111, 255).rgb
         )
         /**
-         * 处理滚轮
+         * 计算滚轮
          */
         val wheel = Mouse.getDWheel() / 10F
         if (mouseX in (windowXStart + 68 + 4 - 2)..(windowXStart + 68 + 4 + 150 + 2)
@@ -235,21 +241,38 @@ class ClickGUI : GuiScreen() {
 
 
         GL11.glPushMatrix()
-        //Module info
+        /**
+         * Module values
+         */
         //x: windowXStart + 231 ~ windowXStart + guiWidth - 7
         if (currentInfoButton != null) {
             if (currentInfoButton!!.infoButtons.isNotEmpty()) {
                 /**
-                 * Info list滚轮
+                 * Values list滚轮
                  */
                 if (mouseX in (windowXStart + 231 + 2)..(windowXStart + guiWidth - 9) && mouseY in (windowYStart + 44 + 2)..(windowYStart + guiHeight - 9)) {
                     infoDiffY += wheel
-                    if (infoDiffY < currentInfoButton!!.infoButtons.size * -26 + guiHeight - 8 - 44)
-                        infoDiffY = currentInfoButton!!.infoButtons.size * -26 + guiHeight - 8F - 44
+                    var height = 0F
+                    currentInfoButton!!.infoButtons.forEach {
+                        height += it.boundingBoxHeight + 6
+                    }
+                    if (infoDiffY < -height + guiHeight - 8 - 44)
+                        infoDiffY = -height + guiHeight - 8F - 44
                     if (infoDiffY > 0)
                         infoDiffY = 0F
-                    currentInfoButton!!.infoButtons.forEach { it.offset = infoDiffY }
+                    currentInfoButton!!.infoButtons.forEach { it.updateOffset(infoDiffY) }
                 }
+                /**
+                 * Update values list y position
+                 */
+                var y = 0F
+                currentInfoButton!!.infoButtons.forEach {
+                    it.updateY(windowYStart + 44 + 6F + y)
+                    y += it.boundingBoxHeight + 6
+                }
+                /**
+                 * Values list box
+                 */
                 RenderUtils.pre2D()
                 GL11.glEnable(GL11.GL_SCISSOR_TEST)
                 RenderUtils.doScissor(
@@ -285,6 +308,9 @@ class ClickGUI : GuiScreen() {
                     windowYStart + 36F,
                     Color.black.rgb
                 )
+            /**
+             * Values list text
+             */
             if (currentInfoButton!!.infoButtons.isNotEmpty()) {
                 GL11.glEnable(GL11.GL_SCISSOR_TEST)
                 RenderUtils.doScissor(
@@ -340,6 +366,7 @@ class ClickGUI : GuiScreen() {
             0 -> mc.displayGuiScreen(null)
             else -> {
                 listDiffY = 0F
+                moduleButtons.forEach { it.offset = 0F }
                 if (categoryIndex != button.id) {
                     categoryIndex = button.id
                     moduleButtons.clear()
@@ -368,10 +395,31 @@ class ClickGUI : GuiScreen() {
                 }
             }
         }
-        if (currentInfoButton != null) {
-
+        if (currentInfoButton != null && currentInfoButton!!.infoButtons.isNotEmpty() &&
+            mouseX in (windowXStart + 231 + 2)..(windowXStart + guiWidth - 7 - 2) &&
+            mouseY in (windowYStart + 44 + 6)..(windowYStart + guiHeight - 6)
+        ) {
+            for (button in currentInfoButton!!.infoButtons) {
+                if (button.isHovering(mouseX, mouseY)) {
+                    button.mouseClicked(mouseX, mouseY, mouseButton)
+                    break
+                }
+            }
         }
         super.mouseClicked(mouseX, mouseY, mouseButton)
+    }
+
+    override fun mouseClickMove(mouseX: Int, mouseY: Int, clickedMouseButton: Int, timeSinceLastClick: Long) {
+        if (currentInfoButton != null && currentInfoButton!!.infoButtons.isNotEmpty() &&
+            mouseX in (windowXStart + 231 + 2)..(windowXStart + guiWidth - 7 - 2) &&
+            mouseY in (windowYStart + 44 + 6)..(windowYStart + guiHeight - 6)
+        ) {
+            for (button in currentInfoButton!!.infoButtons) {
+                if (button.isHovering(mouseX, mouseY) && (button is IntButton || button is FloatButton)) {
+                    button.mouseDragged(mouseX, mouseY, clickedMouseButton, timeSinceLastClick)
+                }
+            }
+        }
     }
 
     override fun keyTyped(typedChar: Char, keyCode: Int) {
@@ -406,11 +454,8 @@ class ClickGUI : GuiScreen() {
             }
         }
         if (currentInfoButton != null && currentInfoButton!!.infoButtons.isNotEmpty()) {
-            var y = 0
             currentInfoButton!!.infoButtons.forEach {
                 it.updateX(windowXStart + 231 + 6F)
-                it.updateY(windowYStart + 44 + 6F + y)
-                y += 26
             }
         }
         super.setWorldAndResolution(mc, width, height)

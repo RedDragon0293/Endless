@@ -1,11 +1,9 @@
 package cn.asone.endless.features.command
 
 import cn.asone.endless.features.module.AbstractModule
-import cn.asone.endless.utils.BlockUtils
 import cn.asone.endless.utils.ClientUtils
 import cn.asone.endless.utils.StringUtils
 import cn.asone.endless.value.*
-import net.minecraft.block.Block
 import java.util.*
 
 class ModuleCommand(val module: AbstractModule) : AbstractCommand(module.name) {
@@ -49,7 +47,7 @@ class ModuleCommand(val module: AbstractModule) : AbstractCommand(module.name) {
                 }
                 try {
                     when (currentValue) {
-                        is BlockValue -> {
+                        /*is BlockValue -> {
                             val id = try {
                                 args[1].toInt()
                             } catch (exception: NumberFormatException) {
@@ -71,7 +69,7 @@ class ModuleCommand(val module: AbstractModule) : AbstractCommand(module.name) {
                             )
                             playEditSound()
                             return
-                        }
+                        }*/
                         is IntValue -> currentValue.set(args[1].toInt())
                         is FloatValue -> currentValue.set(args[1].toFloat())
                         is ListValue -> {

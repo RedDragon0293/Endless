@@ -3,9 +3,13 @@ package cn.asone.endless.ui.gui.clickgui.elements.moduleslist
 import cn.asone.endless.features.module.AbstractModule
 import cn.asone.endless.ui.gui.clickgui.ClickGUI
 import cn.asone.endless.ui.gui.clickgui.elements.moduleinfo.BoolButton
+import cn.asone.endless.ui.gui.clickgui.elements.moduleinfo.FloatButton
+import cn.asone.endless.ui.gui.clickgui.elements.moduleinfo.IntButton
 import cn.asone.endless.utils.mc
 import cn.asone.endless.utils.playSound
 import cn.asone.endless.value.BoolValue
+import cn.asone.endless.value.FloatValue
+import cn.asone.endless.value.IntValue
 
 class ModuleButton(val module: AbstractModule) :
     AbstractButton(module.name) {
@@ -19,7 +23,9 @@ class ModuleButton(val module: AbstractModule) :
         if (module.values.isNotEmpty()) {
             module.values.forEach {
                 when (it) {
-                    is BoolValue -> infoButtons.add(BoolButton(it))
+                    is BoolValue -> infoButtons.add(BoolButton(it, false))
+                    is IntValue -> infoButtons.add(IntButton(it, false))
+                    is FloatValue -> infoButtons.add(FloatButton(it, false))
                 }
             }
         }

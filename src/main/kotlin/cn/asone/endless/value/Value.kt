@@ -143,7 +143,7 @@ open class TextValue(name: String, value: String) : Value<String>(name, value) {
     }
 }*/
 
-open class BlockValue(name: String, value: Int) : IntValue(name, value, 1..197)
+//open class BlockValue(name: String, value: Int) : IntValue(name, value, 1..197)
 
 open class ListValue(name: String, val values: Array<String>, value: String) : Value<String>(name, value) {
     var subValue: MutableMap<String, ArrayList<Value<*>>> = mutableMapOf()
