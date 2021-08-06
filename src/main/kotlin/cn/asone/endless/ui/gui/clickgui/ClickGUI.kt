@@ -399,8 +399,8 @@ class ClickGUI : GuiScreen() {
                  * ListValue 滚轮
                  */
                 valueDiffY += wheel
-                if (valueDiffY < listButton!!.value.values.size * -listElementFont.height - 8 + 210)
-                    valueDiffY = listButton!!.value.values.size * -listElementFont.height + 210 - 8F
+                if (valueDiffY < listButton!!.value.values.size * -(listElementFont.height + 4) - 8 + 210)
+                    valueDiffY = listButton!!.value.values.size * -(listElementFont.height + 4) + 210 - 8F
                 if (valueDiffY > 0)
                     valueDiffY = 0F
                 /**
@@ -415,6 +415,16 @@ class ClickGUI : GuiScreen() {
                         break
                 }
                 if (i >= 0 && i <= listButton!!.value.values.lastIndex) {
+                    GL11.glEnable(GL11.GL_SCISSOR_TEST)
+                    /**
+                     * 向内 -2
+                     */
+                    RenderUtils.doScissor(
+                        windowXStart + guiWidth / 2 - 98,
+                        windowYStart + guiHeight / 2 - 78,
+                        windowXStart + guiWidth / 2 + 98,
+                        windowYStart + guiHeight / 2 + 128
+                    )
                     /**
                      * Blue border
                      */
@@ -426,6 +436,7 @@ class ClickGUI : GuiScreen() {
                         1F,
                         Color(0, 111, 255).rgb
                     )
+                    GL11.glDisable(GL11.GL_SCISSOR_TEST)
                 }
 
             }
@@ -528,19 +539,19 @@ class ClickGUI : GuiScreen() {
         super.mouseClicked(mouseX, mouseY, mouseButton)
     }
 
-    override fun mouseClickMove(mouseX: Int, mouseY: Int, clickedMouseButton: Int, timeSinceLastClick: Long) {
+    override fun mouseDragged(mouseX: Int, mouseY: Int, mouseButton: Int, duration: Long) {
         if (keyBindModule != null)
             return
         if (listButton != null) {
             return
         }
-        if (currentInfoButton != null && currentInfoButton!!.infoButtons.isNotEmpty() &&
-            mouseX in (windowXStart + 231 + 2)..(windowXStart + guiWidth - 7 - 2) &&
-            mouseY in (windowYStart + 44 + 6)..(windowYStart + guiHeight - 6)
+        if (currentInfoButton != null && currentInfoButton!!.infoButtons.isNotEmpty() && mouseButton == 0
+            && mouseX in (windowXStart + 231 + 2)..(windowXStart + guiWidth - 7 - 2)
+            && mouseY in (windowYStart + 44 + 6)..(windowYStart + guiHeight - 6)
         ) {
             for (button in currentInfoButton!!.infoButtons) {
                 if (button.isHovering(mouseX, mouseY)) {
-                    button.mouseDragged(mouseX, mouseY, clickedMouseButton, timeSinceLastClick)
+                    button.mouseDragged(mouseX, mouseY, mouseButton, duration)
                 }
             }
         }

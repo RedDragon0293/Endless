@@ -469,24 +469,17 @@ public abstract class GuiContainer extends GuiScreen {
      * Called when a mouse button is pressed and the mouse is moved around. Parameters are : mouseX, mouseY,
      * lastButtonClicked & timeSinceMouseClick.
      */
-    protected void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick)
-    {
+    protected void mouseDragged(int mouseX, int mouseY, int mouseButton, long duration) {
         Slot slot = this.getSlotAtPosition(mouseX, mouseY);
         ItemStack itemstack = this.mc.thePlayer.inventory.getItemStack();
 
-        if (this.clickedSlot != null && this.mc.gameSettings.touchscreen)
-        {
-            if (clickedMouseButton == 0 || clickedMouseButton == 1)
-            {
-                if (this.draggedStack == null)
-                {
-                    if (slot != this.clickedSlot && this.clickedSlot.getStack() != null)
-                    {
+        if (this.clickedSlot != null && this.mc.gameSettings.touchscreen) {
+            if (mouseButton == 0 || mouseButton == 1) {
+                if (this.draggedStack == null) {
+                    if (slot != this.clickedSlot && this.clickedSlot.getStack() != null) {
                         this.draggedStack = this.clickedSlot.getStack().copy();
                     }
-                }
-                else if (this.draggedStack.stackSize > 1 && slot != null && Container.canAddItemToSlot(slot, this.draggedStack, false))
-                {
+                } else if (this.draggedStack.stackSize > 1 && slot != null && Container.canAddItemToSlot(slot, this.draggedStack, false)) {
                     long i = Minecraft.getSystemTime();
 
                     if (this.currentDragTargetSlot == slot)

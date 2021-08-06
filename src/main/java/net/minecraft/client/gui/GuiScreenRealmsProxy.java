@@ -1,19 +1,18 @@
 package net.minecraft.client.gui;
 
 import com.google.common.collect.Lists;
-import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
 import net.minecraft.item.ItemStack;
 import net.minecraft.realms.RealmsButton;
 import net.minecraft.realms.RealmsScreen;
 
-public class GuiScreenRealmsProxy extends GuiScreen
-{
+import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
+
+public class GuiScreenRealmsProxy extends GuiScreen {
     private RealmsScreen field_154330_a;
 
-    public GuiScreenRealmsProxy(RealmsScreen p_i1087_1_)
-    {
+    public GuiScreenRealmsProxy(RealmsScreen p_i1087_1_) {
         this.field_154330_a = p_i1087_1_;
         super.buttonList = Collections.<GuiButton>synchronizedList(Lists.<GuiButton>newArrayList());
     }
@@ -222,9 +221,8 @@ public class GuiScreenRealmsProxy extends GuiScreen
      * Called when a mouse button is pressed and the mouse is moved around. Parameters are : mouseX, mouseY,
      * lastButtonClicked & timeSinceMouseClick.
      */
-    public void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick)
-    {
-        this.field_154330_a.mouseDragged(mouseX, mouseY, clickedMouseButton, timeSinceLastClick);
+    public void mouseDragged(int mouseX, int mouseY, int mouseButton, long duration) {
+        this.field_154330_a.mouseDragged(mouseX, mouseY, mouseButton, duration);
     }
 
     /**

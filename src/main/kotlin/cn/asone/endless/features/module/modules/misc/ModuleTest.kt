@@ -25,8 +25,25 @@ object ModuleTest : AbstractModule(
     private val checkServerSideOnlyGround = BoolValue("CheckServerSideOnlyGround", false)
     private val testIntValue = IntValue("Test", 100, 0..100)
     private val testFloatValue = FloatValue("TestFloat", 10F, 0F..50F)
-    private val rotationMode =
-        ListValue("RotationMode", arrayOf("Normal", "Static", "Test1", "Test2", "Test3", "TEST"), "Normal")
+    private val rotationMode = ListValue(
+        "RotationMode",
+        arrayOf(
+            "Normal",
+            "Static",
+            "Test1",
+            "Test2",
+            "Test3",
+            "TEST",
+            "TESTSSSSSSSS",
+            "TESTAAAAAAA",
+            "TEST2212424",
+            "TEST3523XFE",
+            "TESTSDVESDF",
+            "TEST235235SDF"
+        ),
+        "Normal"
+    )
+    private val textValue = TextValue("SaySomething", "Hello, World!")
     private val normalRotationSpeed = IntValue("RotationSpeed", 180, 1..180)
     private val staticRotationSpeed = IntValue("RotationSpeed", 180, 1..180)
     private val staticYaw = FloatValue("StaticYaw", 45F, 0F..180F)
@@ -36,6 +53,7 @@ object ModuleTest : AbstractModule(
         checkServerSide,
         testIntValue,
         rotationMode,
+        textValue,
         testFloatValue
     )
 
@@ -45,11 +63,6 @@ object ModuleTest : AbstractModule(
         rotationMode.subValue["Static"]!!.add(staticRotationSpeed)
         rotationMode.subValue["Static"]!!.add(staticYaw)
         rotationMode.subValue["Static"]!!.add(staticPitch)
-        //font.addGlyphs(0x0000, 0xFFFF)
-        //font.effects.add(ColorEffect(Color.red))
-        //ClientUtils.logger.info("Generating fonts...")
-        //font.loadGlyphs()
-        //ClientUtils.logger.info("Done!")
     }
 
     override val handledEvents: ArrayList<EventHook> = arrayListOf(

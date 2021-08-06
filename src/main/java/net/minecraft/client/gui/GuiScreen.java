@@ -433,7 +433,7 @@ public abstract class GuiScreen extends Gui implements GuiYesNoCallback {
      * Called when a mouse button is pressed and the mouse is moved around. Parameters are : mouseX, mouseY,
      * lastButtonClicked & timeSinceMouseClick.
      */
-    protected void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick) {
+    protected void mouseDragged(int mouseX, int mouseY, int mouseButton, long duration) {
     }
 
     /**
@@ -510,7 +510,7 @@ public abstract class GuiScreen extends Gui implements GuiYesNoCallback {
             this.mouseReleased(scaledX, scaledY, mouseButton);
         } else if (this.eventButton != -1 && this.lastMouseEvent > 0L) {
             long duration = Minecraft.getSystemTime() - this.lastMouseEvent;
-            this.mouseClickMove(scaledX, scaledY, this.eventButton, duration);
+            this.mouseDragged(scaledX, scaledY, this.eventButton, duration);
         }
     }
 
