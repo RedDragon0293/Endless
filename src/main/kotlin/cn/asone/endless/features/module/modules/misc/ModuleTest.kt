@@ -24,7 +24,9 @@ object ModuleTest : AbstractModule(
     private val checkServerSide = BoolValue("CheckServerSide", true)
     private val checkServerSideOnlyGround = BoolValue("CheckServerSideOnlyGround", false)
     private val testIntValue = IntValue("Test", 100, 0..100)
-    private val rotationMode = ListValue("RotationMode", arrayOf("Normal", "Static"), "Normal")
+    private val testFloatValue = FloatValue("TestFloat", 10F, 0F..50F)
+    private val rotationMode =
+        ListValue("RotationMode", arrayOf("Normal", "Static", "Test1", "Test2", "Test3", "TEST"), "Normal")
     private val normalRotationSpeed = IntValue("RotationSpeed", 180, 1..180)
     private val staticRotationSpeed = IntValue("RotationSpeed", 180, 1..180)
     private val staticYaw = FloatValue("StaticYaw", 45F, 0F..180F)
@@ -32,17 +34,9 @@ object ModuleTest : AbstractModule(
 
     override val values: ArrayList<Value<*>> = arrayListOf(
         checkServerSide,
+        testIntValue,
         rotationMode,
-        testIntValue
-    )
-
-    override fun getAllValue(): ArrayList<Value<*>> = arrayListOf(
-        checkServerSide,
-        checkServerSideOnlyGround,
-        rotationMode,
-        normalRotationSpeed,
-        staticYaw,
-        staticPitch
+        testFloatValue
     )
 
     init {

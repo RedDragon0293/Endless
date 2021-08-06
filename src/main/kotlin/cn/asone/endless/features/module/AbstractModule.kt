@@ -38,9 +38,6 @@ abstract class AbstractModule(
 
     override val values: ArrayList<Value<*>> = arrayListOf()
 
-    override fun getAllValue(): ArrayList<Value<*>> = arrayListOf()
-
-
     fun toggle() {
         state = !state
     }

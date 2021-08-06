@@ -15,40 +15,38 @@ class BoolButton(override val value: BoolValue, isSub: Boolean) : AbstractValueB
     init {
         if (value.subValue.isNotEmpty()) {
             value.subValue.forEach {
-                when (it) {
-                    is BoolValue -> subButtons.add(BoolButton(it, true))
-                }
+                subButtons.add(valueToButton(it, true))
             }
         }
     }
 
     override fun updateX(x: Float) {
         super.updateX(x)
-        if (subButtons.isNotEmpty() && this.value.get()) {
+        if (subButtons.isNotEmpty()) {
             subButtons.forEach { it.updateX(x + 20) }
         }
     }
 
     override fun updateY(y: Float) {
         super.updateY(y)
-        if (subButtons.isNotEmpty() && this.value.get()) {
-            var var0 = 24
+        if (subButtons.isNotEmpty()) {
+            var var0 = 0
             subButtons.forEach {
-                it.updateY(y + var0)
                 var0 += 24
+                it.updateY(y + var0)
             }
         }
     }
 
     override fun updateOffset(offset: Float) {
         super.updateOffset(offset)
-        if (subButtons.isNotEmpty() && this.value.get()) {
+        if (subButtons.isNotEmpty()) {
             subButtons.forEach { it.updateOffset(offset) }
         }
     }
 
-    override fun drawBox() {
-        super.drawBox()
+    override fun drawBox(mouseX: Int, mouseY: Int) {
+        super.drawBox(mouseX, mouseY)
         /**
          * Boolean background
          */
@@ -74,14 +72,14 @@ class BoolButton(override val value: BoolValue, isSub: Boolean) : AbstractValueB
         }
         if (subButtons.isNotEmpty() && this.value.get()) {
             RenderUtils.drawLine(x + 15, y + 21, x + 15, y + 20 + subButtons.size * 24, 6F, Color(0, 111, 255).rgb)
-            subButtons.forEach { it.drawBox() }
+            subButtons.forEach { it.drawBox(mouseX, mouseY) }
         }
     }
 
-    override fun drawText() {
-        super.drawText()
+    override fun drawText(mouseX: Int, mouseY: Int) {
+        super.drawText(mouseX, mouseY)
         if (subButtons.isNotEmpty() && this.value.get()) {
-            subButtons.forEach { it.drawText() }
+            subButtons.forEach { it.drawText(mouseX, mouseY) }
         }
     }
 
@@ -101,5 +99,14 @@ class BoolButton(override val value: BoolValue, isSub: Boolean) : AbstractValueB
                     }
 
         }
+    }
+
+    override fun mouseDragged(mouseX: Int, mouseY: Int, mouseButton: Int, duration: Long) {
+        if (this.value.get())
+            for (button in subButtons)
+                if (button.isHovering(mouseX, mouseY)) {
+                    button.mouseDragged(mouseX, mouseY, mouseButton, duration)
+                    break
+                }
     }
 }

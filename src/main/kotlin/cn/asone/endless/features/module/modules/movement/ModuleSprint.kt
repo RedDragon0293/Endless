@@ -30,14 +30,6 @@ object ModuleSprint : AbstractModule(
         foodValue
     )
 
-    override fun getAllValue(): ArrayList<Value<*>> = arrayListOf(
-        allDirectionsValue,
-        blindnessValue,
-        foodValue,
-        checkServerSide,
-        checkServerSideGround
-    )
-
     init {
         checkServerSide.subValue.add(checkServerSideGround)
     }

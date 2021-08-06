@@ -27,8 +27,6 @@ object FakeForge : ListenableClass(), ValueRegister {
 
     override val values: ArrayList<Value<*>> = arrayListOf(enabled)
 
-    override fun getAllValue(): ArrayList<Value<*>> = arrayListOf(enabled, fml, fmlProxy, payload)
-
     override val handledEvents: ArrayList<EventHook> = arrayListOf(
         EventHook(SendPacketEvent::class.java, 100)
     )

@@ -6,11 +6,11 @@ import cn.asone.endless.features.special.FakeForge
 import cn.asone.endless.ui.font.CFontRenderer
 import cn.asone.endless.ui.font.Fonts
 import cn.asone.endless.ui.gui.clickgui.elements.CategoryButton
-import cn.asone.endless.ui.gui.clickgui.elements.moduleinfo.BoolButton
-import cn.asone.endless.ui.gui.clickgui.elements.moduleinfo.FloatButton
-import cn.asone.endless.ui.gui.clickgui.elements.moduleinfo.IntButton
+import cn.asone.endless.ui.gui.clickgui.elements.moduleinfo.AbstractValueButton
+import cn.asone.endless.ui.gui.clickgui.elements.moduleinfo.ListButton
 import cn.asone.endless.ui.gui.clickgui.elements.moduleslist.AbstractButton
 import cn.asone.endless.ui.gui.clickgui.elements.moduleslist.ModuleButton
+import cn.asone.endless.utils.ClientUtils
 import cn.asone.endless.utils.RenderUtils
 import cn.asone.endless.utils.playSound
 import net.minecraft.client.Minecraft
@@ -36,6 +36,7 @@ class ClickGUI : GuiScreen() {
             private set
         var keyBindModule: AbstractModule? = null
         var currentInfoButton: AbstractButton? = null
+        var listButton: ListButton? = null
 
         private lateinit var backButton: GuiButton
         fun settingKeyBind() {
@@ -55,10 +56,13 @@ class ClickGUI : GuiScreen() {
     )
     private var listDiffY = 0F
     private var infoDiffY = 0F
+    private var valueDiffY = 0F
     private val moduleButtons: ArrayList<AbstractButton> = ArrayList()
     private val endlessLogo = ResourceLocation("endless/endless_Logo.png")
     private val moduleInfoFont = CFontRenderer(Fonts.getAssetsFont("Roboto-Medium.ttf", 44), true, false)
     private val descriptionFont = CFontRenderer(Fonts.getAssetsFont("Roboto-Thin.ttf", 16), true, true)
+    private val listTitle = CFontRenderer(Fonts.getAssetsFont("Roboto-Regular.ttf", 38), true, true)
+    private val listElementFont = CFontRenderer(Fonts.getAssetsFont("Roboto-Light.ttf", 30), true, true)
     private lateinit var closeButton: GuiButton
 
     init {
@@ -66,7 +70,7 @@ class ClickGUI : GuiScreen() {
             buttonsMap[module.category]?.add(ModuleButton(module))
         buttonsMap[7]?.add(object : AbstractButton("FakeForge") {
             init {
-                infoButtons.add(BoolButton(FakeForge.enabled, false))
+                infoButtons.add(AbstractValueButton.valueToButton(FakeForge.enabled, false))
             }
 
             override var state: Boolean
@@ -168,6 +172,7 @@ class ClickGUI : GuiScreen() {
         val wheel = Mouse.getDWheel() / 10F
         if (mouseX in (windowXStart + 68 + 4 - 2)..(windowXStart + 68 + 4 + 150 + 2)
             && mouseY in (windowYStart + 7)..(windowYStart + guiHeight - 7)
+            && keyBindModule == null && listButton != null
         ) {
             /**
              * modules list滚轮
@@ -191,7 +196,7 @@ class ClickGUI : GuiScreen() {
         )
         moduleButtons.forEach {
             if (it.visible)
-                it.drawBox()
+                it.drawBox(mouseX, mouseY)
         }
         GL11.glDisable(GL11.GL_SCISSOR_TEST)
         /**
@@ -234,11 +239,12 @@ class ClickGUI : GuiScreen() {
         )
         moduleButtons.forEach {
             if (it.visible)
-                it.drawText()
+                it.drawText(mouseX, mouseY)
         }
         GL11.glDisable(GL11.GL_SCISSOR_TEST)
         GL11.glPopMatrix()
 
+        /*========================================================================*/
 
         GL11.glPushMatrix()
         /**
@@ -250,7 +256,10 @@ class ClickGUI : GuiScreen() {
                 /**
                  * Values list滚轮
                  */
-                if (mouseX in (windowXStart + 231 + 2)..(windowXStart + guiWidth - 9) && mouseY in (windowYStart + 44 + 2)..(windowYStart + guiHeight - 9)) {
+                if (mouseX in (windowXStart + 231 + 2)..(windowXStart + guiWidth - 9)
+                    && mouseY in (windowYStart + 44 + 2)..(windowYStart + guiHeight - 9)
+                    && keyBindModule == null && listButton == null
+                ) {
                     infoDiffY += wheel
                     var height = 0F
                     currentInfoButton!!.infoButtons.forEach {
@@ -283,7 +292,7 @@ class ClickGUI : GuiScreen() {
                 )
                 currentInfoButton!!.infoButtons.forEach {
                     if (it.visible) {
-                        it.drawBox()
+                        it.drawBox(mouseX, mouseY)
                     }
                 }
                 GL11.glDisable(GL11.GL_SCISSOR_TEST)
@@ -321,7 +330,7 @@ class ClickGUI : GuiScreen() {
                 )
                 currentInfoButton!!.infoButtons.forEach {
                     if (it.visible) {
-                        it.drawText()
+                        it.drawText(mouseX, mouseY)
                     }
                 }
                 GL11.glDisable(GL11.GL_SCISSOR_TEST)
@@ -359,6 +368,92 @@ class ClickGUI : GuiScreen() {
                 false
             )
         }
+        if (listButton != null) {
+            drawDefaultBackground()
+            GL11.glPushMatrix()
+            RenderUtils.pre2D()
+            /**
+             * Title background
+             */
+            RenderUtils.drawRect(
+                windowXStart + guiWidth / 2F - 100,
+                windowYStart + guiHeight / 2F - 110,
+                200F,
+                30F,
+                Color.white.rgb
+            )
+            /**
+             * List background
+             */
+            RenderUtils.drawRect(
+                windowXStart + guiWidth / 2F - 100,
+                windowYStart + guiHeight / 2F - 80,
+                200F,
+                210F,
+                Color(240, 240, 240).rgb
+            )
+            if (mouseX in (windowXStart + guiWidth / 2 - 98)..(windowXStart + guiWidth / 2 + 98)
+                && mouseY in (windowYStart + guiHeight / 2 - 78)..(windowYStart + guiHeight / 2 + 128)
+            ) {
+                /**
+                 * ListValue 滚轮
+                 */
+                valueDiffY += wheel
+                if (valueDiffY < listButton!!.value.values.size * -listElementFont.height - 8 + 210)
+                    valueDiffY = listButton!!.value.values.size * -listElementFont.height + 210 - 8F
+                if (valueDiffY > 0)
+                    valueDiffY = 0F
+                /**
+                 * calculate the index of the selection hovering currently
+                 */
+                var i = 0
+                while (!(mouseY >= windowYStart + guiHeight / 2 - 80 + 2F + valueDiffY + i * (listElementFont.height + 4)
+                            && mouseY <= windowYStart + guiHeight / 2 - 80 + 2F + valueDiffY + (i + 1) * (listElementFont.height + 4))
+                ) {
+                    i++
+                    if (i >= 100)
+                        break
+                }
+                if (i >= 0 && i <= listButton!!.value.values.lastIndex) {
+                    /**
+                     * Blue border
+                     */
+                    RenderUtils.drawBorder(
+                        windowXStart + guiWidth / 2 - listElementFont.getStringWidth(listButton!!.value.values[i]) / 2 - 2F,
+                        windowYStart + guiHeight / 2 - 80 + 2F + valueDiffY + i * (listElementFont.height + 4),
+                        windowXStart + guiWidth / 2 + listElementFont.getStringWidth(listButton!!.value.values[i]) / 2 + 2F,
+                        windowYStart + guiHeight / 2 - 80 + 2F + valueDiffY + (i + 1) * (listElementFont.height + 4) - 2F,
+                        1F,
+                        Color(0, 111, 255).rgb
+                    )
+                }
+
+            }
+            RenderUtils.post2D()
+            listTitle.drawCenteredString(
+                listButton!!.value.name,
+                windowXStart + guiWidth / 2F,
+                windowYStart + guiHeight / 2F - 110 + 6F,
+                Color.black.rgb
+            )
+            GL11.glEnable(GL11.GL_SCISSOR_TEST)
+            /**
+             * 向内 -2
+             */
+            RenderUtils.doScissor(
+                windowXStart + guiWidth / 2 - 98,
+                windowYStart + guiHeight / 2 - 78,
+                windowXStart + guiWidth / 2 + 98,
+                windowYStart + guiHeight / 2 + 128
+            )
+            var var0 = windowYStart + guiHeight / 2 - 80 + 4F + valueDiffY
+            listButton!!.value.values.forEach {
+                listElementFont.drawCenteredString(it, windowXStart + guiWidth / 2F, var0, Color.black.rgb)
+                var0 += listElementFont.height + 4
+            }
+            GL11.glDisable(GL11.GL_SCISSOR_TEST)
+            GL11.glPopMatrix()
+        }
     }
 
     override fun actionPerformed(button: GuiButton) {
@@ -382,6 +477,30 @@ class ClickGUI : GuiScreen() {
                 backButton.playPressSound(mc.soundHandler)
                 keyBindModule = null
             }
+            return
+        }
+        if (listButton != null) {
+            if (mouseX in (windowXStart + guiWidth / 2 - 100)..(windowXStart + guiWidth / 2 + 100)
+                && mouseY in (windowYStart + guiHeight / 2 - 80)..(windowYStart + guiHeight / 2 + 130)
+            ) {
+                var i = 0
+                while (!(mouseY >= windowYStart + guiHeight / 2 - 80 + 2F + valueDiffY + i * (listElementFont.height + 4)
+                            && mouseY <= windowYStart + guiHeight / 2 - 80 + 2F + valueDiffY + (i + 1) * (listElementFont.height + 4))
+                ) {
+                    i++
+                    if (i >= 100)
+                        break
+                }
+                if (i >= 0 && i <= listButton!!.value.values.lastIndex) {
+                    listButton!!.value.set(listButton!!.value.values[i])
+                    listButton!!.updateX(windowXStart + 231 + 6F)
+                    cn.asone.endless.utils.mc.soundHandler.playSound("gui.button.press", 1F)
+                    listButton = null
+                }
+                //val diff = (mouseY - windowYStart + guiHeight / 2 - 80 + 2F + valueDiffY) / (listElementFont.height + 4)
+                ClientUtils.displayChatMessage(i.toString())
+            } else
+                listButton = null
             return
         }
 
@@ -410,12 +529,17 @@ class ClickGUI : GuiScreen() {
     }
 
     override fun mouseClickMove(mouseX: Int, mouseY: Int, clickedMouseButton: Int, timeSinceLastClick: Long) {
+        if (keyBindModule != null)
+            return
+        if (listButton != null) {
+            return
+        }
         if (currentInfoButton != null && currentInfoButton!!.infoButtons.isNotEmpty() &&
             mouseX in (windowXStart + 231 + 2)..(windowXStart + guiWidth - 7 - 2) &&
             mouseY in (windowYStart + 44 + 6)..(windowYStart + guiHeight - 6)
         ) {
             for (button in currentInfoButton!!.infoButtons) {
-                if (button.isHovering(mouseX, mouseY) && (button is IntButton || button is FloatButton)) {
+                if (button.isHovering(mouseX, mouseY)) {
                     button.mouseDragged(mouseX, mouseY, clickedMouseButton, timeSinceLastClick)
                 }
             }
@@ -438,6 +562,11 @@ class ClickGUI : GuiScreen() {
             keyBindModule!!.keyBind = keyCode
             keyBindModule = null
             mc.soundHandler.playSound("random.anvil_use", 1F)
+        } else if (listButton != null) {
+            if (keyCode == Keyboard.KEY_ESCAPE) {
+                listButton = null
+            }
+            return
         } else
             super.keyTyped(typedChar, keyCode)
     }

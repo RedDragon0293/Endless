@@ -9,6 +9,9 @@ import cn.asone.endless.utils.mc
 import cn.asone.endless.utils.playSound
 import java.awt.Color
 
+/**
+ * 150 × 23 button
+ */
 abstract class AbstractButton(open val name: String) {
     protected var x = 0F
     protected var y = 0F
@@ -28,7 +31,7 @@ abstract class AbstractButton(open val name: String) {
         this.y = y
     }
 
-    fun drawBox() {
+    fun drawBox(mouseX: Int, mouseY: Int) {
         //Background
         RenderUtils.drawAntiAliasingRoundedRect(x, y, 150F, 23F, 5F, Color(253, 253, 253).rgb)
         //Button
@@ -48,7 +51,7 @@ abstract class AbstractButton(open val name: String) {
         )
     }
 
-    fun drawText() {
+    fun drawText(mouseX: Int, mouseY: Int) {
         font.drawString(name, x + 4, y + 6, Color.black.rgb)
     }
 

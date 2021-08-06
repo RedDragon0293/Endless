@@ -27,12 +27,14 @@ object RenderUtils {
     /**
      * Returns the scaled width of the game
      */
+    @JvmStatic
     val scaledWidth
         inline get() = ScaledResolution(mc).scaledWidth
 
     /**
      * Returns the scaled height of the game
      */
+    @JvmStatic
     val scaledHeight
         inline get() = ScaledResolution(mc).scaledHeight
 

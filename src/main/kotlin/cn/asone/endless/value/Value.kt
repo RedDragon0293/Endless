@@ -165,7 +165,7 @@ open class ListValue(name: String, val values: Array<String>, value: String) : V
                 return
             }
         }
-        ClientUtils.logger.error("在选项 $name 的配置文件中找到不存在的值 $newValue.跳过此选项的解析.")
+        ClientUtils.logger.error("选项 $name 不支持设置值为 $newValue. 此值将被抛弃.")
     }
 
     override fun toJson(): JsonElement? {
@@ -174,11 +174,13 @@ open class ListValue(name: String, val values: Array<String>, value: String) : V
             jsonObject.addProperty("value", value)
             val subObject = JsonObject()
             subValue.forEach {
-                val object2 = JsonObject()
-                it.value.forEach { sub ->
-                    object2.add(sub.name, sub.toJson())
+                if (it.value.isNotEmpty()) {
+                    val object2 = JsonObject()
+                    it.value.forEach { sub ->
+                        object2.add(sub.name, sub.toJson())
+                    }
+                    subObject.add(it.key, object2)
                 }
-                subObject.add(it.key, object2)
             }
             jsonObject.add("subValues", subObject)
             jsonObject
