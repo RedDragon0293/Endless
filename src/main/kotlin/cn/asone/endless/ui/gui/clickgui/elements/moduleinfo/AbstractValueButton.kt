@@ -10,14 +10,15 @@ import java.awt.Color
 /**
  * 232 or 212 × 20 button
  */
-abstract class AbstractValueButton(open val value: Value<*>, val isSub: Boolean) {
+abstract class AbstractValueButton(open val value: AbstractValue<*>, val isSub: Boolean) {
     companion object {
-        fun valueToButton(value: Value<*>, isSub: Boolean): AbstractValueButton {
+        fun valueToButton(value: AbstractValue<*>, isSub: Boolean): AbstractValueButton {
             return when (value) {
                 is BoolValue -> BoolButton(value, isSub)
                 is IntValue -> IntButton(value, isSub)
                 is FloatValue -> FloatButton(value, isSub)
                 is ListValue -> ListButton(value, isSub)
+                is TextValue -> TextButton(value, isSub)
                 else -> throw Exception("内部错误!")
             }
         }

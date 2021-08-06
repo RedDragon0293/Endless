@@ -5,8 +5,8 @@ import cn.asone.endless.event.UpdateEvent
 import cn.asone.endless.features.module.AbstractModule
 import cn.asone.endless.features.module.ModuleCategory
 import cn.asone.endless.utils.MovementUtils
+import cn.asone.endless.value.AbstractValue
 import cn.asone.endless.value.BoolValue
-import cn.asone.endless.value.Value
 import net.minecraft.potion.Potion
 
 object ModuleSprint : AbstractModule(
@@ -23,7 +23,7 @@ object ModuleSprint : AbstractModule(
     private val checkServerSide = BoolValue("CheckServerSide", false)
     private val checkServerSideGround = BoolValue("CheckServerSideOnlyGround", false)
 
-    override val values: ArrayList<Value<*>> = arrayListOf(
+    override val values: ArrayList<AbstractValue<*>> = arrayListOf(
         allDirectionsValue,
         blindnessValue,
         checkServerSide,

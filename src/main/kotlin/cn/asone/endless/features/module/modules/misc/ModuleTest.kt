@@ -32,7 +32,7 @@ object ModuleTest : AbstractModule(
     private val staticYaw = FloatValue("StaticYaw", 45F, 0F..180F)
     private val staticPitch = FloatValue("StaticPitch", 90F, -90F..90F)
 
-    override val values: ArrayList<Value<*>> = arrayListOf(
+    override val values: ArrayList<AbstractValue<*>> = arrayListOf(
         checkServerSide,
         testIntValue,
         rotationMode,

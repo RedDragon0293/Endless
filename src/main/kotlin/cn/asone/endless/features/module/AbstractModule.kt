@@ -2,7 +2,7 @@ package cn.asone.endless.features.module
 
 import cn.asone.endless.event.*
 import cn.asone.endless.utils.playSound
-import cn.asone.endless.value.Value
+import cn.asone.endless.value.AbstractValue
 import cn.asone.endless.value.ValueRegister
 import net.minecraft.client.Minecraft
 import org.lwjgl.input.Keyboard
@@ -36,7 +36,7 @@ abstract class AbstractModule(
 
     override val handledEvents: ArrayList<EventHook> = arrayListOf()
 
-    override val values: ArrayList<Value<*>> = arrayListOf()
+    override val values: ArrayList<AbstractValue<*>> = arrayListOf()
 
     fun toggle() {
         state = !state

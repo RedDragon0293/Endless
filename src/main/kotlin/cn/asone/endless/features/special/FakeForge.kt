@@ -5,8 +5,8 @@ import cn.asone.endless.event.EventManager
 import cn.asone.endless.event.ListenableClass
 import cn.asone.endless.event.SendPacketEvent
 import cn.asone.endless.utils.ClientUtils
+import cn.asone.endless.value.AbstractValue
 import cn.asone.endless.value.BoolValue
-import cn.asone.endless.value.Value
 import cn.asone.endless.value.ValueRegister
 import io.netty.buffer.Unpooled
 import net.minecraft.network.PacketBuffer
@@ -25,7 +25,7 @@ object FakeForge : ListenableClass(), ValueRegister {
     @JvmField
     val payload = BoolValue("payload", false)
 
-    override val values: ArrayList<Value<*>> = arrayListOf(enabled)
+    override val values: ArrayList<AbstractValue<*>> = arrayListOf(enabled)
 
     override val handledEvents: ArrayList<EventHook> = arrayListOf(
         EventHook(SendPacketEvent::class.java, 100)
