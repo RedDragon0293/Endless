@@ -1,5 +1,5 @@
 buildscript {
-    ext.kotlin_version = '1.5.20'
+    ext.kotlin_version = '1.5.21'
 
     repositories {
         jcenter()
@@ -57,6 +57,7 @@ dependencies {
     compile group: 'javax.vecmath', name: 'vecmath', version: '1.5.2'
     compile group: 'net.minecraft', name: 'minecraft', version: '1.8.9'//游戏assets
     compile group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib', version: kotlin_version
+    implementation 'com.thealtening.auth:auth:3.0.2'
     compile fileTree(include: ['*.jar'], dir: 'libs')
 }
 shadowJar {
@@ -64,6 +65,7 @@ shadowJar {
         include(dependency('net.minecraft:minecraft'))
         include(dependency('org.jetbrains.kotlin:kotlin-stdlib'))
         include(dependency('javax.vecmath:vecmath'))
+        include(dependency('com.thealtening.auth:auth'))
     }
 }
 configurations {

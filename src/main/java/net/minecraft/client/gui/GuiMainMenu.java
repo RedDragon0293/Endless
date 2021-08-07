@@ -1,6 +1,6 @@
 package net.minecraft.client.gui;
 
-import cn.asone.endless.ui.gui.GuiFakeForge;
+import cn.asone.endless.ui.gui.accounts.GuiAccounts;
 import com.google.common.collect.Lists;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
@@ -10,7 +10,6 @@ import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.client.settings.GameSettings;
 import net.minecraft.realms.RealmsBridge;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.MathHelper;
@@ -129,22 +128,19 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
             }
 
             if (!list.isEmpty()) {
-                while (true) {
+                do {
                     this.splashText = list.get(RANDOM.nextInt(list.size()));
 
-                    if (this.splashText.hashCode() != 125780783) {
-                        break;
-                    }
-                }
+                } while (this.splashText.hashCode() == 125780783);
             }
         } catch (IOException var12) {
-            ;
+
         } finally {
             if (bufferedreader != null) {
                 try {
                     bufferedreader.close();
                 } catch (IOException var11) {
-                    ;
+
                 }
             }
         }
@@ -153,14 +149,10 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
         this.openGLWarning1 = "";
 
         if (!GLContext.getCapabilities().OpenGL20 && !OpenGlHelper.areShadersSupported()) {
-            this.openGLWarning1 = I18n.format("title.oldgl1", new Object[0]);
-            this.openGLWarning2 = I18n.format("title.oldgl2", new Object[0]);
+            this.openGLWarning1 = I18n.format("title.oldgl1");
+            this.openGLWarning2 = I18n.format("title.oldgl2");
             this.openGLWarningLink = "https://help.mojang.com/customer/portal/articles/325948?ref=game";
         }
-    }
-
-    private boolean func_183501_a() {
-        return Minecraft.getMinecraft().gameSettings.getOptionOrdinalValue(GameSettings.Options.REALMS_NOTIFICATIONS) && this.realmsScreen != null;
     }
 
     /**
@@ -168,10 +160,6 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
      */
     public void updateScreen() {
         ++this.panoramaTimer;
-
-        if (this.func_183501_a()) {
-            this.realmsScreen.updateScreen();
-        }
     }
 
     /**
@@ -198,15 +186,14 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
 
-        if (calendar.get(2) + 1 == 12 && calendar.get(5) == 24) {
+        if (calendar.get(Calendar.MONTH) + 1 == 12 && calendar.get(Calendar.DATE) == 24) {
             this.splashText = "Merry X-mas!";
-        } else if (calendar.get(2) + 1 == 1 && calendar.get(5) == 1) {
+        } else if (calendar.get(Calendar.MONTH) + 1 == 1 && calendar.get(Calendar.DATE) == 1) {
             this.splashText = "Happy new year!";
-        } else if (calendar.get(2) + 1 == 10 && calendar.get(5) == 31) {
+        } else if (calendar.get(Calendar.MONTH) + 1 == 10 && calendar.get(Calendar.DATE) == 31) {
             this.splashText = "OOoooOOOoooo! Spooky!";
         }
 
-        int i = 24;
         int j = this.height / 4 + 48;
 
         if (this.mc.isDemo()) {
@@ -215,9 +202,11 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
             this.addSingleplayerMultiplayerButtons(j, 24);
         }
 
-        this.buttonList.add(new GuiButton(0, this.width / 2 - 100, j + 72 + 12, 98, 20, I18n.format("menu.options", new Object[0])));
-        this.buttonList.add(new GuiButton(4, this.width / 2 + 2, j + 72 + 12, 98, 20, I18n.format("menu.quit", new Object[0])));
+        this.buttonList.add(new GuiButton(0, this.width / 2 - 100, j + 72 + 12, 98, 20, I18n.format("menu.options")));
+        this.buttonList.add(new GuiButton(4, this.width / 2 + 2, j + 72 + 12, 98, 20, I18n.format("menu.quit")));
         this.buttonList.add(new GuiButtonLanguage(5, this.width / 2 - 124, j + 72 + 12));
+
+        this.buttonList.add(new GuiButton(14, this.width / 2 - 100, j + 24 * 2, "AltManager"));
 
         synchronized (this.threadLock) {
             this.field_92023_s = this.fontRendererObj.getStringWidth(this.openGLWarning1);
@@ -239,7 +228,6 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
         this.buttonList.add(new GuiButton(1, this.width / 2 - 100, p_73969_1_, I18n.format("menu.singleplayer")));
         this.buttonList.add(new GuiButton(2, this.width / 2 - 100, p_73969_1_ + p_73969_2_, I18n.format("menu.multiplayer")));
         //this.buttonList.add(this.realmsButton = new GuiButton(14, this.width / 2 - 100, p_73969_1_ + p_73969_2_ * 2, I18n.format("menu.online", new Object[0])));
-        this.buttonList.add(new GuiButton(14, this.width / 2 - 100, p_73969_1_ + p_73969_2_ * 2, "FakeForge"));
     }
 
     /**
@@ -277,7 +265,8 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
         }
 
         if (button.id == 14) {
-            mc.displayGuiScreen(new GuiFakeForge(this));
+            //mc.displayGuiScreen(new GuiFakeForge(this));
+            mc.displayGuiScreen(new GuiAccounts(this));
         }
 
         if (button.id == 4) {
@@ -568,10 +557,6 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
 
         super.drawScreen(mouseX, mouseY, partialTicks);
 
-        if (this.func_183501_a()) {
-            this.realmsScreen.drawScreen(mouseX, mouseY, partialTicks);
-        }
-
         if (this.modUpdateNotification != null) {
             this.modUpdateNotification.drawScreen(mouseX, mouseY, partialTicks);
         }
@@ -589,10 +574,6 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
                 guiconfirmopenlink.disableSecurityWarning();
                 this.mc.displayGuiScreen(guiconfirmopenlink);
             }
-        }
-
-        if (this.func_183501_a()) {
-            this.realmsScreen.mouseClicked(mouseX, mouseY, mouseButton);
         }
     }
 

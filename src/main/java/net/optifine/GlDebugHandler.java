@@ -1,15 +1,8 @@
 package net.optifine;
 
-import java.nio.IntBuffer;
 import net.minecraft.src.Config;
 import org.lwjgl.LWJGLException;
-import org.lwjgl.opengl.ARBDebugOutput;
-import org.lwjgl.opengl.ARBDebugOutputCallback;
-import org.lwjgl.opengl.ContextAttribs;
-import org.lwjgl.opengl.Display;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GLContext;
-import org.lwjgl.opengl.PixelFormat;
+import org.lwjgl.opengl.*;
 import org.lwjgl.opengl.ARBDebugOutputCallback.Handler;
 
 public class GlDebugHandler implements Handler
@@ -20,7 +13,7 @@ public class GlDebugHandler implements Handler
         ContextAttribs contextattribs = (new ContextAttribs()).withDebug(true);
         Display.create((new PixelFormat()).withDepthBits(24), contextattribs);
         ARBDebugOutput.glDebugMessageCallbackARB(new ARBDebugOutputCallback(new GlDebugHandler()));
-        ARBDebugOutput.glDebugMessageControlARB(4352, 4352, 4352, (IntBuffer)null, true);
+        ARBDebugOutput.glDebugMessageControlARB(4352, 4352, 4352, null, true);
         GL11.glEnable(33346);
     }
 

@@ -47,28 +47,30 @@ public class GuiTextField extends Gui
     private int lineScrollOffset;
     private int cursorPosition;
 
-    /** other selection position, maybe the same as the cursor */
+    /**
+     * other selection position, maybe the same as the cursor
+     */
     private int selectionEnd;
     private int enabledColor = 14737632;
     private int disabledColor = 7368816;
 
-    /** True if this textbox is visible */
+    /**
+     * True if this textbox is visible
+     */
     private boolean visible = true;
     private GuiPageButtonList.GuiResponder field_175210_x;
-    private Predicate<String> field_175209_y = Predicates.<String>alwaysTrue();
+    private Predicate<String> validator = Predicates.alwaysTrue();
 
-    public GuiTextField(int componentId, FontRenderer fontrendererObj, int x, int y, int par5Width, int par6Height)
-    {
-        this.id = componentId;
-        this.fontRendererInstance = fontrendererObj;
+    public GuiTextField(int id, FontRenderer fontRenderer, int x, int y, int width, int height) {
+        this.id = id;
+        this.fontRendererInstance = fontRenderer;
         this.xPosition = x;
         this.yPosition = y;
-        this.width = par5Width;
-        this.height = par6Height;
+        this.width = width;
+        this.height = height;
     }
 
-    public void func_175207_a(GuiPageButtonList.GuiResponder p_175207_1_)
-    {
+    public void func_175207_a(GuiPageButtonList.GuiResponder p_175207_1_) {
         this.field_175210_x = p_175207_1_;
     }
 
@@ -83,16 +85,11 @@ public class GuiTextField extends Gui
     /**
      * Sets the text of the textbox
      */
-    public void setText(String p_146180_1_)
-    {
-        if (this.field_175209_y.apply(p_146180_1_))
-        {
-            if (p_146180_1_.length() > this.maxStringLength)
-            {
+    public void setText(String p_146180_1_) {
+        if (this.validator.apply(p_146180_1_)) {
+            if (p_146180_1_.length() > this.maxStringLength) {
                 this.text = p_146180_1_.substring(0, this.maxStringLength);
-            }
-            else
-            {
+            } else {
                 this.text = p_146180_1_;
             }
 
@@ -111,32 +108,28 @@ public class GuiTextField extends Gui
     /**
      * returns the text between the cursor and selectionEnd
      */
-    public String getSelectedText()
-    {
-        int i = this.cursorPosition < this.selectionEnd ? this.cursorPosition : this.selectionEnd;
-        int j = this.cursorPosition < this.selectionEnd ? this.selectionEnd : this.cursorPosition;
+    public String getSelectedText() {
+        int i = Math.min(this.cursorPosition, this.selectionEnd);
+        int j = Math.max(this.cursorPosition, this.selectionEnd);
         return this.text.substring(i, j);
     }
 
-    public void func_175205_a(Predicate<String> p_175205_1_)
-    {
-        this.field_175209_y = p_175205_1_;
+    public void func_175205_a(Predicate<String> p_175205_1_) {
+        this.validator = p_175205_1_;
     }
 
     /**
      * replaces selected text, or inserts text at the position on the cursor
      */
-    public void writeText(String p_146191_1_)
-    {
+    public void writeText(String p_146191_1_) {
         String s = "";
         String s1 = ChatAllowedCharacters.filterAllowedCharacters(p_146191_1_);
-        int i = this.cursorPosition < this.selectionEnd ? this.cursorPosition : this.selectionEnd;
-        int j = this.cursorPosition < this.selectionEnd ? this.selectionEnd : this.cursorPosition;
+        int i = Math.min(this.cursorPosition, this.selectionEnd);
+        int j = Math.max(this.cursorPosition, this.selectionEnd);
         int k = this.maxStringLength - this.text.length() - (i - j);
         int l = 0;
 
-        if (this.text.length() > 0)
-        {
+        if (this.text.length() > 0) {
             s = s + this.text.substring(0, i);
         }
 
@@ -156,13 +149,11 @@ public class GuiTextField extends Gui
             s = s + this.text.substring(j);
         }
 
-        if (this.field_175209_y.apply(s))
-        {
+        if (this.validator.apply(s)) {
             this.text = s;
             this.moveCursorBy(i - this.selectionEnd + l);
 
-            if (this.field_175210_x != null)
-            {
+            if (this.field_175210_x != null) {
                 this.field_175210_x.func_175319_a(this.id, this.text);
             }
         }
@@ -215,17 +206,14 @@ public class GuiTextField extends Gui
                     s = s + this.text.substring(j);
                 }
 
-                if (this.field_175209_y.apply(s))
-                {
+                if (this.validator.apply(s)) {
                     this.text = s;
 
-                    if (flag)
-                    {
+                    if (flag) {
                         this.moveCursorBy(p_146175_1_);
                     }
 
-                    if (this.field_175210_x != null)
-                    {
+                    if (this.field_175210_x != null) {
                         this.field_175210_x.func_175319_a(this.id, this.text);
                     }
                 }

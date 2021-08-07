@@ -1,8 +1,10 @@
 package cn.asone.endless.ui.gui
 
 import cn.asone.endless.features.special.FakeForge
+import cn.asone.endless.ui.font.Fonts
 import net.minecraft.client.gui.GuiButton
 import net.minecraft.client.gui.GuiScreen
+import net.minecraft.client.resources.I18n
 import java.awt.Color
 
 class GuiFakeForge(val parent: GuiScreen) : GuiScreen() {
@@ -42,7 +44,14 @@ class GuiFakeForge(val parent: GuiScreen) : GuiScreen() {
         this.buttonList.add(fmlProxyButton)
         this.buttonList.add(payloadButton)
 
-        this.buttonList.add(GuiButton(0, this.width / 2 - 100, this.height / 4 + 50 + 25 * 4 + 10, "Back"))
+        this.buttonList.add(
+            GuiButton(
+                0,
+                this.width / 2 - 100,
+                this.height / 4 + 50 + 25 * 4 + 10,
+                I18n.format("gui.back")
+            )
+        )
     }
 
     override fun actionPerformed(button: GuiButton) {
@@ -54,7 +63,7 @@ class GuiFakeForge(val parent: GuiScreen) : GuiScreen() {
 
             2 -> {
                 FakeForge.fml.set(!FakeForge.fml.get())
-                fmlButton.displayString = "伪造FML: ${if (FakeForge.fml.get()) "On" else "Off"}"
+                fmlButton.displayString = "伪造C01Packet握手FML: ${if (FakeForge.fml.get()) "On" else "Off"}"
             }
 
             3 -> {
@@ -73,7 +82,13 @@ class GuiFakeForge(val parent: GuiScreen) : GuiScreen() {
 
     override fun drawScreen(mouseX: Int, mouseY: Int, partialTicks: Float) {
         drawDefaultBackground()
-        fontRendererObj.drawCenteredString("FakeForge", this.width / 2F, this.height / 8 + 10F, Color(71, 81, 192).rgb, false)
+        Fonts.medium44.drawCenteredString(
+            "FakeForge",
+            this.width / 2F,
+            this.height / 8 + 10F,
+            Color(71, 81, 192).rgb,
+            false
+        )
         super.drawScreen(mouseX, mouseY, partialTicks)
     }
 }
