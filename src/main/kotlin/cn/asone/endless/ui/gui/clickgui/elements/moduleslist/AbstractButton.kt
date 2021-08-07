@@ -1,8 +1,7 @@
 package cn.asone.endless.ui.gui.clickgui.elements.moduleslist
 
-import cn.asone.endless.ui.font.CFontRenderer
 import cn.asone.endless.ui.font.Fonts
-import cn.asone.endless.ui.gui.clickgui.ClickGUI
+import cn.asone.endless.ui.gui.clickgui.GuiClickGUI
 import cn.asone.endless.ui.gui.clickgui.elements.moduleinfo.AbstractValueButton
 import cn.asone.endless.utils.RenderUtils
 import cn.asone.endless.utils.mc
@@ -13,6 +12,11 @@ import java.awt.Color
  * 150 × 23 button
  */
 abstract class AbstractButton(open val name: String) {
+    companion object {
+        var boxColor: Int = 0
+        var buttonColor: Int = 0
+    }
+
     protected var x = 0F
     protected var y = 0F
         get() = field + offset
@@ -20,8 +24,7 @@ abstract class AbstractButton(open val name: String) {
     open var state = false
     open val infoButtons: ArrayList<AbstractValueButton> = arrayListOf()
     val visible: Boolean
-        get() = y < ClickGUI.windowYStart + ClickGUI.guiHeight - 7 && y + 23 > ClickGUI.windowYStart + 7
-    protected val font = CFontRenderer(Fonts.getAssetsFont("Roboto-Regular.ttf", 26), true, true)
+        get() = y < GuiClickGUI.windowYStart + GuiClickGUI.guiHeight - 7 && y + 23 > GuiClickGUI.windowYStart + 7
 
     fun updateX(x: Float) {
         this.x = x
@@ -33,7 +36,7 @@ abstract class AbstractButton(open val name: String) {
 
     fun drawBox(mouseX: Int, mouseY: Int) {
         //Background
-        RenderUtils.drawAntiAliasingRoundedRect(x, y, 150F, 23F, 5F, Color(253, 253, 253).rgb)
+        RenderUtils.drawAntiAliasingRoundedRect(x, y, 150F, 23F, 5F, boxColor)
         //Button
         RenderUtils.drawAntiAliasingRoundedRect(
             x + 150 - 3 - 17,
@@ -47,12 +50,12 @@ abstract class AbstractButton(open val name: String) {
             if (state) x + 150 - 5 - 4 else x + 150 - 14,
             y + 11.5F,
             4.5F,
-            Color.white.rgb
+            buttonColor
         )
     }
 
     fun drawText(mouseX: Int, mouseY: Int) {
-        font.drawString(name, x + 4, y + 6, Color.black.rgb)
+        Fonts.regular26.drawString(name, x + 4, y + 6, GuiClickGUI.textColor)
     }
 
     fun isHovering(mouseX: Int, mouseY: Int): Boolean =
@@ -64,10 +67,10 @@ abstract class AbstractButton(open val name: String) {
             if (mouseX >= x + 150 - 3 - 17 && mouseX <= x + 150 - 3 && mouseY >= y + 6 && mouseY <= y + 17)
                 this.state = !this.state
             else {
-                ClickGUI.currentInfoButton = this
+                GuiClickGUI.currentInfoButton = this
                 if (infoButtons.isNotEmpty()) {
                     infoButtons.forEach {
-                        it.updateX(ClickGUI.windowXStart + 231 + 6F)
+                        it.updateX(GuiClickGUI.windowXStart + 231 + 6F)
                     }
                 }
             }

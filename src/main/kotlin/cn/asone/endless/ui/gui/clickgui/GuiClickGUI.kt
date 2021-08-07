@@ -3,14 +3,12 @@ package cn.asone.endless.ui.gui.clickgui
 import cn.asone.endless.features.module.AbstractModule
 import cn.asone.endless.features.module.ModuleManager
 import cn.asone.endless.features.special.FakeForge
-import cn.asone.endless.ui.font.CFontRenderer
 import cn.asone.endless.ui.font.Fonts
 import cn.asone.endless.ui.gui.clickgui.elements.CategoryButton
 import cn.asone.endless.ui.gui.clickgui.elements.moduleinfo.AbstractValueButton
 import cn.asone.endless.ui.gui.clickgui.elements.moduleinfo.ListButton
 import cn.asone.endless.ui.gui.clickgui.elements.moduleslist.AbstractButton
 import cn.asone.endless.ui.gui.clickgui.elements.moduleslist.ModuleButton
-import cn.asone.endless.utils.ClientUtils
 import cn.asone.endless.utils.RenderUtils
 import cn.asone.endless.utils.playSound
 import net.minecraft.client.Minecraft
@@ -24,7 +22,7 @@ import org.lwjgl.input.Mouse
 import org.lwjgl.opengl.GL11
 import java.awt.Color
 
-class ClickGUI : GuiScreen() {
+class GuiClickGUI : GuiScreen() {
 
     companion object {
         var guiWidth = 480
@@ -37,6 +35,10 @@ class ClickGUI : GuiScreen() {
         var keyBindModule: AbstractModule? = null
         var currentInfoButton: AbstractButton? = null
         var listButton: ListButton? = null
+
+        var backgroundColor: Int = 0
+        var elementColor: Int = 0
+        var textColor: Int = 0
 
         private lateinit var backButton: GuiButton
         fun settingKeyBind() {
@@ -59,10 +61,6 @@ class ClickGUI : GuiScreen() {
     private var valueDiffY = 0F
     private val moduleButtons: ArrayList<AbstractButton> = ArrayList()
     private val endlessLogo = ResourceLocation("endless/endless_Logo.png")
-    private val moduleInfoFont = CFontRenderer(Fonts.getAssetsFont("Roboto-Medium.ttf", 44), true, false)
-    private val descriptionFont = CFontRenderer(Fonts.getAssetsFont("Roboto-Thin.ttf", 16), true, true)
-    private val listTitle = CFontRenderer(Fonts.getAssetsFont("Roboto-Regular.ttf", 38), true, true)
-    private val listElementFont = CFontRenderer(Fonts.getAssetsFont("Roboto-Light.ttf", 30), true, true)
     private lateinit var closeButton: GuiButton
 
     init {
@@ -119,7 +117,7 @@ class ClickGUI : GuiScreen() {
             guiWidth.toFloat(),
             guiHeight.toFloat(),
             8F,
-            Color(236, 236, 236).rgb
+            backgroundColor
         )
         /**
          * Main background border
@@ -131,13 +129,13 @@ class ClickGUI : GuiScreen() {
             windowYStart.toFloat() + guiHeight,
             8F,
             14F,
-            Color.white.rgb
+            elementColor
         )
         /**
          * Info button name background
          */
         if (currentInfoButton != null) {
-            RenderUtils.drawRect(windowXStart + 231F, windowYStart.toFloat(), guiWidth - 2F - 231, 44F, Color.white.rgb)
+            RenderUtils.drawRect(windowXStart + 231F, windowYStart.toFloat(), guiWidth - 2F - 231, 44F, elementColor)
         }
         /**
          * Close button
@@ -153,7 +151,7 @@ class ClickGUI : GuiScreen() {
             windowYStart.toFloat(),
             66F,
             guiHeight.toFloat(),
-            Color.white.rgb
+            elementColor
         )
         /**
          * Current chosen category background
@@ -203,7 +201,7 @@ class ClickGUI : GuiScreen() {
          * module list与module info的分割线
          */
         RenderUtils.drawRect(
-            windowXStart + 222 + 4F, windowYStart.toFloat(), 5F, guiHeight.toFloat(), Color.white.rgb
+            windowXStart + 222 + 4F, windowYStart.toFloat(), 5F, guiHeight.toFloat(), elementColor
         )
 
         /**
@@ -301,21 +299,21 @@ class ClickGUI : GuiScreen() {
             /**
              * Name
              */
-            moduleInfoFont.drawCenteredString(
+            Fonts.medium44.drawCenteredString(
                 currentInfoButton!!.name,
                 windowXStart.toFloat() + (231 - 7 + guiWidth) / 2,
                 windowYStart + 8F,
-                Color.black.rgb
+                textColor
             )
             /**
              * Description
              */
             if (currentInfoButton is ModuleButton)
-                descriptionFont.drawString(
+                Fonts.thin16.drawString(
                     (currentInfoButton as ModuleButton).module.description,
                     windowXStart + 231 + 4F,
                     windowYStart + 36F,
-                    Color.black.rgb
+                    textColor
                 )
             /**
              * Values list text
@@ -335,18 +333,18 @@ class ClickGUI : GuiScreen() {
                 }
                 GL11.glDisable(GL11.GL_SCISSOR_TEST)
             } else
-                Fonts.font20.drawCenteredString(
+                Fonts.regular20.drawCenteredString(
                     "Nothing to show...",
                     windowXStart.toFloat() + (231 - 7 + guiWidth) / 2,
                     windowYStart.toFloat() + guiHeight / 2,
-                    Color.black.rgb
+                    textColor
                 )
         } else {
-            Fonts.font20.drawCenteredString(
+            Fonts.regular20.drawCenteredString(
                 "Left click a module to display more info.",
                 windowXStart.toFloat() + (231 - 7 + guiWidth) / 2,
                 windowYStart.toFloat() + guiHeight / 2,
-                Color.black.rgb
+                textColor
             )
         }
         GL11.glPopMatrix()
@@ -380,7 +378,7 @@ class ClickGUI : GuiScreen() {
                 windowYStart + guiHeight / 2F - 110,
                 200F,
                 30F,
-                Color.white.rgb
+                elementColor
             )
             /**
              * List background
@@ -390,7 +388,7 @@ class ClickGUI : GuiScreen() {
                 windowYStart + guiHeight / 2F - 80,
                 200F,
                 210F,
-                Color(240, 240, 240).rgb
+                backgroundColor
             )
             if (mouseX in (windowXStart + guiWidth / 2 - 98)..(windowXStart + guiWidth / 2 + 98)
                 && mouseY in (windowYStart + guiHeight / 2 - 78)..(windowYStart + guiHeight / 2 + 128)
@@ -399,16 +397,16 @@ class ClickGUI : GuiScreen() {
                  * ListValue 滚轮
                  */
                 valueDiffY += wheel
-                if (valueDiffY < listButton!!.value.values.size * -(listElementFont.height + 4) - 8 + 210)
-                    valueDiffY = listButton!!.value.values.size * -(listElementFont.height + 4) + 210 - 8F
+                if (valueDiffY < listButton!!.value.values.size * -(Fonts.light30.height + 4) - 8 + 210)
+                    valueDiffY = listButton!!.value.values.size * -(Fonts.light30.height + 4) + 210 - 8F
                 if (valueDiffY > 0)
                     valueDiffY = 0F
                 /**
                  * calculate the index of the selection hovering currently
                  */
                 var i = 0
-                while (!(mouseY >= windowYStart + guiHeight / 2 - 80 + 2F + valueDiffY + i * (listElementFont.height + 4)
-                            && mouseY <= windowYStart + guiHeight / 2 - 80 + 2F + valueDiffY + (i + 1) * (listElementFont.height + 4))
+                while (!(mouseY >= windowYStart + guiHeight / 2 - 80 + 2F + valueDiffY + i * (Fonts.light30.height + 4)
+                            && mouseY <= windowYStart + guiHeight / 2 - 80 + 2F + valueDiffY + (i + 1) * (Fonts.light30.height + 4))
                 ) {
                     i++
                     if (i >= 100)
@@ -429,10 +427,10 @@ class ClickGUI : GuiScreen() {
                      * Blue border
                      */
                     RenderUtils.drawBorder(
-                        windowXStart + guiWidth / 2 - listElementFont.getStringWidth(listButton!!.value.values[i]) / 2 - 2F,
-                        windowYStart + guiHeight / 2 - 80 + 2F + valueDiffY + i * (listElementFont.height + 4),
-                        windowXStart + guiWidth / 2 + listElementFont.getStringWidth(listButton!!.value.values[i]) / 2 + 2F,
-                        windowYStart + guiHeight / 2 - 80 + 2F + valueDiffY + (i + 1) * (listElementFont.height + 4) - 2F,
+                        windowXStart + guiWidth / 2 - Fonts.light30.getStringWidth(listButton!!.value.values[i]) / 2 - 2F,
+                        windowYStart + guiHeight / 2 - 80 + 2F + valueDiffY + i * (Fonts.light30.height + 4),
+                        windowXStart + guiWidth / 2 + Fonts.light30.getStringWidth(listButton!!.value.values[i]) / 2 + 2F,
+                        windowYStart + guiHeight / 2 - 80 + 2F + valueDiffY + (i + 1) * (Fonts.light30.height + 4) - 2F,
                         1F,
                         Color(0, 111, 255).rgb
                     )
@@ -441,11 +439,11 @@ class ClickGUI : GuiScreen() {
 
             }
             RenderUtils.post2D()
-            listTitle.drawCenteredString(
+            Fonts.regular38.drawCenteredString(
                 listButton!!.value.name,
                 windowXStart + guiWidth / 2F,
                 windowYStart + guiHeight / 2F - 110 + 6F,
-                Color.black.rgb
+                textColor
             )
             GL11.glEnable(GL11.GL_SCISSOR_TEST)
             /**
@@ -459,8 +457,8 @@ class ClickGUI : GuiScreen() {
             )
             var var0 = windowYStart + guiHeight / 2 - 80 + 4F + valueDiffY
             listButton!!.value.values.forEach {
-                listElementFont.drawCenteredString(it, windowXStart + guiWidth / 2F, var0, Color.black.rgb)
-                var0 += listElementFont.height + 4
+                Fonts.light30.drawCenteredString(it, windowXStart + guiWidth / 2F, var0, textColor)
+                var0 += Fonts.light30.height + 4
             }
             GL11.glDisable(GL11.GL_SCISSOR_TEST)
             GL11.glPopMatrix()
@@ -495,8 +493,8 @@ class ClickGUI : GuiScreen() {
                 && mouseY in (windowYStart + guiHeight / 2 - 80)..(windowYStart + guiHeight / 2 + 130)
             ) {
                 var i = 0
-                while (!(mouseY >= windowYStart + guiHeight / 2 - 80 + 2F + valueDiffY + i * (listElementFont.height + 4)
-                            && mouseY <= windowYStart + guiHeight / 2 - 80 + 2F + valueDiffY + (i + 1) * (listElementFont.height + 4))
+                while (!(mouseY >= windowYStart + guiHeight / 2 - 80 + 2F + valueDiffY + i * (Fonts.light30.height + 4)
+                            && mouseY <= windowYStart + guiHeight / 2 - 80 + 2F + valueDiffY + (i + 1) * (Fonts.light30.height + 4))
                 ) {
                     i++
                     if (i >= 100)
@@ -505,11 +503,9 @@ class ClickGUI : GuiScreen() {
                 if (i >= 0 && i <= listButton!!.value.values.lastIndex) {
                     listButton!!.value.set(listButton!!.value.values[i])
                     listButton!!.updateX(windowXStart + 231 + 6F)
-                    cn.asone.endless.utils.mc.soundHandler.playSound("gui.button.press", 1F)
+                    mc.soundHandler.playSound("gui.button.press", 1F)
                     listButton = null
                 }
-                //val diff = (mouseY - windowYStart + guiHeight / 2 - 80 + 2F + valueDiffY) / (listElementFont.height + 4)
-                ClientUtils.displayChatMessage(i.toString())
             } else
                 listButton = null
             return

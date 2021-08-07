@@ -14,18 +14,41 @@ object Fonts {
             if (!mkdir())
                 throw Exception("无法创建字体文件夹!")
     }
-
     @JvmField
-    val font20: CFontRenderer
-
+    val thin16: CFontRenderer
     @JvmField
-    val font24: CFontRenderer
+    val light18: CFontRenderer
+    @JvmField
+    val regular20: CFontRenderer
+    @JvmField
+    val medium21: CFontRenderer
+    @JvmField
+    val light24: CFontRenderer
+    @JvmField
+    val regular24: CFontRenderer
+    @JvmField
+    val regular26: CFontRenderer
+    @JvmField
+    val light30: CFontRenderer
+    @JvmField
+    val regular38: CFontRenderer
+    @JvmField
+    val medium44: CFontRenderer
 
     init {
         ClientUtils.logger.info("正在初始化默认字体...")
-        font20 = CFontRenderer(getAssetsFont("Roboto-Regular.ttf", 20), true, true)
-        font24 = CFontRenderer(getAssetsFont("Roboto-Regular.ttf", 24), true, true)
-        ClientUtils.logger.info("成功初始化默认字体.")
+        val var0 = System.currentTimeMillis()
+        thin16 = CFontRenderer(getAssetsFont("Roboto-Thin.ttf", 16), true, false)
+        light18 = CFontRenderer(getAssetsFont("Roboto-Light.ttf", 18), true, true)
+        regular20 = CFontRenderer(getAssetsFont("Roboto-Regular.ttf", 20), true, true)
+        medium21 = CFontRenderer(getAssetsFont("Roboto-Medium.ttf", 21), true, true)
+        light24 = CFontRenderer(getAssetsFont("Roboto-Light.ttf", 24), true, true)
+        regular24 = CFontRenderer(getAssetsFont("Roboto-Regular.ttf", 24), true, true)
+        regular26 = CFontRenderer(getAssetsFont("Roboto-Regular.ttf", 26), true, true)
+        light30 = CFontRenderer(getAssetsFont("Roboto-Light.ttf", 30), true, true)
+        regular38 = CFontRenderer(getAssetsFont("Roboto-Regular.ttf", 38), true, true)
+        medium44 = CFontRenderer(getAssetsFont("Roboto-Medium.ttf", 44), true, true)
+        ClientUtils.logger.info("成功初始化默认字体, 用时${(System.currentTimeMillis() - var0) / 1000F}秒.")
     }
 
     @JvmStatic

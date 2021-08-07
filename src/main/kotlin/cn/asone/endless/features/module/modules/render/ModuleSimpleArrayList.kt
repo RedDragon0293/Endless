@@ -21,7 +21,7 @@ object ModuleSimpleArrayList : AbstractModule(
         var offsetY = 0
         for (module in ModuleManager.modules) {
             if (module.state) {
-                Fonts.font24.drawString(module.name, 2F, 2F + offsetY, Color.blue.rgb, false)
+                Fonts.regular24.drawString(module.name, 2F, 2F + offsetY, Color.blue.rgb, false)
                 offsetY += 10
             }
         }

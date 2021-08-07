@@ -1,6 +1,7 @@
 package cn.asone.endless.ui.gui.clickgui.elements.moduleinfo
 
-import cn.asone.endless.ui.gui.clickgui.ClickGUI
+import cn.asone.endless.ui.font.Fonts
+import cn.asone.endless.ui.gui.clickgui.GuiClickGUI
 import cn.asone.endless.utils.RenderUtils
 import cn.asone.endless.utils.mc
 import cn.asone.endless.utils.playSound
@@ -61,10 +62,10 @@ class ListButton(override val value: ListValue, isSub: Boolean) : AbstractValueB
          */
         if (mouseX >= x && mouseX <= x + (if (isSub) 212 else 232) && mouseY >= y && mouseY <= y + 20)
             RenderUtils.drawBorder(
-                x + (if (isSub) 212 else 232) - 5 - valueFont.getStringWidth(value.get()) - 2,
+                x + (if (isSub) 212 else 232) - 5 - Fonts.light18.getStringWidth(value.get()) - 2,
                 y + 3,
                 x + (if (isSub) 212 else 232) - 5 + 2,
-                y + 7 + valueFont.height + 2,
+                y + 7 + Fonts.light18.height + 2,
                 1F,
                 Color(140, 140, 140).rgb
             )
@@ -83,11 +84,11 @@ class ListButton(override val value: ListValue, isSub: Boolean) : AbstractValueB
 
     override fun drawText(mouseX: Int, mouseY: Int) {
         super.drawText(mouseX, mouseY)
-        valueFont.drawString(
+        Fonts.light18.drawString(
             value.get(),
-            x + (if (isSub) 212 else 232) - 5 - valueFont.getStringWidth(value.get()),
+            x + (if (isSub) 212 else 232) - 5 - Fonts.light18.getStringWidth(value.get()),
             y + 7,
-            Color.black.rgb
+            GuiClickGUI.textColor
         )
         if (subButtons[this.value.get()]!!.isNotEmpty()) {
             subButtons[this.value.get()]!!.forEach { it.drawText(mouseX, mouseY) }
@@ -96,13 +97,13 @@ class ListButton(override val value: ListValue, isSub: Boolean) : AbstractValueB
 
     override fun mouseClicked(mouseX: Int, mouseY: Int, mouseButton: Int) {
         if (mouseButton == 0) {
-            if (mouseX >= x + (if (isSub) 212 else 232) - 5 - valueFont.getStringWidth(value.get()) - 2
+            if (mouseX >= x + (if (isSub) 212 else 232) - 5 - Fonts.light18.getStringWidth(value.get()) - 2
                 && mouseX <= x + (if (isSub) 212 else 232) - 5 + 2
                 && mouseY >= y + 3
-                && mouseY <= y + 7 + valueFont.height + 2
+                && mouseY <= y + 7 + Fonts.light18.height + 2
             ) {
                 mc.soundHandler.playSound("gui.button.press", 1F)
-                ClickGUI.listButton = this
+                GuiClickGUI.listButton = this
             } else if (subButtons[this.value.get()]!!.isNotEmpty()) {
                 for (button in subButtons[this.value.get()]!!) {
                     if (button.isHovering(mouseX, mouseY)) {
