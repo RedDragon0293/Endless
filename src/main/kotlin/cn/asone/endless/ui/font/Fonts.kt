@@ -2,6 +2,7 @@ package cn.asone.endless.ui.font
 
 import cn.asone.endless.Endless
 import cn.asone.endless.config.ConfigManager
+import cn.asone.endless.ui.utf16font.GameFontRenderer
 import cn.asone.endless.utils.ClientUtils
 import java.awt.Font
 import java.io.File
@@ -9,7 +10,7 @@ import java.io.FileInputStream
 import java.util.*
 
 object Fonts {
-    private val fontsDir: File = File(ConfigManager.rootDir, "fonts").apply {
+    val fontsDir: File = File(ConfigManager.rootDir, "fonts").apply {
         if (!exists())
             if (!mkdir())
                 throw Exception("无法创建字体文件夹!")
@@ -17,7 +18,6 @@ object Fonts {
 
     @JvmField
     val light16: CFontRenderer
-
     @JvmField
     val light18: CFontRenderer
     @JvmField
@@ -28,14 +28,21 @@ object Fonts {
     val light24: CFontRenderer
     @JvmField
     val regular24: CFontRenderer
+
     @JvmField
     val regular26: CFontRenderer
+
     @JvmField
     val light30: CFontRenderer
+
     @JvmField
     val regular38: CFontRenderer
+
     @JvmField
     val medium44: CFontRenderer
+
+    @JvmField
+    val test: GameFontRenderer
 
     init {
         ClientUtils.logger.info("正在初始化默认字体...")
@@ -50,6 +57,8 @@ object Fonts {
         light30 = CFontRenderer(getAssetsFont("Roboto-Light.ttf", 30), true, true)
         regular38 = CFontRenderer(getAssetsFont("Roboto-Regular.ttf", 38), true, true)
         medium44 = CFontRenderer(getAssetsFont("Roboto-Medium.ttf", 44), true, true)
+
+        test = GameFontRenderer(getAssetsFont("HarmonyOS_Sans_regular.ttf", 20))
         ClientUtils.logger.info("成功初始化默认字体, 用时${(System.currentTimeMillis() - var0) / 1000F}秒.")
     }
 
