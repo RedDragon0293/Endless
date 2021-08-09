@@ -1,6 +1,5 @@
 package net.minecraft.client.renderer.entity;
 
-import java.util.Random;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.TextureMap;
@@ -11,13 +10,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 
-public class RenderEntityItem extends Render<EntityItem>
-{
+import java.util.Random;
+
+public class RenderEntityItem extends Render<EntityItem> {
     private final RenderItem itemRenderer;
     private Random field_177079_e = new Random();
 
-    public RenderEntityItem(RenderManager renderManagerIn, RenderItem p_i46167_2_)
-    {
+    public RenderEntityItem(RenderManager renderManagerIn, RenderItem p_i46167_2_) {
         super(renderManagerIn);
         this.itemRenderer = p_i46167_2_;
         this.shadowSize = 0.15F;
@@ -128,14 +127,14 @@ public class RenderEntityItem extends Render<EntityItem>
                 }
 
                 GlStateManager.scale(0.5F, 0.5F, 0.5F);
-                ibakedmodel.getItemCameraTransforms().func_181689_a(ItemCameraTransforms.TransformType.GROUND);
+                ibakedmodel.getItemCameraTransforms().applyTransform(ItemCameraTransforms.TransformType.GROUND);
                 this.itemRenderer.renderItem(itemstack, ibakedmodel);
                 GlStateManager.popMatrix();
             }
             else
             {
                 GlStateManager.pushMatrix();
-                ibakedmodel.getItemCameraTransforms().func_181689_a(ItemCameraTransforms.TransformType.GROUND);
+                ibakedmodel.getItemCameraTransforms().applyTransform(ItemCameraTransforms.TransformType.GROUND);
                 this.itemRenderer.renderItem(itemstack, ibakedmodel);
                 GlStateManager.popMatrix();
                 float f3 = ibakedmodel.getItemCameraTransforms().field_181699_o.scale.x;

@@ -152,6 +152,9 @@ public class CFontRenderer extends CFont {
                 if (underline)
                     drawLine(x, y + (currentData[character]).height - 2.0D, x + (currentData[character]).width - 8.0D, y + (currentData[character]).height - 2.0D, 1.0F);
                 x += ((currentData[character]).width - 8 + this.charOffset);
+            } else {
+                //GlStateManager.scale(2F, 2F, 2F);
+
             }
             i++;
         }

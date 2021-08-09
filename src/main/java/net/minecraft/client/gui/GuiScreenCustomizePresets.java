@@ -80,8 +80,7 @@ public class GuiScreenCustomizePresets extends GuiScreen {
      */
     protected void keyTyped(char typedChar, int keyCode) throws IOException
     {
-        if (!this.field_175317_i.textboxKeyTyped(typedChar, keyCode))
-        {
+        if (!this.field_175317_i.textBoxKeyTyped(typedChar, keyCode)) {
             super.keyTyped(typedChar, keyCode);
         }
     }

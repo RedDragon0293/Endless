@@ -3,6 +3,7 @@ package net.minecraft.client;
 import cn.asone.endless.Endless;
 import cn.asone.endless.event.EventManager;
 import cn.asone.endless.event.KeyEvent;
+import cn.asone.endless.utils.RenderUtils;
 import com.google.common.collect.*;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -323,6 +324,11 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
      * Profiler currently displayed in the debug screen pie chart
      */
     private String debugProfilerName = "root";
+
+    /**
+     * Used to calculate delta time
+     */
+    private long last = getTime();
 
     public Minecraft(GameConfiguration gameConfig) {
         theMinecraft = this;
@@ -896,10 +902,19 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
         System.gc();
     }
 
+    public long getTime() {
+        return (Sys.getTime() * 1000) / Sys.getTimerResolution();
+    }
+
     /**
      * Called repeatedly from run()
      */
     private void runGameLoop() throws IOException {
+        final long currentTime = getTime();
+        final int deltaTime = (int) (currentTime - last);
+        last = currentTime;
+        RenderUtils.deltaTime = deltaTime;
+
         long i = System.nanoTime();
         this.mcProfiler.startSection("root");
 

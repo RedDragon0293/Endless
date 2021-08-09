@@ -2,6 +2,8 @@ package net.minecraft.client.gui;
 
 import cn.asone.endless.event.EventManager;
 import cn.asone.endless.event.Render2DEvent;
+import cn.asone.endless.features.module.modules.render.ModuleHUD;
+import cn.asone.endless.utils.RenderUtils;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import net.minecraft.block.material.Material;
@@ -35,6 +37,7 @@ import net.minecraft.util.*;
 import net.minecraft.world.border.WorldBorder;
 import net.optifine.CustomColors;
 
+import java.awt.*;
 import java.util.Collection;
 import java.util.List;
 import java.util.Random;
@@ -105,6 +108,18 @@ public class GuiIngame extends Gui {
      */
     private long healthUpdateCounter = 0L;
 
+    /**
+     * Used to implement hotbar smooth animation
+     */
+    private float hotbarOffset = 0;
+
+    private int hotbarDelta = 0;
+
+    /**
+     * Used to ensure when draw hotbar animation
+     */
+    private int lastHotbarIndex = -1;
+
     public GuiIngame(Minecraft mcIn) {
         this.mc = mcIn;
         this.itemRenderer = mcIn.getRenderItem();
@@ -113,10 +128,10 @@ public class GuiIngame extends Gui {
         this.persistantChatGUI = new GuiNewChat(mcIn);
         this.streamIndicator = new GuiStreamIndicator(mcIn);
         this.overlayPlayerList = new GuiPlayerTabOverlay(mcIn, this);
-        this.func_175177_a();
+        this.setDefaultTitlesTimes();
     }
 
-    public void func_175177_a() {
+    public void setDefaultTitlesTimes() {
         this.titleFadeIn = 10;
         this.titleDisplayTime = 70;
         this.titleFadeOut = 20;
@@ -324,26 +339,65 @@ public class GuiIngame extends Gui {
         GlStateManager.enableAlpha();
     }
 
+    /**
+     * Render Hotbar
+     */
     protected void renderTooltip(ScaledResolution sr, float partialTicks) {
         if (this.mc.getRenderViewEntity() instanceof EntityPlayer) {
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-            this.mc.getTextureManager().bindTexture(widgetsTexPath);
             EntityPlayer entityplayer = (EntityPlayer) this.mc.getRenderViewEntity();
-            int i = sr.getScaledWidth() / 2;
-            float f = this.zLevel;
-            this.zLevel = -90.0F;
-            this.drawTexturedModalRect(i - 91, sr.getScaledHeight() - 22, 0, 0, 182, 22);
-            this.drawTexturedModalRect(i - 91 - 1 + entityplayer.inventory.currentItem * 20, sr.getScaledHeight() - 22 - 1, 0, 22, 24, 22);
-            this.zLevel = f;
+            int middleX = sr.getScaledWidth() / 2;
+            if (ModuleHUD.INSTANCE.getBlackHotbarValue().get()) {
+                if (ModuleHUD.INSTANCE.getSmoothHotbarValue().get()) {
+                    if (lastHotbarIndex != entityplayer.inventory.currentItem) {
+                        hotbarDelta = (lastHotbarIndex - entityplayer.inventory.currentItem) * 20 + hotbarDelta + (int) (-hotbarDelta * hotbarOffset);
+                        hotbarOffset = 0;
+                        lastHotbarIndex = entityplayer.inventory.currentItem;
+                    }
+                    if (hotbarOffset != 1F) {
+                        hotbarOffset += RenderUtils.deltaTime * 0.01F;
+                        if (hotbarOffset > 1F)
+                            hotbarOffset = 1F;
+                    }
+                } else
+                    hotbarOffset = 1F;
+
+                GuiIngame.drawRect(
+                        middleX - 91,
+                        sr.getScaledHeight() - 22,
+                        middleX + 91,
+                        sr.getScaledHeight(),
+                        new Color(0, 0, 0, 172).getRGB());
+                int xStart = middleX - 91 + entityplayer.inventory.currentItem * 20 + hotbarDelta + (int) (-hotbarDelta * hotbarOffset);
+                GuiIngame.drawRect(
+                        xStart,
+                        sr.getScaledHeight() - 22,
+                        xStart + 22,
+                        sr.getScaledHeight(),
+                        new Color(0, 111, 255, 172).getRGB());
+                GuiIngame.drawRect(
+                        xStart,
+                        sr.getScaledHeight() - 23,
+                        xStart + 22,
+                        sr.getScaledHeight() - 22,
+                        new Color(0, 255, 111).getRGB());
+            } else {
+                this.mc.getTextureManager().bindTexture(widgetsTexPath);
+                float f = this.zLevel;
+                this.zLevel = -90.0F;
+                this.drawTexturedModalRect(middleX - 91, sr.getScaledHeight() - 22, 0, 0, 182, 22);
+                this.drawTexturedModalRect(middleX - 91 - 1 + entityplayer.inventory.currentItem * 20, sr.getScaledHeight() - 22 - 1, 0, 22, 24, 22);
+                this.zLevel = f;
+            }
             GlStateManager.enableRescaleNormal();
             GlStateManager.enableBlend();
             GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
             RenderHelper.enableGUIStandardItemLighting();
 
-            for (int j = 0; j < 9; ++j) {
-                int k = sr.getScaledWidth() / 2 - 90 + j * 20 + 2;
-                int l = sr.getScaledHeight() - 16 - 3;
-                this.renderHotbarItem(j, k, l, partialTicks, entityplayer);
+            for (int index = 0; index < 9; ++index) {
+                int xPos = sr.getScaledWidth() / 2 - 88 + index * 20;
+                int yPos = sr.getScaledHeight() - 19;
+                this.renderHotbarItem(index, xPos, yPos, partialTicks, entityplayer);
             }
 
             RenderHelper.disableStandardItemLighting();
@@ -890,8 +944,8 @@ public class GuiIngame extends Gui {
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
     }
 
-    private void renderHotbarItem(int index, int xPos, int yPos, float partialTicks, EntityPlayer p_175184_5_) {
-        ItemStack itemstack = p_175184_5_.inventory.mainInventory[index];
+    private void renderHotbarItem(int index, int xPos, int yPos, float partialTicks, EntityPlayer entityPlayer) {
+        ItemStack itemstack = entityPlayer.inventory.mainInventory[index];
 
         if (itemstack != null) {
             float f = (float) itemstack.animationsToGo - partialTicks;

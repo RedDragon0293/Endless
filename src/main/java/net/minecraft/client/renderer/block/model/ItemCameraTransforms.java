@@ -1,15 +1,11 @@
 package net.minecraft.client.renderer.block.model;
 
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import java.lang.reflect.Type;
+import com.google.gson.*;
 import net.minecraft.client.renderer.GlStateManager;
 
-public class ItemCameraTransforms
-{
+import java.lang.reflect.Type;
+
+public class ItemCameraTransforms {
     public static final ItemCameraTransforms DEFAULT = new ItemCameraTransforms();
     public static float field_181690_b = 0.0F;
     public static float field_181691_c = 0.0F;
@@ -52,12 +48,10 @@ public class ItemCameraTransforms
         this.field_181700_p = p_i46444_6_;
     }
 
-    public void func_181689_a(ItemCameraTransforms.TransformType p_181689_1_)
-    {
+    public void applyTransform(ItemCameraTransforms.TransformType p_181689_1_) {
         ItemTransformVec3f itemtransformvec3f = this.func_181688_b(p_181689_1_);
 
-        if (itemtransformvec3f != ItemTransformVec3f.DEFAULT)
-        {
+        if (itemtransformvec3f != ItemTransformVec3f.DEFAULT) {
             GlStateManager.translate(itemtransformvec3f.translation.x + field_181690_b, itemtransformvec3f.translation.y + field_181691_c, itemtransformvec3f.translation.z + field_181692_d);
             GlStateManager.rotate(itemtransformvec3f.rotation.y + field_181694_f, 0.0F, 1.0F, 0.0F);
             GlStateManager.rotate(itemtransformvec3f.rotation.x + field_181693_e, 1.0F, 0.0F, 0.0F);

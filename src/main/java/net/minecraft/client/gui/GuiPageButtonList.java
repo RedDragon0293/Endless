@@ -295,7 +295,7 @@ public class GuiPageButtonList extends GuiListExtended {
                 }
                 else
                 {
-                    guitextfield.textboxKeyTyped(p_178062_1_, p_178062_2_);
+                    guitextfield.textBoxKeyTyped(p_178062_1_, p_178062_2_);
                 }
             }
             else
@@ -513,8 +513,7 @@ public class GuiPageButtonList extends GuiListExtended {
         {
             p_178018_1_.mouseClicked(p_178018_2_, p_178018_3_, p_178018_4_);
 
-            if (p_178018_1_.isFocused())
-            {
+            if (p_178018_1_.getFocused()) {
                 this.field_178028_d = p_178018_1_;
             }
         }

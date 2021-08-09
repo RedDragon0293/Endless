@@ -1437,7 +1437,7 @@ public class NetHandlerPlayClient implements INetHandlerPlayClient {
 
             case RESET:
                 this.gameController.ingameGUI.displayTitle("", "", -1, -1, -1);
-                this.gameController.ingameGUI.func_175177_a();
+                this.gameController.ingameGUI.setDefaultTitlesTimes();
                 return;
         }
 

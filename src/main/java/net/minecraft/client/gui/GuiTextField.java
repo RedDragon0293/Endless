@@ -34,7 +34,7 @@ public class GuiTextField extends Gui
     /**
      * If this value is true along with isEnabled, keyTyped will process the keys.
      */
-    private boolean isFocused;
+    private boolean focused;
 
     /**
      * If this value is true along with isFocused, keyTyped will process the keys.
@@ -322,38 +322,26 @@ public class GuiTextField extends Gui
     /**
      * Call this method from your GuiScreen to process the keys into the textbox
      */
-    public boolean textboxKeyTyped(char p_146201_1_, int p_146201_2_)
-    {
-        if (!this.isFocused)
-        {
+    public boolean textBoxKeyTyped(char typedChar, int keyCode) {
+        if (!this.focused) {
             return false;
-        }
-        else if (GuiScreen.isKeyComboCtrlA(p_146201_2_))
-        {
+        } else if (GuiScreen.isKeyComboCtrlA(keyCode)) {
             this.setCursorPositionEnd();
             this.setSelectionPos(0);
             return true;
-        }
-        else if (GuiScreen.isKeyComboCtrlC(p_146201_2_))
-        {
+        } else if (GuiScreen.isKeyComboCtrlC(keyCode)) {
             GuiScreen.setClipboardString(this.getSelectedText());
             return true;
-        }
-        else if (GuiScreen.isKeyComboCtrlV(p_146201_2_))
-        {
-            if (this.isEnabled)
-            {
+        } else if (GuiScreen.isKeyComboCtrlV(keyCode)) {
+            if (this.isEnabled) {
                 this.writeText(GuiScreen.getClipboardString());
             }
 
             return true;
-        }
-        else if (GuiScreen.isKeyComboCtrlX(p_146201_2_))
-        {
+        } else if (GuiScreen.isKeyComboCtrlX(keyCode)) {
             GuiScreen.setClipboardString(this.getSelectedText());
 
-            if (this.isEnabled)
-            {
+            if (this.isEnabled) {
                 this.writeText("");
             }
 
@@ -361,17 +349,13 @@ public class GuiTextField extends Gui
         }
         else
         {
-            switch (p_146201_2_)
-            {
+            switch (keyCode) {
                 case 14:
-                    if (GuiScreen.isCtrlKeyDown())
-                    {
-                        if (this.isEnabled)
-                        {
+                    if (GuiScreen.isCtrlKeyDown()) {
+                        if (this.isEnabled) {
                             this.deleteWords(-1);
                         }
-                    }
-                    else if (this.isEnabled)
+                    } else if (this.isEnabled)
                     {
                         this.deleteFromCursor(-1);
                     }
@@ -464,17 +448,13 @@ public class GuiTextField extends Gui
                     return true;
 
                 default:
-                    if (ChatAllowedCharacters.isAllowedCharacter(p_146201_1_))
-                    {
-                        if (this.isEnabled)
-                        {
-                            this.writeText(Character.toString(p_146201_1_));
+                    if (ChatAllowedCharacters.isAllowedCharacter(typedChar)) {
+                        if (this.isEnabled) {
+                            this.writeText(Character.toString(typedChar));
                         }
 
                         return true;
-                    }
-                    else
-                    {
+                    } else {
                         return false;
                     }
             }
@@ -484,21 +464,17 @@ public class GuiTextField extends Gui
     /**
      * Args: x, y, buttonClicked
      */
-    public void mouseClicked(int p_146192_1_, int p_146192_2_, int p_146192_3_)
-    {
-        boolean flag = p_146192_1_ >= this.xPosition && p_146192_1_ < this.xPosition + this.width && p_146192_2_ >= this.yPosition && p_146192_2_ < this.yPosition + this.height;
+    public void mouseClicked(int mouseX, int mouseY, int mouseButton) {
+        boolean flag = mouseX >= this.xPosition && mouseX < this.xPosition + this.width && mouseY >= this.yPosition && mouseY < this.yPosition + this.height;
 
-        if (this.canLoseFocus)
-        {
+        if (this.canLoseFocus) {
             this.setFocused(flag);
         }
 
-        if (this.isFocused && flag && p_146192_3_ == 0)
-        {
-            int i = p_146192_1_ - this.xPosition;
+        if (this.focused && flag && mouseButton == 0) {
+            int i = mouseX - this.xPosition;
 
-            if (this.enableBackgroundDrawing)
-            {
+            if (this.enableBackgroundDrawing) {
                 i -= 4;
             }
 
@@ -525,7 +501,7 @@ public class GuiTextField extends Gui
             int k = this.selectionEnd - this.lineScrollOffset;
             String s = this.fontRendererInstance.trimStringToWidth(this.text.substring(this.lineScrollOffset), this.getWidth());
             boolean flag = j >= 0 && j <= s.length();
-            boolean flag1 = this.isFocused && this.cursorCounter / 6 % 2 == 0 && flag;
+            boolean flag1 = this.focused && this.cursorCounter / 6 % 2 == 0 && flag;
             int l = this.enableBackgroundDrawing ? this.xPosition + 4 : this.xPosition;
             int i1 = this.enableBackgroundDrawing ? this.yPosition + (this.height - 8) / 2 : this.yPosition;
             int j1 = l;
@@ -681,22 +657,19 @@ public class GuiTextField extends Gui
     /**
      * Sets focus to this gui element
      */
-    public void setFocused(boolean p_146195_1_)
-    {
-        if (p_146195_1_ && !this.isFocused)
-        {
+    public void setFocused(boolean focused) {
+        if (focused && !this.focused) {
             this.cursorCounter = 0;
         }
 
-        this.isFocused = p_146195_1_;
+        this.focused = focused;
     }
 
     /**
      * Getter for the focused field
      */
-    public boolean isFocused()
-    {
-        return this.isFocused;
+    public boolean getFocused() {
+        return this.focused;
     }
 
     public void setEnabled(boolean p_146184_1_)

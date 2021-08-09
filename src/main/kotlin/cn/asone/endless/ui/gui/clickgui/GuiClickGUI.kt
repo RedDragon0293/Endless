@@ -309,7 +309,7 @@ class GuiClickGUI : GuiScreen() {
              * Description
              */
             if (currentInfoButton is ModuleButton)
-                Fonts.thin16.drawString(
+                Fonts.light16.drawString(
                     (currentInfoButton as ModuleButton).module.description,
                     windowXStart + 231 + 4F,
                     windowYStart + 36F,

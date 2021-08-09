@@ -34,12 +34,12 @@ public class RealmsEditBox
 
     public void keyPressed(char p_keyPressed_1_, int p_keyPressed_2_)
     {
-        this.editBox.textboxKeyTyped(p_keyPressed_1_, p_keyPressed_2_);
+        this.editBox.textBoxKeyTyped(p_keyPressed_1_, p_keyPressed_2_);
     }
 
     public boolean isFocused()
     {
-        return this.editBox.isFocused();
+        return this.editBox.getFocused();
     }
 
     public void mouseClicked(int p_mouseClicked_1_, int p_mouseClicked_2_, int p_mouseClicked_3_)

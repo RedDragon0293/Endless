@@ -1,10 +1,6 @@
 package net.minecraft.client.gui.inventory;
 
 import com.google.common.collect.Lists;
-import java.io.IOException;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.achievement.GuiAchievements;
@@ -32,13 +28,21 @@ import net.minecraft.util.ResourceLocation;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
-public class GuiContainerCreative extends InventoryEffectRenderer
-{
-    /** The location of the creative inventory tabs texture */
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+public class GuiContainerCreative extends InventoryEffectRenderer {
+    /**
+     * The location of the creative inventory tabs texture
+     */
     private static final ResourceLocation creativeInventoryTabs = new ResourceLocation("textures/gui/container/creative_inventory/tabs.png");
     private static InventoryBasic field_147060_v = new InventoryBasic("tmp", true, 45);
 
-    /** Currently selected creative inventory tab index. */
+    /**
+     * Currently selected creative inventory tab index.
+     */
     private static int selectedTabIndex = CreativeTabs.tabBlock.getTabIndex();
 
     /** Amount scrolled in Creative mode inventory (0 = top, 1 = bottom) */
@@ -324,14 +328,10 @@ public class GuiContainerCreative extends InventoryEffectRenderer
                 this.searchField.setText("");
             }
 
-            if (!this.checkHotbarKeys(keyCode))
-            {
-                if (this.searchField.textboxKeyTyped(typedChar, keyCode))
-                {
+            if (!this.checkHotbarKeys(keyCode)) {
+                if (this.searchField.textBoxKeyTyped(typedChar, keyCode)) {
                     this.updateCreativeSearch();
-                }
-                else
-                {
+                } else {
                     super.keyTyped(typedChar, keyCode);
                 }
             }

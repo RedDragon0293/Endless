@@ -8,7 +8,6 @@ import com.mojang.authlib.Agent
 import com.mojang.authlib.exceptions.AuthenticationException
 import com.mojang.authlib.exceptions.AuthenticationUnavailableException
 import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService
-import com.mojang.authlib.yggdrasil.YggdrasilUserAuthentication
 import com.thealtening.auth.service.AlteningServiceType
 import net.minecraft.util.Session
 import java.net.Proxy
@@ -50,7 +49,7 @@ object LoginUtils {
         val userAuthentication = YggdrasilAuthenticationService(
             Proxy.NO_PROXY,
             ""
-        ).createUserAuthentication(Agent.MINECRAFT) as YggdrasilUserAuthentication
+        ).createUserAuthentication(Agent.MINECRAFT)
 
         userAuthentication.setUsername(username)
         userAuthentication.setPassword(password)
@@ -74,6 +73,25 @@ object LoginUtils {
         } catch (exception: NullPointerException) {
             LoginResult.WRONG_PASSWORD
         }
+    }
+
+    @JvmStatic
+    fun loginTheAltening(token: String): String {
+        lateinit var result: LoginResult
+        runCatching {
+            GuiAccounts.auth.updateService(AlteningServiceType.THEALTENING)
+            result = loginMojang(token, "Endless")
+            GuiAccounts.auth.updateService(AlteningServiceType.MOJANG)
+        }.onSuccess {
+            return if (result === LoginResult.LOGGED)
+                "§aYour name is now §f§l${mc.session.username}§c."
+            else
+                "§cFailed"
+        }.onFailure {
+            it.printStackTrace()
+            return "§cFailed to login: ${it.message}"
+        }
+        return "§cFailed"
     }
 
     @JvmStatic

@@ -14,8 +14,10 @@ object Fonts {
             if (!mkdir())
                 throw Exception("无法创建字体文件夹!")
     }
+
     @JvmField
-    val thin16: CFontRenderer
+    val light16: CFontRenderer
+
     @JvmField
     val light18: CFontRenderer
     @JvmField
@@ -38,7 +40,7 @@ object Fonts {
     init {
         ClientUtils.logger.info("正在初始化默认字体...")
         val var0 = System.currentTimeMillis()
-        thin16 = CFontRenderer(getAssetsFont("Roboto-Thin.ttf", 16), true, false)
+        light16 = CFontRenderer(getAssetsFont("Roboto-Light.ttf", 16), true, true)
         light18 = CFontRenderer(getAssetsFont("Roboto-Light.ttf", 18), true, true)
         regular20 = CFontRenderer(getAssetsFont("Roboto-Regular.ttf", 20), true, true)
         medium21 = CFontRenderer(getAssetsFont("Roboto-Medium.ttf", 21), true, true)

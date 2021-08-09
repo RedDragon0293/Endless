@@ -1,18 +1,12 @@
 package net.minecraft.client.gui;
 
 import io.netty.buffer.Unpooled;
-import java.io.IOException;
-import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.ContainerRepair;
-import net.minecraft.inventory.ICrafting;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.Slot;
+import net.minecraft.inventory.*;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.client.C17PacketCustomPayload;
@@ -20,15 +14,16 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import org.lwjgl.input.Keyboard;
 
-public class GuiRepair extends GuiContainer implements ICrafting
-{
+import java.io.IOException;
+import java.util.List;
+
+public class GuiRepair extends GuiContainer implements ICrafting {
     private static final ResourceLocation anvilResource = new ResourceLocation("textures/gui/container/anvil.png");
     private ContainerRepair anvil;
     private GuiTextField nameField;
     private InventoryPlayer playerInventory;
 
-    public GuiRepair(InventoryPlayer inventoryIn, World worldIn)
-    {
+    public GuiRepair(InventoryPlayer inventoryIn, World worldIn) {
         super(new ContainerRepair(inventoryIn, worldIn, Minecraft.getMinecraft().thePlayer));
         this.playerInventory = inventoryIn;
         this.anvil = (ContainerRepair)this.inventorySlots;
@@ -123,12 +118,9 @@ public class GuiRepair extends GuiContainer implements ICrafting
      */
     protected void keyTyped(char typedChar, int keyCode) throws IOException
     {
-        if (this.nameField.textboxKeyTyped(typedChar, keyCode))
-        {
+        if (this.nameField.textBoxKeyTyped(typedChar, keyCode)) {
             this.renameItem();
-        }
-        else
-        {
+        } else {
             super.keyTyped(typedChar, keyCode);
         }
     }

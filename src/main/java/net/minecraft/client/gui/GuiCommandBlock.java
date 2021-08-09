@@ -1,7 +1,6 @@
 package net.minecraft.client.gui;
 
 import io.netty.buffer.Unpooled;
-import java.io.IOException;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.command.server.CommandBlockLogic;
 import net.minecraft.network.PacketBuffer;
@@ -11,15 +10,20 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.input.Keyboard;
 
-public class GuiCommandBlock extends GuiScreen
-{
+import java.io.IOException;
+
+public class GuiCommandBlock extends GuiScreen {
     private static final Logger field_146488_a = LogManager.getLogger();
 
-    /** Text field containing the command block's command. */
+    /**
+     * Text field containing the command block's command.
+     */
     private GuiTextField commandTextField;
     private GuiTextField previousOutputTextField;
 
-    /** Command block being edited. */
+    /**
+     * Command block being edited.
+     */
     private final CommandBlockLogic localCommandBlock;
 
     /** "Done" button for the GUI. */
@@ -113,16 +117,13 @@ public class GuiCommandBlock extends GuiScreen
      * Fired when a key is typed (except F11 which toggles full screen). This is the equivalent of
      * KeyListener.keyTyped(KeyEvent e). Args : character (character on the key), keyCode (lwjgl Keyboard key code)
      */
-    protected void keyTyped(char typedChar, int keyCode) throws IOException
-    {
-        this.commandTextField.textboxKeyTyped(typedChar, keyCode);
-        this.previousOutputTextField.textboxKeyTyped(typedChar, keyCode);
+    protected void keyTyped(char typedChar, int keyCode) throws IOException {
+        this.commandTextField.textBoxKeyTyped(typedChar, keyCode);
+        this.previousOutputTextField.textBoxKeyTyped(typedChar, keyCode);
         this.doneBtn.enabled = this.commandTextField.getText().trim().length() > 0;
 
-        if (keyCode != 28 && keyCode != 156)
-        {
-            if (keyCode == 1)
-            {
+        if (keyCode != 28 && keyCode != 156) {
+            if (keyCode == 1) {
                 this.actionPerformed(this.cancelBtn);
             }
         }

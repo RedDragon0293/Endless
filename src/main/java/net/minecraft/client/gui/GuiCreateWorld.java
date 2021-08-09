@@ -1,7 +1,5 @@
 package net.minecraft.client.gui;
 
-import java.io.IOException;
-import java.util.Random;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.ChatAllowedCharacters;
 import net.minecraft.world.WorldSettings;
@@ -11,8 +9,10 @@ import net.minecraft.world.storage.WorldInfo;
 import org.apache.commons.lang3.StringUtils;
 import org.lwjgl.input.Keyboard;
 
-public class GuiCreateWorld extends GuiScreen
-{
+import java.io.IOException;
+import java.util.Random;
+
+public class GuiCreateWorld extends GuiScreen {
     private GuiScreen parentScreen;
     private GuiTextField field_146333_g;
     private GuiTextField field_146335_h;
@@ -406,14 +406,11 @@ public class GuiCreateWorld extends GuiScreen
      */
     protected void keyTyped(char typedChar, int keyCode) throws IOException
     {
-        if (this.field_146333_g.isFocused() && !this.field_146344_y)
-        {
-            this.field_146333_g.textboxKeyTyped(typedChar, keyCode);
+        if (this.field_146333_g.getFocused() && !this.field_146344_y) {
+            this.field_146333_g.textBoxKeyTyped(typedChar, keyCode);
             this.field_146330_J = this.field_146333_g.getText();
-        }
-        else if (this.field_146335_h.isFocused() && this.field_146344_y)
-        {
-            this.field_146335_h.textboxKeyTyped(typedChar, keyCode);
+        } else if (this.field_146335_h.getFocused() && this.field_146344_y) {
+            this.field_146335_h.textBoxKeyTyped(typedChar, keyCode);
             this.field_146329_I = this.field_146335_h.getText();
         }
 

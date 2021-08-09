@@ -1,19 +1,18 @@
 package net.minecraft.client.gui;
 
-import java.io.IOException;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.world.storage.ISaveFormat;
 import net.minecraft.world.storage.WorldInfo;
 import org.lwjgl.input.Keyboard;
 
-public class GuiRenameWorld extends GuiScreen
-{
+import java.io.IOException;
+
+public class GuiRenameWorld extends GuiScreen {
     private GuiScreen parentScreen;
     private GuiTextField field_146583_f;
     private final String saveName;
 
-    public GuiRenameWorld(GuiScreen parentScreenIn, String saveNameIn)
-    {
+    public GuiRenameWorld(GuiScreen parentScreenIn, String saveNameIn) {
         this.parentScreen = parentScreenIn;
         this.saveName = saveNameIn;
     }
@@ -78,8 +77,8 @@ public class GuiRenameWorld extends GuiScreen
      */
     protected void keyTyped(char typedChar, int keyCode) throws IOException
     {
-        this.field_146583_f.textboxKeyTyped(typedChar, keyCode);
-        ((GuiButton)this.buttonList.get(0)).enabled = this.field_146583_f.getText().trim().length() > 0;
+        this.field_146583_f.textBoxKeyTyped(typedChar, keyCode);
+        ((GuiButton) this.buttonList.get(0)).enabled = this.field_146583_f.getText().trim().length() > 0;
 
         if (keyCode == 28 || keyCode == 156)
         {

@@ -1,21 +1,20 @@
 package net.minecraft.client.gui;
 
 import com.google.common.base.Predicate;
-import java.io.IOException;
-import java.net.IDN;
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.client.resources.I18n;
 import org.lwjgl.input.Keyboard;
 
-public class GuiScreenAddServer extends GuiScreen
-{
+import java.io.IOException;
+import java.net.IDN;
+
+public class GuiScreenAddServer extends GuiScreen {
     private final GuiScreen parentScreen;
     private final ServerData serverData;
     private GuiTextField serverIPField;
     private GuiTextField serverNameField;
     private GuiButton serverResourcePacks;
-    private Predicate<String> field_181032_r = new Predicate<String>()
-    {
+    private Predicate<String> field_181032_r = new Predicate<String>() {
         public boolean apply(String p_apply_1_)
         {
             if (p_apply_1_.length() == 0)
@@ -119,20 +118,17 @@ public class GuiScreenAddServer extends GuiScreen
      * Fired when a key is typed (except F11 which toggles full screen). This is the equivalent of
      * KeyListener.keyTyped(KeyEvent e). Args : character (character on the key), keyCode (lwjgl Keyboard key code)
      */
-    protected void keyTyped(char typedChar, int keyCode) throws IOException
-    {
-        this.serverNameField.textboxKeyTyped(typedChar, keyCode);
-        this.serverIPField.textboxKeyTyped(typedChar, keyCode);
+    protected void keyTyped(char typedChar, int keyCode) throws IOException {
+        this.serverNameField.textBoxKeyTyped(typedChar, keyCode);
+        this.serverIPField.textBoxKeyTyped(typedChar, keyCode);
 
-        if (keyCode == 15)
-        {
-            this.serverNameField.setFocused(!this.serverNameField.isFocused());
-            this.serverIPField.setFocused(!this.serverIPField.isFocused());
+        if (keyCode == 15) {
+            this.serverNameField.setFocused(!this.serverNameField.getFocused());
+            this.serverIPField.setFocused(!this.serverIPField.getFocused());
         }
 
-        if (keyCode == 28 || keyCode == 156)
-        {
-            this.actionPerformed((GuiButton)this.buttonList.get(0));
+        if (keyCode == 28 || keyCode == 156) {
+            this.actionPerformed((GuiButton) this.buttonList.get(0));
         }
 
         ((GuiButton)this.buttonList.get(0)).enabled = this.serverIPField.getText().length() > 0 && this.serverIPField.getText().split(":").length > 0 && this.serverNameField.getText().length() > 0;

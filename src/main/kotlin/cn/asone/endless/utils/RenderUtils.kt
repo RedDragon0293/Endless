@@ -38,6 +38,9 @@ object RenderUtils {
     val scaledHeight
         inline get() = ScaledResolution(mc).scaledHeight
 
+    @JvmField
+    var deltaTime: Int = 0
+
     @JvmStatic
     fun doScissor(x1: Int, y1: Int, x2: Int, y2: Int) {
         val width = abs(x1 - x2) * 2

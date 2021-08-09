@@ -11,6 +11,7 @@ import cn.asone.endless.features.module.modules.misc.ModuleAntiBot
 import cn.asone.endless.features.module.modules.misc.ModuleTest
 import cn.asone.endless.features.module.modules.movement.ModuleSprint
 import cn.asone.endless.features.module.modules.render.ModuleClickGUI
+import cn.asone.endless.features.module.modules.render.ModuleHUD
 import cn.asone.endless.features.module.modules.render.ModuleSimpleArrayList
 import cn.asone.endless.utils.ClientUtils
 import java.util.*
@@ -28,7 +29,8 @@ object ModuleManager : ListenableClass() {
             ModuleClickGUI,
             ModuleAura,
             ModuleVelocity,
-            ModuleAntiBot
+            ModuleAntiBot,
+            ModuleHUD
         ).forEach {
             registerModule(it)
             if (it.values.isNotEmpty())
