@@ -508,7 +508,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
         this.effectRenderer = new EffectRenderer(this.theWorld, this.renderEngine);
         this.checkGLError("Post startup");
         Endless.INSTANCE.startClient();
-        if (Fonts.INSTANCE.getForceCustomFont().get())
+        if (Fonts.forceCustomFont.get())
             fontRendererObj = Fonts.mcRegular18;
         else
             fontRendererObj = fonts;
@@ -700,7 +700,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
             this.gameSettings.field_183018_l.clear();
             this.gameSettings.saveOptions();
         }
-        if (!Fonts.INSTANCE.getForceCustomFont().get())
+        if (!Fonts.forceCustomFont.get())
             fontRendererObj = fonts;
         this.mcLanguageManager.parseLanguageMetadata(list);
 

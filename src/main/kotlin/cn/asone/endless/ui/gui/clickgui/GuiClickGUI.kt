@@ -72,12 +72,11 @@ class GuiClickGUI : GuiScreen() {
                 infoButtons.add(AbstractValueButton.valueToButton(FakeForge.enabled, false))
             }
         })
-        buttonsMap[7]?.add(object : AbstractButton("全局自定义字体") {
-            override var state: Boolean
-                get() = Fonts.forceCustomFont.get()
-                set(value) {
-                    Fonts.forceCustomFont.set(value)
-                }
+        buttonsMap[7]?.add(object : DisabledButton("Font") {
+            init {
+                infoButtons.add(AbstractValueButton.valueToButton(Fonts.forceCustomFont, false))
+                infoButtons.add(AbstractValueButton.valueToButton(Fonts.cacheFont, false))
+            }
         })
     }
 

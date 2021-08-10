@@ -23,6 +23,8 @@ object Endless {
 
         ConfigManager
         Fonts
+        ConfigManager.loadConfig("global.json")
+        Fonts.loadFonts()
         EventManager
         CommandManager
         ModuleManager

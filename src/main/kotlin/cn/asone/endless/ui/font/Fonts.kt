@@ -18,6 +18,8 @@ object Fonts : ValueRegister {
             if (!mkdir())
                 throw Exception("无法创建字体文件夹!")
     }
+
+    @JvmField
     val forceCustomFont = object : BoolValue("ForceCustomFont", true) {
         override fun changeValue(newValue: Boolean) {
             super.changeValue(newValue)
@@ -29,38 +31,43 @@ object Fonts : ValueRegister {
     }
 
     @JvmField
-    val condensedLight16: GameFontRenderer
+    val cacheFont = BoolValue("CacheFont", true)
 
-    @JvmField
-    val light18: GameFontRenderer
+    @JvmStatic
+    lateinit var condensedLight16: GameFontRenderer
 
-    @JvmField
-    val mcRegular18: GameFontRenderer
+    @JvmStatic
+    lateinit var light18: GameFontRenderer
 
-    @JvmField
-    val regular20: GameFontRenderer
+    @JvmStatic
+    lateinit var mcRegular18: GameFontRenderer
 
-    @JvmField
-    val medium22: GameFontRenderer
+    @JvmStatic
+    lateinit var regular20: GameFontRenderer
 
-    @JvmField
-    val light24: GameFontRenderer
+    @JvmStatic
+    lateinit var medium22: GameFontRenderer
 
-    @JvmField
-    val regular24: GameFontRenderer
+    @JvmStatic
+    lateinit var light24: GameFontRenderer
 
-    @JvmField
-    val regular26: GameFontRenderer
+    @JvmStatic
+    lateinit var regular24: GameFontRenderer
 
-    @JvmField
-    val light30: GameFontRenderer
+    @JvmStatic
+    lateinit var regular26: GameFontRenderer
 
-    @JvmField
-    val regular38: GameFontRenderer
+    @JvmStatic
+    lateinit var light30: GameFontRenderer
 
-    @JvmField
-    val medium44: GameFontRenderer
-    init {
+    @JvmStatic
+    lateinit var regular38: GameFontRenderer
+
+    @JvmStatic
+    lateinit var medium44: GameFontRenderer
+
+    @JvmStatic
+    fun loadFonts() {
         ClientUtils.logger.info("正在初始化默认字体...")
         val var0 = System.currentTimeMillis()
         condensedLight16 = GameFontRenderer(getAssetsFont("HarmonyOS_Sans_Condensed_Light.ttf", 16))
@@ -116,5 +123,8 @@ object Fonts : ValueRegister {
         }
     }
 
-    override val values: ArrayList<AbstractValue<*>> = arrayListOf(forceCustomFont)
+    override val values: ArrayList<AbstractValue<*>> = arrayListOf(
+        forceCustomFont,
+        cacheFont
+    )
 }

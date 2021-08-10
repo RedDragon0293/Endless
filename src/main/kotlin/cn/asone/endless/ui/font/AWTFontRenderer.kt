@@ -214,25 +214,19 @@ class AWTFontRenderer(val font: Font) {
      * 初始化单个字符图片
      */
     private fun loadChar(char: Char): FontChar {
-        val fc = loadCharImageFromCache(char)
-        chars[char.code] = fc
-        return fc
-    }
-
-    /**
-     * 从本地缓存读取字符图片
-     * 没有则渲染
-     */
-    private fun loadCharImageFromCache(char: Char): FontChar {
-        val charImageFile = getCharCacheFile(char)
         val result: FontChar
-        if (charImageFile.exists()) {
-            result = FontChar(char, ImageIO.read(charImageFile))
-        } else {
-            val image = renderCharImage(char)
-            result = FontChar(char, image)
-            saveFontCharToCache(char, image)
-        }
+        if (Fonts.cacheFont.get()) {
+            val charImageFile = getCharCacheFile(char)
+            if (charImageFile.exists()) {
+                result = FontChar(char, ImageIO.read(charImageFile))
+            } else {
+                val image = renderCharImage(char)
+                result = FontChar(char, image)
+                saveFontCharToCache(char, image)
+            }
+        } else
+            result = FontChar(char, renderCharImage(char))
+        chars[char.code] = result
         return result
     }
 

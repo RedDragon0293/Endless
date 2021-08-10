@@ -28,7 +28,7 @@ object FakeForge : ListenableClass(), ValueRegister {
     override val values: ArrayList<AbstractValue<*>> = arrayListOf(enabled)
 
     override val handledEvents: ArrayList<EventHook> = arrayListOf(
-        EventHook(SendPacketEvent::class.java, 100)
+        //EventHook(SendPacketEvent::class.java, 100)
     )
 
     init {

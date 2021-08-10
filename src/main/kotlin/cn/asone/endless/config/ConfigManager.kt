@@ -26,6 +26,8 @@ object ConfigManager {
         configs.add(GlobalConfig())
     }
 
+    fun loadConfig(configFile: String) = configs.find { it.file == File(rootDir, configFile) }?.loadConfig()
+
     fun loadAllConfigs() = configs.forEach {
         it.loadConfig()
     }
