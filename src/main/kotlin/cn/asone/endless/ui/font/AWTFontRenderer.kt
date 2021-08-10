@@ -194,7 +194,7 @@ class AWTFontRenderer(val font: Font) {
     /**
      * 渲染字符图片
      */
-    private fun renderCharImage(char: Char): FontChar {
+    private fun renderCharImage(char: Char): BufferedImage {
         var charWidth = fontMetrics.stringWidth(char.toString()) + 8
         if (charWidth <= 0)
             charWidth = 7
@@ -206,7 +206,7 @@ class AWTFontRenderer(val font: Font) {
         graphics.color = Color.WHITE
         graphics.drawString(char.toString(), 3, 1 + fontMetrics.ascent)
 
-        return FontChar(char, fontImage)
+        return fontImage
     }
 
     /**
@@ -228,11 +228,10 @@ class AWTFontRenderer(val font: Font) {
         val result: FontChar
         if (charImageFile.exists()) {
             result = FontChar(char, ImageIO.read(charImageFile))
-            //ClientUtils.logger.info("从缓存中加载字符$char, 用时${System.currentTimeMillis() - time} ms")
         } else {
-            result = renderCharImage(char)
-            //ClientUtils.logger.info("生成字符$char, 用时${System.currentTimeMillis() - time} ms")
-            saveFontCharToCache(result)
+            val image = renderCharImage(char)
+            result = FontChar(char, image)
+            saveFontCharToCache(char, image)
         }
         return result
     }
@@ -241,8 +240,8 @@ class AWTFontRenderer(val font: Font) {
      * 将渲染好的FontChar保存至缓存
      * @return 传入的FontChar
      */
-    private fun saveFontCharToCache(fontChar: FontChar) {
-        ImageIO.write(fontChar.bufferedImage, "png", getCharCacheFile(fontChar.char))
+    private fun saveFontCharToCache(char: Char, image: BufferedImage) {
+        ImageIO.write(image, "png", getCharCacheFile(char))
     }
 
     /**

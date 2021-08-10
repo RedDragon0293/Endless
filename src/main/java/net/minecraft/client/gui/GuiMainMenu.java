@@ -537,7 +537,7 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
         float f = 1.8F - MathHelper.abs(MathHelper.sin((float) (Minecraft.getSystemTime() % 1000L) / 1000.0F * (float) Math.PI * 2.0F) * 0.1F);
         f = f * 100.0F / (float) (this.fontRendererObj.getStringWidth(this.splashText) + 32);
         GlStateManager.scale(f, f, f);
-        this.drawCenteredString(this.fontRendererObj, this.splashText, 0, -8, -256);
+        this.drawCenteredString(this.fontRendererObj, this.splashText, 0, -8, -256 /*FF FF FF 00*/);
         GlStateManager.popMatrix();
         String s = "Minecraft 1.8.9 × " + Endless.CLIENT_NAME + " " + Endless.CLIENT_VERSION;
 
