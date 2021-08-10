@@ -8,7 +8,6 @@ import cn.asone.endless.features.command.CommandManager
 import cn.asone.endless.features.module.modules.combat.ModuleAura
 import cn.asone.endless.features.module.modules.combat.ModuleVelocity
 import cn.asone.endless.features.module.modules.misc.ModuleAntiBot
-import cn.asone.endless.features.module.modules.misc.ModuleTest
 import cn.asone.endless.features.module.modules.movement.ModuleSprint
 import cn.asone.endless.features.module.modules.render.ModuleClickGUI
 import cn.asone.endless.features.module.modules.render.ModuleHUD
@@ -23,7 +22,6 @@ object ModuleManager : ListenableClass() {
     init {
         EventManager.registerListener(this)
         arrayOf(
-            ModuleTest,
             ModuleSimpleArrayList,
             ModuleSprint,
             ModuleClickGUI,
