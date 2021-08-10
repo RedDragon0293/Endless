@@ -34,7 +34,7 @@ abstract class AbstractButton(open val name: String) {
         this.y = y
     }
 
-    fun drawBox(mouseX: Int, mouseY: Int) {
+    open fun drawBox(mouseX: Int, mouseY: Int) {
         //Background
         RenderUtils.drawAntiAliasingRoundedRect(x, y, 150F, 23F, 5F, boxColor)
         //Button
@@ -54,7 +54,7 @@ abstract class AbstractButton(open val name: String) {
         )
     }
 
-    fun drawText(mouseX: Int, mouseY: Int) {
+    open fun drawText(mouseX: Int, mouseY: Int) {
         Fonts.regular26.drawString(name, x + 4, y + 6, GuiClickGUI.textColor)
     }
 

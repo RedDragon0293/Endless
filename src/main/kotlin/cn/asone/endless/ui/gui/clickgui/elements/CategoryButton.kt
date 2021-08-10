@@ -12,10 +12,10 @@ class CategoryButton(id: Int, x: Int, y: Int, text: String) : GuiButton(id, x, y
     }
 
     override fun drawButton(mc: Minecraft?, mouseX: Int, mouseY: Int) {
-        Fonts.medium21.drawCenteredString(
+        Fonts.medium22.drawCenteredString(
             displayString,
-            xPosition + 30.5F,
-            yPosition + 5F,
+            xPosition + 30F,
+            yPosition + 4.5F,
             if (GuiClickGUI.categoryIndex == this.id)
                 chosenColor
             else

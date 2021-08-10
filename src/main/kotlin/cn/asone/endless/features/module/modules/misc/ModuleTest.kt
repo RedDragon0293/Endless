@@ -82,12 +82,12 @@ object ModuleTest : AbstractModule(
         Fonts.regular20.drawString("ABCDEFGHIGKLMNOPQRSTUVWXYZ", 200F, 70F, Color.RED.rgb)
         mc.fontRendererObj.drawString("ABCDEFGHIGKLMNOPQRSTUVWXYZ", 200, 70, Color.BLUE.rgb)
 
-        var y = 70 + Fonts.regular20.height + 1.0
-        Fonts.regular20.drawString("abcdefghijklmnopqrstuvwxyz", 200.0, y, Color.RED.rgb)
+        var y = 70 + Fonts.regular20.height + 1F
+        Fonts.regular20.drawString("abcdefghijklmnopqrstuvwxyz", 200F, y, Color.RED.rgb)
         mc.fontRendererObj.drawString("abcdefghijklmnopqrstuvwxyz", 200, y.toInt(), Color.BLUE.rgb)
 
-        y += Fonts.regular20.height + 1.0
-        Fonts.regular20.drawString("1234567890,./?:[]", 200.0, y, Color.RED.rgb)
+        y += Fonts.regular20.height + 1F
+        Fonts.regular20.drawString("1234567890,./?:[]", 200F, y, Color.RED.rgb)
         mc.fontRendererObj.drawString("1234567890,./?:[]", 200, y.toInt(), Color.BLUE.rgb)
         //GL11.glPushMatrix()
         //GL11.glTranslatef(200F, 100F, 1F)

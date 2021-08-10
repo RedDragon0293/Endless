@@ -580,12 +580,12 @@ public class FontRenderer implements IResourceManagerReloadListener {
                 text = this.bidiReorder(text);
             }
 
-            if ((color & -67108864) == 0) {
-                color |= -16777216;
+            if ((color & -67108864 /*FC 00 00 00*/) == 0) {
+                color |= -16777216 /*FF 00 00 00*/;
             }
 
             if (dropShadow) {
-                color = (color & 16579836) >> 2 | color & -16777216;
+                color = (color & 16579836 /*FC FC FC*/) >> 2 | color & -16777216 /*FF 00 00 00*/;
             }
 
             this.red = (float) (color >> 16 & 255) / 255.0F;

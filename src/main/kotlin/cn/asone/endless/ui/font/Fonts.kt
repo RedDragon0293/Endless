@@ -2,63 +2,79 @@ package cn.asone.endless.ui.font
 
 import cn.asone.endless.Endless
 import cn.asone.endless.config.ConfigManager
-import cn.asone.endless.ui.utf16font.GameFontRenderer
 import cn.asone.endless.utils.ClientUtils
+import cn.asone.endless.utils.mc
+import cn.asone.endless.value.AbstractValue
+import cn.asone.endless.value.BoolValue
+import cn.asone.endless.value.ValueRegister
 import java.awt.Font
 import java.io.File
 import java.io.FileInputStream
 import java.util.*
 
-object Fonts {
-    val fontsDir: File = File(ConfigManager.rootDir, "fonts").apply {
+object Fonts : ValueRegister {
+    private val fontsDir: File = File(ConfigManager.rootDir, "fonts").apply {
         if (!exists())
             if (!mkdir())
                 throw Exception("无法创建字体文件夹!")
     }
+    val forceCustomFont = object : BoolValue("ForceCustomFont", true) {
+        override fun changeValue(newValue: Boolean) {
+            super.changeValue(newValue)
+            if (newValue)
+                mc.fontRendererObj = mcRegular18
+            else
+                mc.fontRendererObj = mc.fonts
+        }
+    }
 
     @JvmField
-    val light16: CFontRenderer
-    @JvmField
-    val light18: CFontRenderer
-    @JvmField
-    val regular20: CFontRenderer
-    @JvmField
-    val medium21: CFontRenderer
-    @JvmField
-    val light24: CFontRenderer
-    @JvmField
-    val regular24: CFontRenderer
+    val condensedLight16: GameFontRenderer
 
     @JvmField
-    val regular26: CFontRenderer
+    val light18: GameFontRenderer
 
     @JvmField
-    val light30: CFontRenderer
+    val mcRegular18: GameFontRenderer
 
     @JvmField
-    val regular38: CFontRenderer
+    val regular20: GameFontRenderer
 
     @JvmField
-    val medium44: CFontRenderer
+    val medium22: GameFontRenderer
 
     @JvmField
-    val test: GameFontRenderer
+    val light24: GameFontRenderer
 
+    @JvmField
+    val regular24: GameFontRenderer
+
+    @JvmField
+    val regular26: GameFontRenderer
+
+    @JvmField
+    val light30: GameFontRenderer
+
+    @JvmField
+    val regular38: GameFontRenderer
+
+    @JvmField
+    val medium44: GameFontRenderer
     init {
         ClientUtils.logger.info("正在初始化默认字体...")
         val var0 = System.currentTimeMillis()
-        light16 = CFontRenderer(getAssetsFont("Roboto-Light.ttf", 16), true, true)
-        light18 = CFontRenderer(getAssetsFont("Roboto-Light.ttf", 18), true, true)
-        regular20 = CFontRenderer(getAssetsFont("Roboto-Regular.ttf", 20), true, true)
-        medium21 = CFontRenderer(getAssetsFont("Roboto-Medium.ttf", 21), true, true)
-        light24 = CFontRenderer(getAssetsFont("Roboto-Light.ttf", 24), true, true)
-        regular24 = CFontRenderer(getAssetsFont("Roboto-Regular.ttf", 24), true, true)
-        regular26 = CFontRenderer(getAssetsFont("Roboto-Regular.ttf", 26), true, true)
-        light30 = CFontRenderer(getAssetsFont("Roboto-Light.ttf", 30), true, true)
-        regular38 = CFontRenderer(getAssetsFont("Roboto-Regular.ttf", 38), true, true)
-        medium44 = CFontRenderer(getAssetsFont("Roboto-Medium.ttf", 44), true, true)
+        condensedLight16 = GameFontRenderer(getAssetsFont("HarmonyOS_Sans_Condensed_Light.ttf", 16))
+        light18 = GameFontRenderer(getAssetsFont("HarmonyOS_Sans_Light.ttf", 18))
+        mcRegular18 = GameFontRenderer(getAssetsFont("HarmonyOS_Sans_Regular.ttf", 18), true)
+        regular20 = GameFontRenderer(getAssetsFont("HarmonyOS_Sans_Regular.ttf", 20))
+        medium22 = GameFontRenderer(getAssetsFont("HarmonyOS_Sans_Medium.ttf", 22))
+        light24 = GameFontRenderer(getAssetsFont("HarmonyOS_Sans_Light.ttf", 24))
+        regular24 = GameFontRenderer(getAssetsFont("HarmonyOS_Sans_Regular.ttf", 24))
+        regular26 = GameFontRenderer(getAssetsFont("HarmonyOS_Sans_Regular.ttf", 26))
+        light30 = GameFontRenderer(getAssetsFont("HarmonyOS_Sans_Light.ttf", 30))
+        regular38 = GameFontRenderer(getAssetsFont("HarmonyOS_Sans_Regular.ttf", 38))
+        medium44 = GameFontRenderer(getAssetsFont("HarmonyOS_Sans_Medium.ttf", 44))
 
-        test = GameFontRenderer(getAssetsFont("HarmonyOS_Sans_regular.ttf", 20))
         ClientUtils.logger.info("成功初始化默认字体, 用时${(System.currentTimeMillis() - var0) / 1000F}秒.")
     }
 
@@ -99,4 +115,6 @@ object Fonts {
             Font("default", Font.PLAIN, size)
         }
     }
+
+    override val values: ArrayList<AbstractValue<*>> = arrayListOf(forceCustomFont)
 }

@@ -3,6 +3,7 @@ package net.minecraft.client;
 import cn.asone.endless.Endless;
 import cn.asone.endless.event.EventManager;
 import cn.asone.endless.event.KeyEvent;
+import cn.asone.endless.ui.font.Fonts;
 import cn.asone.endless.utils.RenderUtils;
 import com.google.common.collect.*;
 import com.google.common.util.concurrent.Futures;
@@ -172,6 +173,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
      * The font renderer used for displaying and measuring text
      */
     public FontRenderer fontRendererObj;
+    public FontRenderer fonts;
     public FontRenderer standardGalacticFontRenderer;
 
     /**
@@ -452,15 +454,14 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
         this.mcSoundHandler = new SoundHandler(this.mcResourceManager, this.gameSettings);
         this.mcResourceManager.registerReloadListener(this.mcSoundHandler);
         this.mcMusicTicker = new MusicTicker(this);
-        this.fontRendererObj = new FontRenderer(this.gameSettings, new ResourceLocation("textures/font/ascii.png"), this.renderEngine, false);
-
+        this.fonts = new FontRenderer(this.gameSettings, new ResourceLocation("textures/font/ascii.png"), this.renderEngine, false);
         if (this.gameSettings.language != null) {
-            this.fontRendererObj.setUnicodeFlag(this.gameSettings.forceUnicodeFont);
-            this.fontRendererObj.setBidiFlag(this.mcLanguageManager.isCurrentLanguageBidirectional());
+            this.fonts.setUnicodeFlag(this.gameSettings.forceUnicodeFont);
+            this.fonts.setBidiFlag(this.mcLanguageManager.isCurrentLanguageBidirectional());
         }
 
         this.standardGalacticFontRenderer = new FontRenderer(this.gameSettings, new ResourceLocation("textures/font/ascii_sga.png"), this.renderEngine, false);
-        this.mcResourceManager.registerReloadListener(this.fontRendererObj);
+        this.mcResourceManager.registerReloadListener(this.fonts);
         this.mcResourceManager.registerReloadListener(this.standardGalacticFontRenderer);
         this.mcResourceManager.registerReloadListener(new GrassColorReloadListener());
         this.mcResourceManager.registerReloadListener(new FoliageColorReloadListener());
@@ -507,6 +508,10 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
         this.effectRenderer = new EffectRenderer(this.theWorld, this.renderEngine);
         this.checkGLError("Post startup");
         Endless.INSTANCE.startClient();
+        if (Fonts.INSTANCE.getForceCustomFont().get())
+            fontRendererObj = Fonts.mcRegular18;
+        else
+            fontRendererObj = fonts;
         this.ingameGUI = new GuiIngame(this);
 
         if (this.serverName != null) {
@@ -695,7 +700,8 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
             this.gameSettings.field_183018_l.clear();
             this.gameSettings.saveOptions();
         }
-
+        if (!Fonts.INSTANCE.getForceCustomFont().get())
+            fontRendererObj = fonts;
         this.mcLanguageManager.parseLanguageMetadata(list);
 
         if (this.renderGlobal != null) {

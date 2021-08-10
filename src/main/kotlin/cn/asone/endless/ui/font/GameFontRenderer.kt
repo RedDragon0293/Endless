@@ -1,4 +1,4 @@
-package cn.asone.endless.ui.utf16font
+package cn.asone.endless.ui.font
 
 import cn.asone.endless.utils.mc
 import net.minecraft.client.gui.FontRenderer
@@ -7,31 +7,35 @@ import net.minecraft.client.resources.IResourceManager
 import net.minecraft.util.ChatAllowedCharacters
 import net.minecraft.util.ResourceLocation
 import org.lwjgl.opengl.GL11
-import java.awt.Color
 import java.awt.Font
 import java.util.*
 
-class GameFontRenderer(font: Font) : FontRenderer(
+class GameFontRenderer(font: Font, companionStyle: Boolean = false) : FontRenderer(
     mc.gameSettings,
     ResourceLocation("textures/font/ascii.png"), mc.textureManager, false
 ) {
 
-    var defaultFont = AWTFontRenderer(font)
-    private var boldFont = AWTFontRenderer(font.deriveFont(Font.BOLD))
-    private var italicFont = AWTFontRenderer(font.deriveFont(Font.ITALIC))
-    private var boldItalicFont = AWTFontRenderer(font.deriveFont(Font.BOLD or Font.ITALIC))
+    private var defaultFont = AWTFontRenderer(font)
+    private var boldFont: AWTFontRenderer? = null
+    private var italicFont: AWTFontRenderer? = null
+    private var boldItalicFont: AWTFontRenderer? = null
 
     val height: Int
-        get() = defaultFont.height / 2
+        get() = defaultFont.height
 
     val size: Int
         get() = defaultFont.font.size
 
     init {
         FONT_HEIGHT = height
+        if (companionStyle) {
+            boldFont = AWTFontRenderer(font.deriveFont(Font.BOLD))
+            italicFont = AWTFontRenderer(font.deriveFont(Font.ITALIC))
+            boldItalicFont = AWTFontRenderer(font.deriveFont(Font.BOLD or Font.ITALIC))
+        }
     }
 
-    fun drawString(s: String, x: Float, y: Float, color: Int) = drawString(s, x, y, color, false)
+    fun drawString(s: String, x: Float, y: Float, color: Int) = drawText(s, x, y, color, false)
 
     override fun drawStringWithShadow(text: String, x: Float, y: Float, color: Int) =
         drawString(text, x, y, color, true)
@@ -40,14 +44,21 @@ class GameFontRenderer(font: Font) : FontRenderer(
         drawString(s, x - getStringWidth(s) / 2F, y, color, shadow)
 
     fun drawCenteredString(s: String, x: Float, y: Float, color: Int) =
-        drawStringWithShadow(s, x - getStringWidth(s) / 2F, y, color)
+        drawText(s, x - getStringWidth(s) / 2F, y, color, false)
 
     override fun drawString(text: String, x: Float, y: Float, color: Int, shadow: Boolean): Int {
+        if (shadow) {
+            var newColor = color
+            if (newColor and -67108864 /*FC 00 00 00*/ == 0) {
+                newColor = newColor or -16777216 /*FF 00 00 00*/
+            }
 
-        val currY = y - 3F
-        if (shadow)
-            drawText(text, x + 1f, currY + 1f, Color(0, 0, 0, 150).rgb, true)
-        return drawText(text, x, currY, color, false)
+            if (shadow) {
+                newColor = (newColor and 16579836) /*FC FC FC*/ shr 2 or newColor and -16777216 /*FF 00 00 00*/
+            }
+            drawText(text, x + 1F, y + 1F, newColor, true)
+        }
+        return drawText(text, x, y, color, false)
     }
 
     private fun drawText(rawText: String?, x: Float, y: Float, colorHex: Int, ignoreColor: Boolean): Int {
@@ -124,11 +135,11 @@ class GameFontRenderer(font: Font) : FontRenderer(
                     }
 
                     currentFont = if (bold && italic)
-                        boldItalicFont
+                        boldItalicFont ?: defaultFont
                     else if (bold)
-                        boldFont
+                        boldFont ?: defaultFont
                     else if (italic)
-                        italicFont
+                        italicFont ?: defaultFont
                     else
                         defaultFont
 
@@ -141,15 +152,19 @@ class GameFontRenderer(font: Font) : FontRenderer(
 
                     if (strikeThrough)
                         drawLine(
-                            width / 2.0 + 1, currentFont.height / 3.0,
-                            (width + currentFont.getStringWidth(words)) / 2F + 1, currentFont.height / 3.0,
+                            width + 1,
+                            currentFont.height / 2 - 1.0,
+                            (width + currentFont.getStringWidth(words)) + 1,
+                            currentFont.height / 2 - 1.0,
                             FONT_HEIGHT / 16F
                         )
 
                     if (underline)
                         drawLine(
-                            width / 2.0 + 1, currentFont.height / 2.0,
-                            (width + currentFont.getStringWidth(words)) / 2.0 + 1, currentFont.height / 2.0,
+                            width + 1,
+                            currentFont.height - 1.0,
+                            (width + currentFont.getStringWidth(words)) + 1,
+                            currentFont.height - 1.0,
                             FONT_HEIGHT / 16F
                         )
 
@@ -166,7 +181,7 @@ class GameFontRenderer(font: Font) : FontRenderer(
         return (x + getStringWidth(rawText)).toInt()
     }
 
-    override fun getColorCode(charCode: Char) = mc.fontRendererObj.getColorCode(charCode)
+    //override fun getColorCode(charCode: Char) = mc.fontRendererObj.getColorCode(charCode)
     //ColorUtils.hexColors[getColorIndex(charCode)] ColorUtils.hexColors[colorIndex] or (alpha shl 24)
 
     override fun getStringWidth(text: String): Int {
@@ -203,11 +218,11 @@ class GameFontRenderer(font: Font) : FontRenderer(
                     }
 
                     currentFont = if (bold && italic)
-                        boldItalicFont
+                        boldItalicFont ?: defaultFont
                     else if (bold)
-                        boldFont
+                        boldFont ?: defaultFont
                     else if (italic)
-                        italicFont
+                        italicFont ?: defaultFont
                     else
                         defaultFont
 
@@ -215,9 +230,9 @@ class GameFontRenderer(font: Font) : FontRenderer(
                 }
             }
 
-            width / 2
+            width
         } else
-            defaultFont.getStringWidth(text) / 2
+            defaultFont.getStringWidth(text)
     }
 
     private fun drawLine(x: Double, y: Double, x1: Double, y1: Double, width: Float) {

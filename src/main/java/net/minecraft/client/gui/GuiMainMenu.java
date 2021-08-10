@@ -1,5 +1,6 @@
 package net.minecraft.client.gui;
 
+import cn.asone.endless.Endless;
 import cn.asone.endless.ui.gui.accounts.GuiAccounts;
 import com.google.common.collect.Lists;
 import net.minecraft.client.Minecraft;
@@ -538,7 +539,7 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
         GlStateManager.scale(f, f, f);
         this.drawCenteredString(this.fontRendererObj, this.splashText, 0, -8, -256);
         GlStateManager.popMatrix();
-        String s = "Minecraft 1.8.9";
+        String s = "Minecraft 1.8.9 × " + Endless.CLIENT_NAME + " " + Endless.CLIENT_VERSION;
 
         if (this.mc.isDemo()) {
             s = s + " Demo";

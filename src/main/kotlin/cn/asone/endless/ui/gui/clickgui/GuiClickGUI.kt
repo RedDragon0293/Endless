@@ -8,6 +8,7 @@ import cn.asone.endless.ui.gui.clickgui.elements.CategoryButton
 import cn.asone.endless.ui.gui.clickgui.elements.moduleinfo.AbstractValueButton
 import cn.asone.endless.ui.gui.clickgui.elements.moduleinfo.ListButton
 import cn.asone.endless.ui.gui.clickgui.elements.moduleslist.AbstractButton
+import cn.asone.endless.ui.gui.clickgui.elements.moduleslist.DisabledButton
 import cn.asone.endless.ui.gui.clickgui.elements.moduleslist.ModuleButton
 import cn.asone.endless.utils.RenderUtils
 import cn.asone.endless.utils.playSound
@@ -66,18 +67,17 @@ class GuiClickGUI : GuiScreen() {
     init {
         for (module in ModuleManager.modules)
             buttonsMap[module.category]?.add(ModuleButton(module))
-        buttonsMap[7]?.add(object : AbstractButton("FakeForge") {
+        buttonsMap[7]?.add(object : DisabledButton("FakeForge") {
             init {
                 infoButtons.add(AbstractValueButton.valueToButton(FakeForge.enabled, false))
             }
-
+        })
+        buttonsMap[7]?.add(object : AbstractButton("全局自定义字体") {
             override var state: Boolean
-                get() = FakeForge.enabled.get()
+                get() = Fonts.forceCustomFont.get()
                 set(value) {
-                    FakeForge.enabled.set(value)
+                    Fonts.forceCustomFont.set(value)
                 }
-            //override val infoValues: ArrayList<AbstractValueButton>
-            //get() = FakeForge.values
         })
     }
 
@@ -309,7 +309,7 @@ class GuiClickGUI : GuiScreen() {
              * Description
              */
             if (currentInfoButton is ModuleButton)
-                Fonts.light16.drawString(
+                Fonts.condensedLight16.drawString(
                     (currentInfoButton as ModuleButton).module.description,
                     windowXStart + 231 + 4F,
                     windowYStart + 36F,

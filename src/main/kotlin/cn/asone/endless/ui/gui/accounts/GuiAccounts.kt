@@ -32,6 +32,7 @@ class GuiAccounts(val parent: GuiScreen) : GuiScreen() {
         backButton = GuiButton(0, width / 2 - 100, height - 48, I18n.format("gui.back"))
         username = GuiTextField(2, fontRendererObj, width / 2 - 100, 90, 200, 20)
         username.maxStringLength = 1024
+        username.text = mc.session.username
         password = GuiPasswordField(3, fontRendererObj, width / 2 - 100, 115, 200, 20)
         password.maxStringLength = 1024
         thealtening = GuiTextField(4, fontRendererObj, width / 2 - 100, 140, 200, 20)
