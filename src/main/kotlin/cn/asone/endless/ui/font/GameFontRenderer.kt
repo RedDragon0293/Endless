@@ -47,18 +47,19 @@ class GameFontRenderer(font: Font, companionStyle: Boolean = false) : FontRender
         drawText(s, x - getStringWidth(s) / 2F, y, color, false)
 
     override fun drawString(text: String, x: Float, y: Float, color: Int, shadow: Boolean): Int {
-        if (shadow) {
-            var newColor = color
-            if (newColor and -67108864 /*FC 00 00 00*/ == 0) {
-                newColor = newColor or -16777216 /*FF 00 00 00*/
-            }
+        var newColor = color
 
-            if (shadow) {
-                newColor = (newColor and 16579836) /*FC FC FC*/ shr 2 or newColor and -16777216 /*FF 00 00 00*/
-            }
+        if (shadow) {
+            newColor = (newColor and 16579836) /*FC FC FC*/ shr 2 or newColor and -16777216 /*FF 00 00 00*/
             drawText(text, x + 1F, y + 1F, newColor, true)
         }
-        return drawText(text, x, y, color, false)
+        newColor = color
+
+        if (newColor and -67108864 /*FC 00 00 00*/ == 0) {
+            newColor = newColor or -16777216 /*FF 00 00 00*/
+        }
+
+        return drawText(text, x, y, newColor, false)
     }
 
     private fun drawText(rawText: String?, x: Float, y: Float, colorHex: Int, ignoreColor: Boolean): Int {

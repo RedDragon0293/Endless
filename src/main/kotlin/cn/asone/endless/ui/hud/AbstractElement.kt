@@ -1,4 +1,4 @@
 package cn.asone.endless.ui.hud
 
-class HUD {
+abstract class AbstractElement {
 }

@@ -37,9 +37,9 @@ class GuiClickGUI : GuiScreen() {
         var currentInfoButton: AbstractButton? = null
         var listButton: ListButton? = null
 
-        var backgroundColor: Int = 0
-        var elementColor: Int = 0
-        var textColor: Int = 0
+        var backgroundColor: Int = Color(236, 236, 236).rgb
+        var elementColor: Int = Color.white.rgb
+        var textColor: Int = Color.black.rgb
 
         private lateinit var backButton: GuiButton
         fun settingKeyBind() {

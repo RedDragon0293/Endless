@@ -13,8 +13,8 @@ import java.awt.Color
  */
 abstract class AbstractButton(open val name: String) {
     companion object {
-        var boxColor: Int = 0
-        var buttonColor: Int = 0
+        var boxColor: Int = Color.white.rgb
+        var buttonColor: Int = Color.white.rgb
     }
 
     protected var x = 0F

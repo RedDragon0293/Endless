@@ -11,7 +11,11 @@ import cn.asone.endless.value.BoolValue
 object ModuleHUD : AbstractModule("HUD", "Toggles visibility of the HUD.", ModuleCategory.RENDER) {
     val blackHotbarValue = BoolValue("BlackHotbar", true)
     val smoothHotbarValue = BoolValue("Smooth", false)
-    override val values: ArrayList<AbstractValue<*>> = arrayListOf(blackHotbarValue)
+    private val arraylistValue = BoolValue("Arraylist", true)
+    override val values: ArrayList<AbstractValue<*>> = arrayListOf(
+        blackHotbarValue,
+        arraylistValue
+    )
     override val handledEvents: ArrayList<EventHook> = arrayListOf(
         EventHook(Render2DEvent::class.java, 100),
         EventHook(UpdateEvent::class.java)
