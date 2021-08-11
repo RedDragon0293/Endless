@@ -7,7 +7,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraftforge.client.model.pipeline.IVertexConsumer;
 import net.minecraftforge.client.model.pipeline.IVertexProducer;
 import net.optifine.model.QuadBounds;
-import net.optifine.reflect.Reflector;
 
 public class BakedQuad implements IVertexProducer
 {
@@ -110,7 +109,6 @@ public class BakedQuad implements IVertexProducer
 
     public void pipe(IVertexConsumer p_pipe_1_)
     {
-        Reflector.callVoid(Reflector.LightUtil_putBakedQuad, new Object[] {p_pipe_1_, this});
     }
 
     private static TextureAtlasSprite getSpriteByUv(int[] p_getSpriteByUv_0_)

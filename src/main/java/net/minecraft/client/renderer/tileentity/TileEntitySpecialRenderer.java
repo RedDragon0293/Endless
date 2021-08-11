@@ -1,7 +1,6 @@
 package net.minecraft.client.renderer.tileentity;
 
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
@@ -45,10 +44,6 @@ public abstract class TileEntitySpecialRenderer<T extends TileEntity> implements
     public boolean func_181055_a()
     {
         return false;
-    }
-
-    public void renderTileEntityFast(T p_renderTileEntityFast_1_, double p_renderTileEntityFast_2_, double p_renderTileEntityFast_4_, double p_renderTileEntityFast_6_, float p_renderTileEntityFast_8_, int p_renderTileEntityFast_9_, WorldRenderer p_renderTileEntityFast_10_)
-    {
     }
 
     public Class getEntityClass()

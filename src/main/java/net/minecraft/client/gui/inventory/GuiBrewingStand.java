@@ -12,7 +12,7 @@ public class GuiBrewingStand extends GuiContainer
 
     /** The player inventory bound to this GUI. */
     private final InventoryPlayer playerInventory;
-    private IInventory tileBrewingStand;
+    public IInventory tileBrewingStand;
 
     public GuiBrewingStand(InventoryPlayer playerInv, IInventory p_i45506_2_)
     {

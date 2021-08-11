@@ -1,9 +1,10 @@
 package net.optifine.reflect;
 
+import net.minecraft.src.Config;
+
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
-import net.minecraft.src.Config;
 
 public class ReflectorMethod
 {
@@ -111,13 +112,7 @@ public class ReflectorMethod
 
     public boolean exists()
     {
-        return this.checked ? this.targetMethod != null : this.getTargetMethod() != null;
-    }
-
-    public Class getReturnType()
-    {
-        Method method = this.getTargetMethod();
-        return method == null ? null : method.getReturnType();
+        return false;
     }
 
     public void deactivate()

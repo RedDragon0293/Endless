@@ -17,7 +17,7 @@ public class GuiHopper extends GuiContainer
     private IInventory playerInventory;
 
     /** The hopper inventory bound to this GUI instance */
-    private IInventory hopperInventory;
+    public IInventory hopperInventory;
 
     public GuiHopper(InventoryPlayer playerInv, IInventory hopperInv)
     {

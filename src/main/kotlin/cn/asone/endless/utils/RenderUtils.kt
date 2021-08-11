@@ -3,6 +3,8 @@ package cn.asone.endless.utils
 import net.minecraft.client.gui.Gui
 import net.minecraft.client.gui.ScaledResolution
 import net.minecraft.client.renderer.GlStateManager
+import net.minecraft.client.renderer.Tessellator
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats
 import net.minecraft.util.ResourceLocation
 import net.minecraft.util.Vec3
 import org.lwjgl.opengl.GL11
@@ -37,6 +39,9 @@ object RenderUtils {
     @JvmStatic
     val scaledHeight
         inline get() = ScaledResolution(mc).scaledHeight
+
+    private val tessellator = Tessellator.getInstance()
+    private val worldRenderer = tessellator.worldRenderer
 
     @JvmField
     var deltaTime: Int = 0
@@ -189,28 +194,53 @@ object RenderUtils {
         val xEnd = x2 - radius
         val yEnd = y2 - radius
 
+        GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO)
         GL11.glLineWidth(width)
         GL11.glEnable(GL11.GL_LINE_SMOOTH)
-        GL11.glBegin(GL11.GL_LINE_LOOP)
-        for (i in 0..90) GL11.glVertex2d(
+        //GL11.glBegin(GL11.GL_LINE_LOOP)
+        worldRenderer.begin(GL11.GL_LINE_LOOP, DefaultVertexFormats.POSITION)
+
+        for (i in 0..90) /*GL11.glVertex2d(
             xEnd + sin(Math.toRadians(i.toDouble())) * radius,
             yEnd + cos(Math.toRadians(i.toDouble())) * radius
-        )
-        for (i in 90..180) GL11.glVertex2d(
+        )*/
+            worldRenderer.pos(
+                xEnd + sin(Math.toRadians(i.toDouble())) * radius,
+                yEnd + cos(Math.toRadians(i.toDouble())) * radius,
+                0.0
+            ).endVertex()
+        for (i in 90..180) /*GL11.glVertex2d(
             xEnd + sin(Math.toRadians(i.toDouble())) * radius,
             yStart + cos(Math.toRadians(i.toDouble())) * radius
-        )
-        for (i in 180..270) GL11.glVertex2d(
+        )*/
+            worldRenderer.pos(
+                xEnd + sin(Math.toRadians(i.toDouble())) * radius,
+                yStart + cos(Math.toRadians(i.toDouble())) * radius,
+                0.0
+            ).endVertex()
+        for (i in 180..270) /*GL11.glVertex2d(
             xStart + sin(Math.toRadians(i.toDouble())) * radius,
             yStart + cos(Math.toRadians(i.toDouble())) * radius
-        )
-        for (i in 270..360) GL11.glVertex2d(
+        )*/
+            worldRenderer.pos(
+                xStart + sin(Math.toRadians(i.toDouble())) * radius,
+                yStart + cos(Math.toRadians(i.toDouble())) * radius,
+                0.0
+            ).endVertex()
+        for (i in 270..360) /*GL11.glVertex2d(
             xStart + sin(Math.toRadians(i.toDouble())) * radius,
             yEnd + cos(Math.toRadians(i.toDouble())) * radius
-        )
-        GL11.glEnd()
+        )*/
+            worldRenderer.pos(
+                xStart + sin(Math.toRadians(i.toDouble())) * radius,
+                yEnd + cos(Math.toRadians(i.toDouble())) * radius,
+                0.0
+            ).endVertex()
+        //GL11.glEnd()
+        tessellator.draw()
         GL11.glDisable(GL11.GL_LINE_SMOOTH)
         GL11.glLineWidth(1F)
+        GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA)
     }
 
     @JvmStatic

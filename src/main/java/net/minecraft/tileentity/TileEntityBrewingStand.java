@@ -1,7 +1,5 @@
 package net.minecraft.tileentity;
 
-import java.util.Arrays;
-import java.util.List;
 import net.minecraft.block.BlockBrewingStand;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -19,6 +17,9 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.potion.PotionHelper;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class TileEntityBrewingStand extends TileEntityLockable implements ITickable, ISidedInventory
 {
@@ -41,7 +42,7 @@ public class TileEntityBrewingStand extends TileEntityLockable implements ITicka
      * used to check if the current ingredient has been removed from the brewing stand during brewing
      */
     private Item ingredientID;
-    private String customName;
+    public String customName;
 
     /**
      * Gets the name of this command sender (usually username, but possibly "Rcon")

@@ -1,42 +1,28 @@
 package net.optifine;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
 import net.minecraft.client.gui.GuiEnchantment;
 import net.minecraft.client.gui.GuiHopper;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.inventory.GuiBeacon;
-import net.minecraft.client.gui.inventory.GuiBrewingStand;
-import net.minecraft.client.gui.inventory.GuiChest;
-import net.minecraft.client.gui.inventory.GuiDispenser;
-import net.minecraft.client.gui.inventory.GuiFurnace;
+import net.minecraft.client.gui.inventory.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.EntityHorse;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.src.Config;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityBeacon;
-import net.minecraft.tileentity.TileEntityChest;
-import net.minecraft.tileentity.TileEntityDispenser;
-import net.minecraft.tileentity.TileEntityDropper;
-import net.minecraft.tileentity.TileEntityEnderChest;
+import net.minecraft.tileentity.*;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.IWorldNameable;
 import net.minecraft.world.biome.BiomeGenBase;
-import net.optifine.config.ConnectedParser;
-import net.optifine.config.Matches;
-import net.optifine.config.NbtTagValue;
-import net.optifine.config.RangeListInt;
-import net.optifine.config.VillagerProfession;
-import net.optifine.reflect.Reflector;
-import net.optifine.reflect.ReflectorField;
+import net.optifine.config.*;
 import net.optifine.util.StrUtils;
 import net.optifine.util.TextureUtils;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
 
 public class CustomGuiProperties
 {
@@ -383,13 +369,7 @@ public class CustomGuiProperties
 
     private static IWorldNameable getWorldNameable(GuiScreen screen)
     {
-        return (IWorldNameable)(screen instanceof GuiBeacon ? getWorldNameable(screen, Reflector.GuiBeacon_tileBeacon) : (screen instanceof GuiBrewingStand ? getWorldNameable(screen, Reflector.GuiBrewingStand_tileBrewingStand) : (screen instanceof GuiChest ? getWorldNameable(screen, Reflector.GuiChest_lowerChestInventory) : (screen instanceof GuiDispenser ? ((GuiDispenser)screen).dispenserInventory : (screen instanceof GuiEnchantment ? getWorldNameable(screen, Reflector.GuiEnchantment_nameable) : (screen instanceof GuiFurnace ? getWorldNameable(screen, Reflector.GuiFurnace_tileFurnace) : (screen instanceof GuiHopper ? getWorldNameable(screen, Reflector.GuiHopper_hopperInventory) : null)))))));
-    }
-
-    private static IWorldNameable getWorldNameable(GuiScreen screen, ReflectorField fieldInventory)
-    {
-        Object object = Reflector.getFieldValue(screen, fieldInventory);
-        return !(object instanceof IWorldNameable) ? null : (IWorldNameable)object;
+        return screen instanceof GuiBeacon ? ((GuiBeacon) screen).tileBeacon : (screen instanceof GuiBrewingStand ? ((GuiBrewingStand) screen).tileBrewingStand : (screen instanceof GuiChest ? ((GuiChest) screen).lowerChestInventory : (screen instanceof GuiDispenser ? ((GuiDispenser)screen).dispenserInventory : (screen instanceof GuiEnchantment ? ((GuiEnchantment) screen).field_175380_I : (screen instanceof GuiFurnace ? ((GuiFurnace) screen).tileFurnace : (screen instanceof GuiHopper ? ((GuiHopper) screen).hopperInventory : null))))));
     }
 
     private boolean matchesBeacon(BlockPos pos, IBlockAccess blockAccess)
@@ -535,7 +515,8 @@ public class CustomGuiProperties
             if (this.professions != null)
             {
                 int i = entityvillager.getProfession();
-                int j = Reflector.getFieldValueInt(entityvillager, Reflector.EntityVillager_careerId, -1);
+                int j = entityvillager.careerId;
+                //int j = Reflector.getFieldValueInt(entityvillager, Reflector.EntityVillager_careerId, -1);
 
                 if (j < 0)
                 {

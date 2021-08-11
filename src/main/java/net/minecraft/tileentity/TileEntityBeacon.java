@@ -1,8 +1,6 @@
 package net.minecraft.tileentity;
 
 import com.google.common.collect.Lists;
-import java.util.Arrays;
-import java.util.List;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockStainedGlass;
 import net.minecraft.block.BlockStainedGlassPane;
@@ -27,6 +25,9 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ITickable;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class TileEntityBeacon extends TileEntityLockable implements ITickable, IInventory
 {
     /** List of effects that Beacon can apply */
@@ -47,7 +48,7 @@ public class TileEntityBeacon extends TileEntityLockable implements ITickable, I
 
     /** Item given to this beacon as payment. */
     private ItemStack payment;
-    private String customName;
+    public String customName;
 
     /**
      * Like the old updateEntity(), except more generic.

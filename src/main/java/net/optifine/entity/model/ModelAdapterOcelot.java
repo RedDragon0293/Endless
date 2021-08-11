@@ -1,7 +1,5 @@
 package net.optifine.entity.model;
 
-import java.util.HashMap;
-import java.util.Map;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelOcelot;
@@ -9,7 +7,9 @@ import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.RenderOcelot;
 import net.minecraft.entity.passive.EntityOcelot;
-import net.optifine.reflect.Reflector;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class ModelAdapterOcelot extends ModelAdapter
 {
@@ -38,8 +38,8 @@ public class ModelAdapterOcelot extends ModelAdapter
 
             if (map.containsKey(modelPart))
             {
-                int i = ((Integer)map.get(modelPart)).intValue();
-                return (ModelRenderer)Reflector.getFieldValue(modelocelot, Reflector.ModelOcelot_ModelRenderers, i);
+                int i = map.get(modelPart);
+                return modelocelot.rendererList.get(i);
             }
             else
             {

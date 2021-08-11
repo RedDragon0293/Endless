@@ -4,6 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.RendererLivingEntity;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.optifine.expr.ExpressionType;
 import net.optifine.expr.IExpressionBool;
@@ -47,26 +48,18 @@ public enum RenderEntityParameterBool implements IExpressionBool
 
     public boolean eval()
     {
-        Render render = this.renderManager.renderRender;
+        Render<Entity> render = this.renderManager.renderRender;
 
-        if (render == null)
-        {
-            return false;
-        }
-        else
-        {
-            if (render instanceof RendererLivingEntity)
-            {
-                RendererLivingEntity rendererlivingentity = (RendererLivingEntity)render;
+        if (render != null) {
+            if (render instanceof RendererLivingEntity) {
+                RendererLivingEntity<EntityLivingBase> rendererlivingentity = (RendererLivingEntity) render;
                 EntityLivingBase entitylivingbase = rendererlivingentity.renderEntity;
 
-                if (entitylivingbase == null)
-                {
+                if (entitylivingbase == null) {
                     return false;
                 }
 
-                switch (this)
-                {
+                switch (this) {
                     case IS_ALIVE:
                         return entitylivingbase.isEntityAlive();
 
@@ -108,8 +101,8 @@ public enum RenderEntityParameterBool implements IExpressionBool
                 }
             }
 
-            return false;
         }
+        return false;
     }
 
     public static RenderEntityParameterBool parse(String str)

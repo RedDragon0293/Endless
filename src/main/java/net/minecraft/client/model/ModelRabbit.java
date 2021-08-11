@@ -6,6 +6,8 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.passive.EntityRabbit;
 import net.minecraft.util.MathHelper;
 
+import java.util.ArrayList;
+
 public class ModelRabbit extends ModelBase
 {
     /** The Rabbit's Left Foot */
@@ -43,6 +45,9 @@ public class ModelRabbit extends ModelBase
 
     /** The Rabbit's Nose */
     ModelRenderer rabbitNose;
+
+    public ArrayList<ModelRenderer> rendererList = new ArrayList<>();
+
     private float field_178701_m = 0.0F;
     private float field_178699_n = 0.0F;
 
@@ -112,6 +117,18 @@ public class ModelRabbit extends ModelBase
         this.rabbitNose.setRotationPoint(0.0F, 16.0F, -1.0F);
         this.rabbitNose.mirror = true;
         this.setRotationOffset(this.rabbitNose, 0.0F, 0.0F, 0.0F);
+        rendererList.add(rabbitLeftFoot);
+        rendererList.add(rabbitRightFoot);
+        rendererList.add(rabbitLeftThigh);
+        rendererList.add(rabbitRightThigh);
+        rendererList.add(rabbitBody);
+        rendererList.add(rabbitLeftArm);
+        rendererList.add(rabbitRightArm);
+        rendererList.add(rabbitHead);
+        rendererList.add(rabbitRightEar);
+        rendererList.add(rabbitLeftEar);
+        rendererList.add(rabbitTail);
+        rendererList.add(rabbitNose);
     }
 
     private void setRotationOffset(ModelRenderer p_178691_1_, float p_178691_2_, float p_178691_3_, float p_178691_4_)

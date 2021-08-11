@@ -20,12 +20,10 @@ import net.minecraft.world.WorldType;
 import net.minecraft.world.chunk.Chunk;
 import net.optifine.SmartAnimations;
 import net.optifine.TextureAnimations;
-import net.optifine.reflect.Reflector;
 import net.optifine.util.NativeMemory;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Objects;
@@ -213,12 +211,6 @@ public class GuiOverlayDebug extends Gui {
         long j1 = NativeMemory.getBufferMaximum();
         String s = "Native: " + bytesToMb(i1) + "/" + bytesToMb(j1) + "MB";
         list.add(4, s);
-
-        if (Reflector.FMLCommonHandler_getBrandings.exists()) {
-            Object object = Reflector.call(Reflector.FMLCommonHandler_instance);
-            list.add("");
-            list.addAll((Collection) Reflector.call(object, Reflector.FMLCommonHandler_getBrandings, new Object[]{Boolean.valueOf(false)}));
-        }
 
         if (this.isReducedDebug()) {
             return list;

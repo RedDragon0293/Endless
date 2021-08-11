@@ -6,10 +6,10 @@ import net.minecraft.util.MathHelper;
 public class ModelSilverfish extends ModelBase
 {
     /** The body parts of the silverfish's model. */
-    private ModelRenderer[] silverfishBodyParts = new ModelRenderer[7];
+    public ModelRenderer[] silverfishBodyParts = new ModelRenderer[7];
 
     /** The wings (dust-looking sprites) on the silverfish's model. */
-    private ModelRenderer[] silverfishWings;
+    public ModelRenderer[] silverfishWingParts;
     private float[] field_78170_c = new float[7];
 
     /** The widths, heights, and lengths for the silverfish model boxes. */
@@ -35,16 +35,16 @@ public class ModelSilverfish extends ModelBase
             }
         }
 
-        this.silverfishWings = new ModelRenderer[3];
-        this.silverfishWings[0] = new ModelRenderer(this, 20, 0);
-        this.silverfishWings[0].addBox(-5.0F, 0.0F, (float)silverfishBoxLength[2][2] * -0.5F, 10, 8, silverfishBoxLength[2][2]);
-        this.silverfishWings[0].setRotationPoint(0.0F, 16.0F, this.field_78170_c[2]);
-        this.silverfishWings[1] = new ModelRenderer(this, 20, 11);
-        this.silverfishWings[1].addBox(-3.0F, 0.0F, (float)silverfishBoxLength[4][2] * -0.5F, 6, 4, silverfishBoxLength[4][2]);
-        this.silverfishWings[1].setRotationPoint(0.0F, 20.0F, this.field_78170_c[4]);
-        this.silverfishWings[2] = new ModelRenderer(this, 20, 18);
-        this.silverfishWings[2].addBox(-3.0F, 0.0F, (float)silverfishBoxLength[4][2] * -0.5F, 6, 5, silverfishBoxLength[1][2]);
-        this.silverfishWings[2].setRotationPoint(0.0F, 19.0F, this.field_78170_c[1]);
+        this.silverfishWingParts = new ModelRenderer[3];
+        this.silverfishWingParts[0] = new ModelRenderer(this, 20, 0);
+        this.silverfishWingParts[0].addBox(-5.0F, 0.0F, (float)silverfishBoxLength[2][2] * -0.5F, 10, 8, silverfishBoxLength[2][2]);
+        this.silverfishWingParts[0].setRotationPoint(0.0F, 16.0F, this.field_78170_c[2]);
+        this.silverfishWingParts[1] = new ModelRenderer(this, 20, 11);
+        this.silverfishWingParts[1].addBox(-3.0F, 0.0F, (float)silverfishBoxLength[4][2] * -0.5F, 6, 4, silverfishBoxLength[4][2]);
+        this.silverfishWingParts[1].setRotationPoint(0.0F, 20.0F, this.field_78170_c[4]);
+        this.silverfishWingParts[2] = new ModelRenderer(this, 20, 18);
+        this.silverfishWingParts[2].addBox(-3.0F, 0.0F, (float)silverfishBoxLength[4][2] * -0.5F, 6, 5, silverfishBoxLength[1][2]);
+        this.silverfishWingParts[2].setRotationPoint(0.0F, 19.0F, this.field_78170_c[1]);
     }
 
     /**
@@ -59,9 +59,9 @@ public class ModelSilverfish extends ModelBase
             this.silverfishBodyParts[i].render(scale);
         }
 
-        for (int j = 0; j < this.silverfishWings.length; ++j)
+        for (int j = 0; j < this.silverfishWingParts.length; ++j)
         {
-            this.silverfishWings[j].render(scale);
+            this.silverfishWingParts[j].render(scale);
         }
     }
 
@@ -78,10 +78,10 @@ public class ModelSilverfish extends ModelBase
             this.silverfishBodyParts[i].rotationPointX = MathHelper.sin(p_78087_3_ * 0.9F + (float)i * 0.15F * (float)Math.PI) * (float)Math.PI * 0.2F * (float)Math.abs(i - 2);
         }
 
-        this.silverfishWings[0].rotateAngleY = this.silverfishBodyParts[2].rotateAngleY;
-        this.silverfishWings[1].rotateAngleY = this.silverfishBodyParts[4].rotateAngleY;
-        this.silverfishWings[1].rotationPointX = this.silverfishBodyParts[4].rotationPointX;
-        this.silverfishWings[2].rotateAngleY = this.silverfishBodyParts[1].rotateAngleY;
-        this.silverfishWings[2].rotationPointX = this.silverfishBodyParts[1].rotationPointX;
+        this.silverfishWingParts[0].rotateAngleY = this.silverfishBodyParts[2].rotateAngleY;
+        this.silverfishWingParts[1].rotateAngleY = this.silverfishBodyParts[4].rotateAngleY;
+        this.silverfishWingParts[1].rotationPointX = this.silverfishBodyParts[4].rotationPointX;
+        this.silverfishWingParts[2].rotateAngleY = this.silverfishBodyParts[1].rotateAngleY;
+        this.silverfishWingParts[2].rotationPointX = this.silverfishBodyParts[1].rotationPointX;
     }
 }

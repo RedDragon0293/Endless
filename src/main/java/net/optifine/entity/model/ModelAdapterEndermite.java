@@ -8,7 +8,6 @@ import net.minecraft.client.renderer.entity.RenderEndermite;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.monster.EntityEndermite;
 import net.minecraft.src.Config;
-import net.optifine.reflect.Reflector;
 
 public class ModelAdapterEndermite extends ModelAdapter
 {
@@ -35,19 +34,12 @@ public class ModelAdapterEndermite extends ModelAdapter
 
             if (modelPart.startsWith(s))
             {
-                ModelRenderer[] amodelrenderer = (ModelRenderer[])((ModelRenderer[])Reflector.getFieldValue(modelendermite, Reflector.ModelEnderMite_bodyParts));
+                ModelRenderer[] amodelrenderer = modelendermite.bodyParts;
 
-                if (amodelrenderer == null)
-                {
-                    return null;
-                }
-                else
-                {
-                    String s1 = modelPart.substring(s.length());
-                    int i = Config.parseInt(s1, -1);
-                    --i;
-                    return i >= 0 && i < amodelrenderer.length ? amodelrenderer[i] : null;
-                }
+                String s1 = modelPart.substring(s.length());
+                int i = Config.parseInt(s1, -1);
+                --i;
+                return i >= 0 && i < amodelrenderer.length ? amodelrenderer[i] : null;
             }
             else
             {

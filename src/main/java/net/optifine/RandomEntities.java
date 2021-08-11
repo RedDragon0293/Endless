@@ -1,16 +1,5 @@
 package net.optifine;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-import java.util.UUID;
 import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.entity.DataWatcher;
@@ -21,12 +10,16 @@ import net.minecraft.src.Config;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import net.optifine.reflect.Reflector;
 import net.optifine.reflect.ReflectorRaw;
 import net.optifine.util.IntegratedServerUtils;
 import net.optifine.util.PropertiesOrdered;
 import net.optifine.util.ResUtils;
 import net.optifine.util.StrUtils;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.*;
 
 public class RandomEntities
 {
@@ -78,10 +71,12 @@ public class RandomEntities
             EntityVillager entityvillager = (EntityVillager)entity;
             int i = entityvillager.getProfession();
             ev.setProfession(i);
-            int j = Reflector.getFieldValueInt(entityvillager, Reflector.EntityVillager_careerId, 0);
-            Reflector.setFieldValueInt(ev, Reflector.EntityVillager_careerId, j);
-            int k = Reflector.getFieldValueInt(entityvillager, Reflector.EntityVillager_careerLevel, 0);
-            Reflector.setFieldValueInt(ev, Reflector.EntityVillager_careerLevel, k);
+            //int j = Reflector.getFieldValueInt(entityvillager, Reflector.EntityVillager_careerId, 0);
+            //Reflector.setFieldValueInt(ev, Reflector.EntityVillager_careerId, j);
+            ev.careerId = entityvillager.careerId;
+            //int k = Reflector.getFieldValueInt(entityvillager, Reflector.EntityVillager_careerLevel, 0);
+            //Reflector.setFieldValueInt(ev, Reflector.EntityVillager_careerLevel, k);
+            ev.careerLevel = entityvillager.careerLevel;
         }
     }
 
@@ -89,17 +84,17 @@ public class RandomEntities
     {
         if (newWorld != null)
         {
-            List list = newWorld.getLoadedEntityList();
+            List<Entity> list = newWorld.getLoadedEntityList();
 
             for (int i = 0; i < list.size(); ++i)
             {
-                Entity entity = (Entity)list.get(i);
+                Entity entity = list.get(i);
                 entityLoaded(entity, newWorld);
             }
         }
 
-        randomEntity.setEntity((Entity)null);
-        randomTileEntity.setTileEntity((TileEntity)null);
+        randomEntity.setEntity(null);
+        randomTileEntity.setTileEntity(null);
     }
 
     public static ResourceLocation getTextureLocation(ResourceLocation loc)

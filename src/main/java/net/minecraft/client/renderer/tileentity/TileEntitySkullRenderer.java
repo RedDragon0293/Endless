@@ -3,8 +3,6 @@ package net.minecraft.client.renderer.tileentity;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
-import java.util.Map;
-import java.util.UUID;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelHumanoidHead;
@@ -17,6 +15,9 @@ import net.minecraft.tileentity.TileEntitySkull;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 
+import java.util.Map;
+import java.util.UUID;
+
 public class TileEntitySkullRenderer extends TileEntitySpecialRenderer<TileEntitySkull>
 {
     private static final ResourceLocation SKELETON_TEXTURES = new ResourceLocation("textures/entity/skeleton/skeleton.png");
@@ -25,7 +26,7 @@ public class TileEntitySkullRenderer extends TileEntitySpecialRenderer<TileEntit
     private static final ResourceLocation CREEPER_TEXTURES = new ResourceLocation("textures/entity/creeper/creeper.png");
     public static TileEntitySkullRenderer instance;
     private final ModelSkeletonHead skeletonHead = new ModelSkeletonHead(0, 0, 64, 32);
-    private final ModelSkeletonHead humanoidHead = new ModelHumanoidHead();
+    public ModelSkeletonHead humanoidHead = new ModelHumanoidHead();
 
     public void renderTileEntityAt(TileEntitySkull te, double x, double y, double z, float partialTicks, int destroyStage)
     {

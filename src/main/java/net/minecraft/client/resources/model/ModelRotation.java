@@ -2,18 +2,16 @@ package net.minecraft.client.resources.model;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.Maps;
-
-import java.util.Map;
-
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MathHelper;
 import net.minecraftforge.client.model.IModelPart;
 import net.minecraftforge.client.model.IModelState;
 import net.minecraftforge.client.model.ITransformation;
 import net.minecraftforge.client.model.TRSRTransformation;
-import net.optifine.reflect.Reflector;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;
+
+import java.util.Map;
 
 public enum ModelRotation implements IModelState, ITransformation {
     X0_Y0(0, 0),
@@ -98,16 +96,12 @@ public enum ModelRotation implements IModelState, ITransformation {
     }
 
     public static ModelRotation getModelRotation(int p_177524_0_, int p_177524_1_) {
-        return (ModelRotation) mapRotations.get(Integer.valueOf(combineXY(MathHelper.normalizeAngle(p_177524_0_, 360), MathHelper.normalizeAngle(p_177524_1_, 360))));
-    }
-
-    public Optional<TRSRTransformation> apply(Optional<? extends IModelPart> p_apply_1_) {
-        return (Optional) Reflector.call(Reflector.ForgeHooksClient_applyTransform, new Object[]{this.getMatrix(), p_apply_1_});
+        return mapRotations.get(combineXY(MathHelper.normalizeAngle(p_177524_0_, 360), MathHelper.normalizeAngle(p_177524_1_, 360)));
     }
 
     public javax.vecmath.Matrix4f getMatrix() {
         Matrix4f m = this.matrix4d;
-        return Reflector.ForgeHooksClient_getMatrix.exists() ? (javax.vecmath.Matrix4f) Reflector.call(Reflector.ForgeHooksClient_getMatrix, new Object[]{this}) : new javax.vecmath.Matrix4f(m.m00, m.m01, m.m02, m.m03, m.m10, m.m11, m.m12, m.m13, m.m20, m.m21, m.m22, m.m23, m.m30, m.m31, m.m32, m.m33);
+        return new javax.vecmath.Matrix4f(m.m00, m.m01, m.m02, m.m03, m.m10, m.m11, m.m12, m.m13, m.m20, m.m21, m.m22, m.m23, m.m30, m.m31, m.m32, m.m33);
     }
 
     public EnumFacing rotate(EnumFacing p_rotate_1_) {
@@ -120,7 +114,12 @@ public enum ModelRotation implements IModelState, ITransformation {
 
     static {
         for (ModelRotation modelrotation : values()) {
-            mapRotations.put(Integer.valueOf(modelrotation.combinedXY), modelrotation);
+            mapRotations.put(modelrotation.combinedXY, modelrotation);
         }
+    }
+
+    @Override
+    public Optional<TRSRTransformation> apply(Optional<? extends IModelPart> var1) {
+        return Optional.absent();
     }
 }

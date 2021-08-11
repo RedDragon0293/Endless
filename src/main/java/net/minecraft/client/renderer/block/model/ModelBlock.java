@@ -2,13 +2,13 @@ package net.minecraft.client.renderer.block.model;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
+import com.google.gson.*;
+import net.minecraft.util.JsonUtils;
+import net.minecraft.util.ResourceLocation;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.Reader;
 import java.io.StringReader;
 import java.lang.reflect.Type;
@@ -16,11 +16,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import net.minecraft.util.JsonUtils;
-import net.minecraft.util.ResourceLocation;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class ModelBlock
 {
@@ -31,13 +26,13 @@ public class ModelBlock
     private final boolean ambientOcclusion;
     private ItemCameraTransforms cameraTransforms;
     public String name;
-    protected final Map<String, String> textures;
+    public final Map<String, String> textures;
     protected ModelBlock parent;
-    protected ResourceLocation parentLocation;
+    public ResourceLocation parentLocation;
 
     public static ModelBlock deserialize(Reader p_178307_0_)
     {
-        return (ModelBlock)SERIALIZER.fromJson(p_178307_0_, ModelBlock.class);
+        return SERIALIZER.fromJson(p_178307_0_, ModelBlock.class);
     }
 
     public static ModelBlock deserialize(String p_178294_0_)

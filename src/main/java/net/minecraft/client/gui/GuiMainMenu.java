@@ -20,7 +20,6 @@ import net.minecraft.world.storage.ISaveFormat;
 import net.minecraft.world.storage.WorldInfo;
 import net.optifine.CustomPanorama;
 import net.optifine.CustomPanoramaProperties;
-import net.optifine.reflect.Reflector;
 import org.apache.commons.io.Charsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -51,7 +50,7 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
     /**
      * The splash message.
      */
-    private String splashText;
+    public String splashText;
     private GuiButton buttonResetDemo;
 
     /**
@@ -272,10 +271,6 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
 
         if (button.id == 4) {
             mc.shutdown();
-        }
-
-        if (button.id == 6 && Reflector.GuiModList_Constructor.exists()) {
-            mc.displayGuiScreen((GuiScreen) Reflector.newInstance(Reflector.GuiModList_Constructor, new Object[]{this}));
         }
 
         if (button.id == 11) {

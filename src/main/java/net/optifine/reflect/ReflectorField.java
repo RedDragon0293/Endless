@@ -30,7 +30,7 @@ public class ReflectorField
 
     public ReflectorField(Field field)
     {
-        this((IFieldLocator)(new FieldLocatorFixed(field)));
+        this(new FieldLocatorFixed(field));
     }
 
     public ReflectorField(IFieldLocator fieldLocator)

@@ -1,7 +1,5 @@
 package net.optifine.entity.model;
 
-import java.util.HashMap;
-import java.util.Map;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRabbit;
@@ -9,7 +7,9 @@ import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.RenderRabbit;
 import net.minecraft.entity.passive.EntityRabbit;
-import net.optifine.reflect.Reflector;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class ModelAdapterRabbit extends ModelAdapter
 {
@@ -38,8 +38,8 @@ public class ModelAdapterRabbit extends ModelAdapter
 
             if (map.containsKey(modelPart))
             {
-                int i = ((Integer)map.get(modelPart)).intValue();
-                return (ModelRenderer)Reflector.getFieldValue(modelrabbit, Reflector.ModelRabbit_renderers, i);
+                int i = map.get(modelPart);
+                return modelrabbit.rendererList.get(i);
             }
             else
             {

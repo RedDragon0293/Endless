@@ -28,8 +28,6 @@ import net.minecraft.src.Config;
 import net.minecraft.util.*;
 import net.optifine.CustomColors;
 import net.optifine.CustomItems;
-import net.optifine.reflect.Reflector;
-import net.optifine.reflect.ReflectorForge;
 import net.optifine.shaders.Shaders;
 import net.optifine.shaders.ShadersRender;
 import org.lwjgl.opengl.GL11;
@@ -54,12 +52,7 @@ public class RenderItem implements IResourceManagerReloadListener {
     public RenderItem(TextureManager textureManager, ModelManager modelManager) {
         this.textureManager = textureManager;
         this.modelManager = modelManager;
-
-        if (Reflector.ItemModelMesherForge_Constructor.exists()) {
-            this.itemModelMesher = (ItemModelMesher) Reflector.newInstance(Reflector.ItemModelMesherForge_Constructor, new Object[]{modelManager});
-        } else {
-            this.itemModelMesher = new ItemModelMesher(modelManager);
-        }
+        this.itemModelMesher = new ItemModelMesher(modelManager);
 
         this.registerItems();
     }
@@ -93,7 +86,7 @@ public class RenderItem implements IResourceManagerReloadListener {
     }
 
     public void renderModel(IBakedModel model, int color) {
-        this.renderModel(model, color, (ItemStack) null);
+        this.renderModel(model, color, null);
     }
 
     private void renderModel(IBakedModel model, int color, ItemStack stack) {
@@ -116,7 +109,7 @@ public class RenderItem implements IResourceManagerReloadListener {
         tessellator.draw();
 
         if (flag1) {
-            worldrenderer.setBlockLayer((EnumWorldBlockLayer) null);
+            worldrenderer.setBlockLayer(null);
             GlStateManager.bindCurrentTexture();
         }
     }
@@ -136,7 +129,7 @@ public class RenderItem implements IResourceManagerReloadListener {
                 GlStateManager.translate(-0.5F, -0.5F, -0.5F);
 
                 if (Config.isCustomItems()) {
-                    model = CustomItems.getCustomItemModel(stack, model, (ResourceLocation) null, false);
+                    model = CustomItems.getCustomItemModel(stack, model, null, false);
                 }
 
                 this.renderModelHasEmissive = false;
@@ -227,11 +220,7 @@ public class RenderItem implements IResourceManagerReloadListener {
 
         renderer.putSprite(quad.getSprite());
 
-        if (Reflector.IColoredBakedQuad.exists() && Reflector.IColoredBakedQuad.isInstance(quad)) {
-            forgeHooksClient_putQuadColor(renderer, quad, color);
-        } else {
-            renderer.putColor4(color);
-        }
+        renderer.putColor4(color);
 
         this.putQuadNormal(renderer, quad);
     }
@@ -241,7 +230,7 @@ public class RenderItem implements IResourceManagerReloadListener {
         int i = 0;
 
         for (int j = quads.size(); i < j; ++i) {
-            BakedQuad bakedquad = (BakedQuad) quads.get(i);
+            BakedQuad bakedquad = quads.get(i);
             int k = color;
 
             if (flag && bakedquad.hasTintIndex()) {
@@ -264,7 +253,7 @@ public class RenderItem implements IResourceManagerReloadListener {
 
     public boolean shouldRenderItemIn3D(ItemStack stack) {
         IBakedModel ibakedmodel = this.itemModelMesher.getItemModel(stack);
-        return ibakedmodel == null ? false : ibakedmodel.isGui3d();
+        return ibakedmodel != null && ibakedmodel.isGui3d();
     }
 
     private void preTransform(ItemStack stack) {
@@ -310,8 +299,6 @@ public class RenderItem implements IResourceManagerReloadListener {
                     } else if (i > 0) {
                         modelresourcelocation = new ModelResourceLocation("bow_pulling_0", "inventory");
                     }
-                } else if (Reflector.ForgeItem_getModel.exists()) {
-                    modelresourcelocation = (ModelResourceLocation) Reflector.call(item, Reflector.ForgeItem_getModel, new Object[]{stack, entityplayer, Integer.valueOf(entityplayer.getItemInUseCount())});
                 }
 
                 if (modelresourcelocation != null) {
@@ -337,15 +324,11 @@ public class RenderItem implements IResourceManagerReloadListener {
         GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
         GlStateManager.pushMatrix();
 
-        if (Reflector.ForgeHooksClient_handleCameraTransforms.exists()) {
-            model = (IBakedModel) Reflector.call(Reflector.ForgeHooksClient_handleCameraTransforms, new Object[]{model, cameraTransformType});
-        } else {
-            ItemCameraTransforms itemcameratransforms = model.getItemCameraTransforms();
-            itemcameratransforms.applyTransform(cameraTransformType);
+        ItemCameraTransforms itemcameratransforms = model.getItemCameraTransforms();
+        itemcameratransforms.applyTransform(cameraTransformType);
 
-            if (this.func_183005_a(itemcameratransforms.func_181688_b(cameraTransformType))) {
-                GlStateManager.cullFace(1028);
-            }
+        if (this.func_183005_a(itemcameratransforms.func_181688_b(cameraTransformType))) {
+            GlStateManager.cullFace(1028);
         }
 
         this.renderItem(stack, model);
@@ -450,7 +433,7 @@ public class RenderItem implements IResourceManagerReloadListener {
                 GlStateManager.enableBlend();
             }
 
-            if (ReflectorForge.isItemDamaged(stack)) {
+            if (stack.isItemDamaged()) {
                 int j1 = (int) Math.round(13.0D - (double) stack.getItemDamage() * 13.0D / (double) stack.getMaxDamage());
                 int i = (int) Math.round(255.0D - (double) stack.getItemDamage() * 255.0D / (double) stack.getMaxDamage());
 
@@ -1031,10 +1014,6 @@ public class RenderItem implements IResourceManagerReloadListener {
         this.registerBlock(Blocks.brown_mushroom_block, BlockHugeMushroom.EnumType.ALL_INSIDE.getMetadata(), "brown_mushroom_block");
         this.registerBlock(Blocks.red_mushroom_block, BlockHugeMushroom.EnumType.ALL_INSIDE.getMetadata(), "red_mushroom_block");
         this.registerBlock(Blocks.dragon_egg, "dragon_egg");
-
-        if (Reflector.ModelLoader_onRegisterItems.exists()) {
-            Reflector.call(Reflector.ModelLoader_onRegisterItems, new Object[]{this.itemModelMesher});
-        }
     }
 
     public void onResourceManagerReload(IResourceManager resourceManager) {

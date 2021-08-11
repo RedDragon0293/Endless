@@ -2,16 +2,6 @@ package net.optifine.entity.model;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.IdentityHashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
@@ -21,20 +11,24 @@ import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.src.Config;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.optifine.entity.model.anim.ModelResolver;
 import net.optifine.entity.model.anim.ModelUpdater;
 
+import java.io.IOException;
+import java.util.*;
+
 public class CustomEntityModels
 {
     private static boolean active = false;
-    private static Map<Class, Render> originalEntityRenderMap = null;
-    private static Map<Class, TileEntitySpecialRenderer> originalTileEntityRenderMap = null;
+    private static Map<Class<? extends Entity>, Render<? extends  Entity>> originalEntityRenderMap = null;
+    private static Map<Class<? extends TileEntity>, TileEntitySpecialRenderer<? extends TileEntity>> originalTileEntityRenderMap = null;
 
     public static void update()
     {
-        Map<Class, Render> map = getEntityRenderMap();
-        Map<Class, TileEntitySpecialRenderer> map1 = getTileEntityRenderMap();
+        Map<Class<? extends Entity>, Render<? extends  Entity>> map = getEntityRenderMap();
+        Map<Class<? extends TileEntity>, TileEntitySpecialRenderer<? extends TileEntity>> map1 = getTileEntityRenderMap();
 
         if (map == null)
         {
@@ -89,10 +83,10 @@ public class CustomEntityModels
         }
     }
 
-    private static Map<Class, Render> getEntityRenderMap()
+    private static Map<Class<? extends Entity>, Render<? extends  Entity>> getEntityRenderMap()
     {
         RenderManager rendermanager = Minecraft.getMinecraft().getRenderManager();
-        Map<Class, Render> map = rendermanager.getEntityRenderMap();
+        Map<Class<? extends Entity>, Render<? extends  Entity>> map = rendermanager.getEntityRenderMap();
 
         if (map == null)
         {
@@ -109,9 +103,9 @@ public class CustomEntityModels
         }
     }
 
-    private static Map<Class, TileEntitySpecialRenderer> getTileEntityRenderMap()
+    private static Map<Class<? extends TileEntity>, TileEntitySpecialRenderer<? extends TileEntity>> getTileEntityRenderMap()
     {
-        Map<Class, TileEntitySpecialRenderer> map = TileEntityRendererDispatcher.instance.mapSpecialRenderers;
+        Map<Class<? extends TileEntity>, TileEntitySpecialRenderer<? extends TileEntity>> map = TileEntityRendererDispatcher.instance.mapSpecialRenderers;
 
         if (originalTileEntityRenderMap == null)
         {

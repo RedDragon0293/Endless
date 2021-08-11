@@ -166,7 +166,7 @@ public class WorldRenderer {
             System.arraycopy(this.quadSprites, 0, atextureatlassprite, 0, j);
         }
 
-        return new WorldRenderer.State(aint, new VertexFormat(this.vertexFormat), atextureatlassprite);
+        return new State(aint, new VertexFormat(this.vertexFormat), atextureatlassprite);
     }
 
     public int getBufferSize() {
@@ -633,7 +633,7 @@ public class WorldRenderer {
     }
 
     public int getDrawMode() {
-        return this.modeTriangles ? 4 : this.drawMode;
+        return this.modeTriangles ? GL11.GL_TRIANGLES : this.drawMode;
     }
 
     public void putColor4(int argb) {
@@ -879,7 +879,7 @@ public class WorldRenderer {
         return this.needsUpdate;
     }
 
-    public class State {
+    public static class State {
         private final int[] stateRawBuffer;
         private final VertexFormat stateVertexFormat;
         private TextureAtlasSprite[] stateQuadSprites;

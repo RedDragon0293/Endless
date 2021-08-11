@@ -1,17 +1,14 @@
 package net.minecraft.tileentity;
 
-import java.util.Random;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ContainerEnchantment;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.ChatComponentTranslation;
-import net.minecraft.util.IChatComponent;
-import net.minecraft.util.ITickable;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.*;
 import net.minecraft.world.IInteractionObject;
+
+import java.util.Random;
 
 public class TileEntityEnchantmentTable extends TileEntity implements ITickable, IInteractionObject
 {
@@ -26,7 +23,7 @@ public class TileEntityEnchantmentTable extends TileEntity implements ITickable,
     public float bookRotationPrev;
     public float field_145924_q;
     private static Random rand = new Random();
-    private String customName;
+    public String customName;
 
     public void writeToNBT(NBTTagCompound compound)
     {

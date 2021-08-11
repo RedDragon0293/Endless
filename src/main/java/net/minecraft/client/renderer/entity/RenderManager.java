@@ -30,19 +30,21 @@ import net.minecraft.entity.passive.*;
 import net.minecraft.entity.projectile.*;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
-import net.minecraft.util.*;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.ReportedException;
+import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.optifine.entity.model.CustomEntityModels;
 import net.optifine.player.PlayerItemsLayer;
-import net.optifine.reflect.Reflector;
 
 import java.util.Collections;
 import java.util.Map;
 
 public class RenderManager {
-    private Map<Class, Render> entityRenderMap = Maps.newHashMap();
-    private Map<String, RenderPlayer> skinMap = Maps.newHashMap();
-    private RenderPlayer playerRenderer;
+    private Map<Class<? extends Entity>, Render<? extends Entity>> entityRenderMap = Maps.newHashMap();
+    private final Map<String, RenderPlayer> skinMap = Maps.newHashMap();
+    private final RenderPlayer playerRenderer;
 
     /**
      * Renders fonts
@@ -66,7 +68,9 @@ public class RenderManager {
     public float playerViewY;
     public float playerViewX;
 
-    /** Reference to the GameSettings object. */
+    /**
+     * Reference to the GameSettings object.
+     */
     public GameSettings options;
     public double viewerPosX;
     public double viewerPosY;
@@ -74,15 +78,16 @@ public class RenderManager {
     private boolean renderOutlines = false;
     private boolean renderShadow = true;
 
-    /** whether bounding box should be rendered or not */
+    /**
+     * whether bounding box should be rendered or not
+     */
     private boolean debugBoundingBox = false;
-    public Render renderRender = null;
+    public Render<Entity> renderRender = null;
 
-    public RenderManager(TextureManager renderEngineIn, RenderItem itemRendererIn)
-    {
+    public RenderManager(TextureManager renderEngineIn, RenderItem itemRendererIn) {
         this.renderEngine = renderEngineIn;
         this.entityRenderMap.put(EntityCaveSpider.class, new RenderCaveSpider(this));
-        this.entityRenderMap.put(EntitySpider.class, new RenderSpider(this));
+        this.entityRenderMap.put(EntitySpider.class, new RenderSpider<>(this));
         this.entityRenderMap.put(EntityPig.class, new RenderPig(this, new ModelPig(), 0.7F));
         this.entityRenderMap.put(EntitySheep.class, new RenderSheep(this, new ModelSheep2(), 0.7F));
         this.entityRenderMap.put(EntityCow.class, new RenderCow(this, new ModelCow(), 0.7F));
@@ -144,238 +149,178 @@ public class RenderManager {
         this.skinMap.put("default", this.playerRenderer);
         this.skinMap.put("slim", new RenderPlayer(this, true));
         PlayerItemsLayer.register(this.skinMap);
-
-        if (Reflector.RenderingRegistry_loadEntityRenderers.exists())
-        {
-            Reflector.call(Reflector.RenderingRegistry_loadEntityRenderers, new Object[] {this, this.entityRenderMap});
-        }
     }
 
-    public void setRenderPosition(double renderPosXIn, double renderPosYIn, double renderPosZIn)
-    {
+    public void setRenderPosition(double renderPosXIn, double renderPosYIn, double renderPosZIn) {
         this.renderPosX = renderPosXIn;
         this.renderPosY = renderPosYIn;
         this.renderPosZ = renderPosZIn;
     }
 
-    public <T extends Entity> Render<T> getEntityClassRenderObject(Class <? extends Entity > p_78715_1_)
-    {
-        Render <? extends Entity > render = (Render)this.entityRenderMap.get(p_78715_1_);
+    public <T extends Entity> Render<T> getEntityClassRenderObject(Class<? extends Entity> p_78715_1_) {
+        Render<? extends Entity> render = this.entityRenderMap.get(p_78715_1_);
 
-        if (render == null && p_78715_1_ != Entity.class)
-        {
-            render = this.<Entity>getEntityClassRenderObject((Class <? extends Entity >)p_78715_1_.getSuperclass());
+        if (render == null && p_78715_1_ != Entity.class) {
+            render = this.getEntityClassRenderObject((Class<? extends Entity>) p_78715_1_.getSuperclass());
             this.entityRenderMap.put(p_78715_1_, render);
         }
 
-        return (Render<T>)render;
+        return (Render<T>) render;
     }
 
-    public <T extends Entity> Render<T> getEntityRenderObject(Entity entityIn)
-    {
-        if (entityIn instanceof AbstractClientPlayer)
-        {
-            String s = ((AbstractClientPlayer)entityIn).getSkinType();
-            RenderPlayer renderplayer = (RenderPlayer)this.skinMap.get(s);
-            return (Render<T>)(renderplayer != null ? renderplayer : this.playerRenderer);
-        }
-        else
-        {
-            return this.<T>getEntityClassRenderObject(entityIn.getClass());
+    public <T extends Entity> Render<T> getEntityRenderObject(Entity entityIn) {
+        if (entityIn instanceof AbstractClientPlayer) {
+            String s = ((AbstractClientPlayer) entityIn).getSkinType();
+            RenderPlayer renderplayer = this.skinMap.get(s);
+            return (Render<T>) (renderplayer != null ? renderplayer : this.playerRenderer);
+        } else {
+            return this.getEntityClassRenderObject(entityIn.getClass());
         }
     }
 
-    public void cacheActiveRenderInfo(World worldIn, FontRenderer textRendererIn, Entity livingPlayerIn, Entity pointedEntityIn, GameSettings optionsIn, float partialTicks)
-    {
+    public void cacheActiveRenderInfo(World worldIn, FontRenderer textRendererIn, Entity livingPlayerIn, Entity pointedEntityIn, GameSettings optionsIn, float partialTicks) {
         this.worldObj = worldIn;
         this.options = optionsIn;
         this.livingPlayer = livingPlayerIn;
         this.pointedEntity = pointedEntityIn;
         this.textRenderer = textRendererIn;
 
-        if (livingPlayerIn instanceof EntityLivingBase && ((EntityLivingBase)livingPlayerIn).isPlayerSleeping())
-        {
+        if (livingPlayerIn instanceof EntityLivingBase && ((EntityLivingBase) livingPlayerIn).isPlayerSleeping()) {
             IBlockState iblockstate = worldIn.getBlockState(new BlockPos(livingPlayerIn));
             Block block = iblockstate.getBlock();
 
-            if (Reflector.callBoolean(block, Reflector.ForgeBlock_isBed, new Object[] {iblockstate, worldIn, new BlockPos(livingPlayerIn), (EntityLivingBase)livingPlayerIn}))
-            {
-                EnumFacing enumfacing = (EnumFacing)Reflector.call(block, Reflector.ForgeBlock_getBedDirection, new Object[] {iblockstate, worldIn, new BlockPos(livingPlayerIn)});
-                int i = enumfacing.getHorizontalIndex();
-                this.playerViewY = (float)(i * 90 + 180);
+            if (block == Blocks.bed) {
+                int j = iblockstate.getValue(BlockBed.FACING).getHorizontalIndex();
+                this.playerViewY = (float) (j * 90 + 180);
                 this.playerViewX = 0.0F;
             }
-            else if (block == Blocks.bed)
-            {
-                int j = ((EnumFacing)iblockstate.getValue(BlockBed.FACING)).getHorizontalIndex();
-                this.playerViewY = (float)(j * 90 + 180);
-                this.playerViewX = 0.0F;
-            }
-        }
-        else
-        {
+        } else {
             this.playerViewY = livingPlayerIn.prevRotationYaw + (livingPlayerIn.rotationYaw - livingPlayerIn.prevRotationYaw) * partialTicks;
             this.playerViewX = livingPlayerIn.prevRotationPitch + (livingPlayerIn.rotationPitch - livingPlayerIn.prevRotationPitch) * partialTicks;
         }
 
-        if (optionsIn.thirdPersonView == 2)
-        {
+        if (optionsIn.thirdPersonView == 2) {
             this.playerViewY += 180.0F;
         }
 
-        this.viewerPosX = livingPlayerIn.lastTickPosX + (livingPlayerIn.posX - livingPlayerIn.lastTickPosX) * (double)partialTicks;
-        this.viewerPosY = livingPlayerIn.lastTickPosY + (livingPlayerIn.posY - livingPlayerIn.lastTickPosY) * (double)partialTicks;
-        this.viewerPosZ = livingPlayerIn.lastTickPosZ + (livingPlayerIn.posZ - livingPlayerIn.lastTickPosZ) * (double)partialTicks;
+        this.viewerPosX = livingPlayerIn.lastTickPosX + (livingPlayerIn.posX - livingPlayerIn.lastTickPosX) * (double) partialTicks;
+        this.viewerPosY = livingPlayerIn.lastTickPosY + (livingPlayerIn.posY - livingPlayerIn.lastTickPosY) * (double) partialTicks;
+        this.viewerPosZ = livingPlayerIn.lastTickPosZ + (livingPlayerIn.posZ - livingPlayerIn.lastTickPosZ) * (double) partialTicks;
     }
 
-    public void setPlayerViewY(float playerViewYIn)
-    {
+    public void setPlayerViewY(float playerViewYIn) {
         this.playerViewY = playerViewYIn;
     }
 
-    public boolean isRenderShadow()
-    {
+    public boolean isRenderShadow() {
         return this.renderShadow;
     }
 
-    public void setRenderShadow(boolean renderShadowIn)
-    {
+    public void setRenderShadow(boolean renderShadowIn) {
         this.renderShadow = renderShadowIn;
     }
 
-    public void setDebugBoundingBox(boolean debugBoundingBoxIn)
-    {
+    public void setDebugBoundingBox(boolean debugBoundingBoxIn) {
         this.debugBoundingBox = debugBoundingBoxIn;
     }
 
-    public boolean isDebugBoundingBox()
-    {
+    public boolean isDebugBoundingBox() {
         return this.debugBoundingBox;
     }
 
-    public boolean renderEntitySimple(Entity entityIn, float partialTicks)
-    {
+    public boolean renderEntitySimple(Entity entityIn, float partialTicks) {
         return this.renderEntityStatic(entityIn, partialTicks, false);
     }
 
-    public boolean shouldRender(Entity entityIn, ICamera camera, double camX, double camY, double camZ)
-    {
-        Render<Entity> render = this.<Entity>getEntityRenderObject(entityIn);
+    public boolean shouldRender(Entity entityIn, ICamera camera, double camX, double camY, double camZ) {
+        Render<Entity> render = this.getEntityRenderObject(entityIn);
         return render != null && render.shouldRender(entityIn, camera, camX, camY, camZ);
     }
 
-    public boolean renderEntityStatic(Entity entity, float partialTicks, boolean p_147936_3_)
-    {
-        if (entity.ticksExisted == 0)
-        {
+    public boolean renderEntityStatic(Entity entity, float partialTicks, boolean p_147936_3_) {
+        if (entity.ticksExisted == 0) {
             entity.lastTickPosX = entity.posX;
             entity.lastTickPosY = entity.posY;
             entity.lastTickPosZ = entity.posZ;
         }
 
-        double d0 = entity.lastTickPosX + (entity.posX - entity.lastTickPosX) * (double)partialTicks;
-        double d1 = entity.lastTickPosY + (entity.posY - entity.lastTickPosY) * (double)partialTicks;
-        double d2 = entity.lastTickPosZ + (entity.posZ - entity.lastTickPosZ) * (double)partialTicks;
+        double d0 = entity.lastTickPosX + (entity.posX - entity.lastTickPosX) * (double) partialTicks;
+        double d1 = entity.lastTickPosY + (entity.posY - entity.lastTickPosY) * (double) partialTicks;
+        double d2 = entity.lastTickPosZ + (entity.posZ - entity.lastTickPosZ) * (double) partialTicks;
         float f = entity.prevRotationYaw + (entity.rotationYaw - entity.prevRotationYaw) * partialTicks;
         int i = entity.getBrightnessForRender(partialTicks);
 
-        if (entity.isBurning())
-        {
+        if (entity.isBurning()) {
             i = 15728880;
         }
 
         int j = i % 65536;
         int k = i / 65536;
-        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)j / 1.0F, (float)k / 1.0F);
+        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float) j / 1.0F, (float) k / 1.0F);
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         return this.doRenderEntity(entity, d0 - this.renderPosX, d1 - this.renderPosY, d2 - this.renderPosZ, f, partialTicks, p_147936_3_);
     }
 
-    public void renderWitherSkull(Entity entityIn, float partialTicks)
-    {
-        double d0 = entityIn.lastTickPosX + (entityIn.posX - entityIn.lastTickPosX) * (double)partialTicks;
-        double d1 = entityIn.lastTickPosY + (entityIn.posY - entityIn.lastTickPosY) * (double)partialTicks;
-        double d2 = entityIn.lastTickPosZ + (entityIn.posZ - entityIn.lastTickPosZ) * (double)partialTicks;
-        Render<Entity> render = this.<Entity>getEntityRenderObject(entityIn);
+    public void renderWitherSkull(Entity entityIn, float partialTicks) {
+        double d0 = entityIn.lastTickPosX + (entityIn.posX - entityIn.lastTickPosX) * (double) partialTicks;
+        double d1 = entityIn.lastTickPosY + (entityIn.posY - entityIn.lastTickPosY) * (double) partialTicks;
+        double d2 = entityIn.lastTickPosZ + (entityIn.posZ - entityIn.lastTickPosZ) * (double) partialTicks;
+        Render<Entity> render = this.getEntityRenderObject(entityIn);
 
-        if (render != null && this.renderEngine != null)
-        {
+        if (render != null && this.renderEngine != null) {
             int i = entityIn.getBrightnessForRender(partialTicks);
             int j = i % 65536;
             int k = i / 65536;
-            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)j / 1.0F, (float)k / 1.0F);
+            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float) j, (float) k);
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
             render.renderName(entityIn, d0 - this.renderPosX, d1 - this.renderPosY, d2 - this.renderPosZ);
         }
     }
 
-    public boolean renderEntityWithPosYaw(Entity entityIn, double x, double y, double z, float entityYaw, float partialTicks)
-    {
+    public boolean renderEntityWithPosYaw(Entity entityIn, double x, double y, double z, float entityYaw, float partialTicks) {
         return this.doRenderEntity(entityIn, x, y, z, entityYaw, partialTicks, false);
     }
 
-    public boolean doRenderEntity(Entity entity, double x, double y, double z, float entityYaw, float partialTicks, boolean p_147939_10_)
-    {
+    public boolean doRenderEntity(Entity entity, double x, double y, double z, float entityYaw, float partialTicks, boolean p_147939_10_) {
         Render<Entity> render = null;
 
-        try
-        {
-            render = this.<Entity>getEntityRenderObject(entity);
+        try {
+            render = this.getEntityRenderObject(entity);
 
-            if (render != null && this.renderEngine != null)
-            {
-                try
-                {
-                    if (render instanceof RendererLivingEntity)
-                    {
-                        ((RendererLivingEntity)render).setRenderOutlines(this.renderOutlines);
+            if (render != null && this.renderEngine != null) {
+                try {
+                    if (render instanceof RendererLivingEntity) {
+                        ((RendererLivingEntity<?>) render).setRenderOutlines(this.renderOutlines);
                     }
 
-                    if (CustomEntityModels.isActive())
-                    {
+                    if (CustomEntityModels.isActive()) {
                         this.renderRender = render;
                     }
 
                     render.doRender(entity, x, y, z, entityYaw, partialTicks);
-                }
-                catch (Throwable throwable2)
-                {
+                } catch (Throwable throwable2) {
                     throw new ReportedException(CrashReport.makeCrashReport(throwable2, "Rendering entity in world"));
                 }
 
-                try
-                {
-                    if (!this.renderOutlines)
-                    {
+                try {
+                    if (!this.renderOutlines) {
                         render.doRenderShadowAndFire(entity, x, y, z, entityYaw, partialTicks);
                     }
-                }
-                catch (Throwable throwable1)
-                {
+                } catch (Throwable throwable1) {
                     throw new ReportedException(CrashReport.makeCrashReport(throwable1, "Post-rendering entity in world"));
                 }
 
-                if (this.debugBoundingBox && !entity.isInvisible() && !p_147939_10_)
-                {
-                    try
-                    {
+                if (this.debugBoundingBox && !entity.isInvisible() && !p_147939_10_) {
+                    try {
                         this.renderDebugBoundingBox(entity, x, y, z, entityYaw, partialTicks);
-                    }
-                    catch (Throwable throwable)
-                    {
+                    } catch (Throwable throwable) {
                         throw new ReportedException(CrashReport.makeCrashReport(throwable, "Rendering entity hitbox in world"));
                     }
                 }
-            }
-            else if (this.renderEngine != null)
-            {
-                return false;
-            }
+            } else return this.renderEngine == null;
 
             return true;
-        }
-        catch (Throwable throwable3)
-        {
+        } catch (Throwable throwable3) {
             CrashReport crashreport = CrashReport.makeCrashReport(throwable3, "Rendering entity in world");
             CrashReportCategory crashreportcategory = crashreport.makeCategory("Entity being rendered");
             entity.addEntityCrashInfo(crashreportcategory);
@@ -391,8 +336,7 @@ public class RenderManager {
     /**
      * Renders the bounding box around an entity when F3+B is pressed
      */
-    private void renderDebugBoundingBox(Entity entityIn, double p_85094_2_, double p_85094_4_, double p_85094_6_, float p_85094_8_, float p_85094_9_)
-    {
+    private void renderDebugBoundingBox(Entity entityIn, double p_85094_2_, double p_85094_4_, double p_85094_6_, float p_85094_8_, float p_85094_9_) {
         GlStateManager.depthMask(false);
         GlStateManager.disableTexture2D();
         GlStateManager.disableLighting();
@@ -425,13 +369,11 @@ public class RenderManager {
     /**
      * World sets this RenderManager's worldObj to the world provided
      */
-    public void set(World worldIn)
-    {
+    public void set(World worldIn) {
         this.worldObj = worldIn;
     }
 
-    public double getDistanceToCamera(double p_78714_1_, double p_78714_3_, double p_78714_5_)
-    {
+    public double getDistanceToCamera(double p_78714_1_, double p_78714_3_, double p_78714_5_) {
         double d0 = p_78714_1_ - this.viewerPosX;
         double d1 = p_78714_3_ - this.viewerPosY;
         double d2 = p_78714_5_ - this.viewerPosZ;
@@ -441,28 +383,23 @@ public class RenderManager {
     /**
      * Returns the font renderer
      */
-    public FontRenderer getFontRenderer()
-    {
+    public FontRenderer getFontRenderer() {
         return this.textRenderer;
     }
 
-    public void setRenderOutlines(boolean renderOutlinesIn)
-    {
+    public void setRenderOutlines(boolean renderOutlinesIn) {
         this.renderOutlines = renderOutlinesIn;
     }
 
-    public Map<Class, Render> getEntityRenderMap()
-    {
+    public Map<Class<? extends Entity>, Render<? extends Entity>> getEntityRenderMap() {
         return this.entityRenderMap;
     }
 
-    public void setEntityRenderMap(Map p_setEntityRenderMap_1_)
-    {
+    public void setEntityRenderMap(Map p_setEntityRenderMap_1_) {
         this.entityRenderMap = p_setEntityRenderMap_1_;
     }
 
-    public Map<String, RenderPlayer> getSkinMap()
-    {
-        return Collections.<String, RenderPlayer>unmodifiableMap(this.skinMap);
+    public Map<String, RenderPlayer> getSkinMap() {
+        return Collections.unmodifiableMap(this.skinMap);
     }
 }
