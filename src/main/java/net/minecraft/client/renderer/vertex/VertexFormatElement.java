@@ -94,8 +94,7 @@ public class VertexFormatElement
         return i;
     }
 
-    public static enum EnumType
-    {
+    public enum EnumType {
         FLOAT(4, "Float", 5126),
         UBYTE(1, "Unsigned Byte", 5121),
         BYTE(1, "Byte", 5120),
@@ -108,8 +107,7 @@ public class VertexFormatElement
         private final String displayName;
         private final int glConstant;
 
-        private EnumType(int sizeIn, String displayNameIn, int glConstantIn)
-        {
+        EnumType(int sizeIn, String displayNameIn, int glConstantIn) {
             this.size = sizeIn;
             this.displayName = displayNameIn;
             this.glConstant = glConstantIn;
@@ -131,8 +129,7 @@ public class VertexFormatElement
         }
     }
 
-    public static enum EnumUsage
-    {
+    public enum EnumUsage {
         POSITION("Position"),
         NORMAL("Normal"),
         COLOR("Vertex Color"),
@@ -143,8 +140,7 @@ public class VertexFormatElement
 
         private final String displayName;
 
-        private EnumUsage(String displayNameIn)
-        {
+        EnumUsage(String displayNameIn) {
             this.displayName = displayNameIn;
         }
 

@@ -37,7 +37,7 @@ object Fonts : ValueRegister {
     lateinit var condensedLight16: GameFontRenderer
 
     @JvmStatic
-    lateinit var light18: GameFontRenderer
+    lateinit var condensedLight18: GameFontRenderer
 
     @JvmStatic
     lateinit var mcRegular18: GameFontRenderer
@@ -71,7 +71,7 @@ object Fonts : ValueRegister {
         ClientUtils.logger.info("正在初始化默认字体...")
         val var0 = System.currentTimeMillis()
         condensedLight16 = GameFontRenderer(getAssetsFont("HarmonyOS_Sans_Condensed_Light.ttf", 16))
-        light18 = GameFontRenderer(getAssetsFont("HarmonyOS_Sans_Light.ttf", 18))
+        condensedLight18 = GameFontRenderer(getAssetsFont("HarmonyOS_Sans_Condensed_Light.ttf", 18))
         mcRegular18 = GameFontRenderer(getAssetsFont("HarmonyOS_Sans_Regular.ttf", 18), true)
         regular20 = GameFontRenderer(getAssetsFont("HarmonyOS_Sans_Regular.ttf", 20))
         medium22 = GameFontRenderer(getAssetsFont("HarmonyOS_Sans_Medium.ttf", 22))

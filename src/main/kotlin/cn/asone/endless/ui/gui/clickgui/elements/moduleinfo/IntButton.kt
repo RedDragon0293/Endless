@@ -11,16 +11,6 @@ class IntButton(override val value: IntValue, isSub: Boolean) : AbstractValueBut
         super.drawBox(mouseX, mouseY)
         if (isHovering(mouseX, mouseY)) {
             /**
-             * White background in order to hover other texts
-             */
-            /*RenderUtils.drawRect(
-                x + (if (isSub) 212 else 232) - 110 - 4 - valueFont.getStringWidth(value.get().toString()) - 2,
-                y + 5,
-                valueFont.getStringWidth(value.get().toString()) + 4F,
-                10F,
-                Color.white.rgb
-            )*/
-            /**
              * Bar background
              */
             RenderUtils.drawAntiAliasingRoundedRect(
@@ -53,12 +43,12 @@ class IntButton(override val value: IntValue, isSub: Boolean) : AbstractValueBut
 
     override fun drawText(mouseX: Int, mouseY: Int) {
         super.drawText(mouseX, mouseY)
-        Fonts.light18.drawString(
+        Fonts.condensedLight18.drawString(
             value.get().toString(),
             if (isHovering(mouseX, mouseY))
-                x + (if (isSub) 212 else 232) - 110 - 4 - Fonts.light18.getStringWidth(value.get().toString())
+                x + (if (isSub) 212 else 232) - 110 - 4 - Fonts.condensedLight18.getStringWidth(value.get().toString())
             else
-                x + (if (isSub) 212 else 232) - 5 - Fonts.light18.getStringWidth(value.get().toString()),
+                x + (if (isSub) 212 else 232) - 5 - Fonts.condensedLight18.getStringWidth(value.get().toString()),
             y + 7,
             GuiClickGUI.textColor
         )

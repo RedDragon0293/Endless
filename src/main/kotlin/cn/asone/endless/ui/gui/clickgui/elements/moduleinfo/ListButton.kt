@@ -62,10 +62,10 @@ class ListButton(override val value: ListValue, isSub: Boolean) : AbstractValueB
          */
         if (mouseX >= x && mouseX <= x + (if (isSub) 212 else 232) && mouseY >= y && mouseY <= y + 20)
             RenderUtils.drawBorder(
-                x + (if (isSub) 212 else 232) - 5 - Fonts.light18.getStringWidth(value.get()) - 2,
+                x + (if (isSub) 212 else 232) - 5 - Fonts.condensedLight18.getStringWidth(value.get()) - 2,
                 y + 3,
                 x + (if (isSub) 212 else 232) - 5 + 2,
-                y + 7 + Fonts.light18.height + 2,
+                y + 7 + Fonts.condensedLight18.height + 2,
                 1F,
                 Color(140, 140, 140).rgb
             )
@@ -84,9 +84,9 @@ class ListButton(override val value: ListValue, isSub: Boolean) : AbstractValueB
 
     override fun drawText(mouseX: Int, mouseY: Int) {
         super.drawText(mouseX, mouseY)
-        Fonts.light18.drawString(
+        Fonts.condensedLight18.drawString(
             value.get(),
-            x + (if (isSub) 212 else 232) - 5 - Fonts.light18.getStringWidth(value.get()),
+            x + (if (isSub) 212 else 232) - 5 - Fonts.condensedLight18.getStringWidth(value.get()),
             y + 7,
             GuiClickGUI.textColor
         )
@@ -97,10 +97,10 @@ class ListButton(override val value: ListValue, isSub: Boolean) : AbstractValueB
 
     override fun mouseClicked(mouseX: Int, mouseY: Int, mouseButton: Int) {
         if (mouseButton == 0) {
-            if (mouseX >= x + (if (isSub) 212 else 232) - 5 - Fonts.light18.getStringWidth(value.get()) - 2
+            if (mouseX >= x + (if (isSub) 212 else 232) - 5 - Fonts.condensedLight18.getStringWidth(value.get()) - 2
                 && mouseX <= x + (if (isSub) 212 else 232) - 5 + 2
                 && mouseY >= y + 3
-                && mouseY <= y + 7 + Fonts.light18.height + 2
+                && mouseY <= y + 7 + Fonts.condensedLight18.height + 2
             ) {
                 mc.soundHandler.playSound("gui.button.press", 1F)
                 GuiClickGUI.listButton = this

@@ -40,8 +40,8 @@ idea {
         inheritOutputDirs = true
     }
 }
-group 'net.minecraft'
-version 'beta 1.0'
+group 'cn.asone'
+version 'beta 0.1.0'
 
 allprojects {
     repositories {

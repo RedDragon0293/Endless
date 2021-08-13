@@ -12,7 +12,7 @@ import org.lwjgl.opengl.Display
 
 object Endless {
     const val CLIENT_NAME = "Endless"
-    const val CLIENT_VERSION = "Beta 1.0"
+    const val CLIENT_VERSION = "Beta 0.1.0"
     const val MINECRAFT_VERSION = "1.8.9"
     lateinit var clickGUI: GuiClickGUI
 

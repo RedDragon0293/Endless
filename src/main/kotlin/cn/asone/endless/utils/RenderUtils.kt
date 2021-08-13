@@ -97,6 +97,7 @@ object RenderUtils {
         val xEnd = x + width - radius
         val yEnd = y + height - radius
 
+        /*
         GL11.glBegin(GL11.GL_POLYGON)
         for (i in 0..90) GL11.glVertex2d(
             xEnd + sin(Math.toRadians(i.toDouble())) * radius,
@@ -115,6 +116,33 @@ object RenderUtils {
             yEnd + cos(Math.toRadians(i.toDouble())) * radius
         )
         GL11.glEnd()
+        */
+        worldRenderer.begin(GL11.GL_POLYGON, DefaultVertexFormats.POSITION)
+        for (i in 0..90)
+            worldRenderer.pos(
+                xEnd + sin(Math.toRadians(i.toDouble())) * radius,
+                yEnd + cos(Math.toRadians(i.toDouble())) * radius,
+                0.0
+            ).endVertex()
+        for (i in 90..180)
+            worldRenderer.pos(
+                xEnd + sin(Math.toRadians(i.toDouble())) * radius,
+                yStart + cos(Math.toRadians(i.toDouble())) * radius,
+                0.0
+            ).endVertex()
+        for (i in 180..270)
+            worldRenderer.pos(
+                xStart + sin(Math.toRadians(i.toDouble())) * radius,
+                yStart + cos(Math.toRadians(i.toDouble())) * radius,
+                0.0
+            ).endVertex()
+        for (i in 270..360)
+            worldRenderer.pos(
+                xStart + sin(Math.toRadians(i.toDouble())) * radius,
+                yEnd + cos(Math.toRadians(i.toDouble())) * radius,
+                0.0
+            ).endVertex()
+        tessellator.draw()
     }
 
     @JvmStatic
@@ -126,6 +154,7 @@ object RenderUtils {
         val xEnd = x + width - radius
         val yEnd = y + height - radius
 
+/*
         GL11.glBegin(GL11.GL_POLYGON)
         for (i in 0..90) GL11.glVertex2d(
             xEnd + sin(Math.toRadians(i.toDouble())) * radius,
@@ -144,10 +173,37 @@ object RenderUtils {
             yEnd + cos(Math.toRadians(i.toDouble())) * radius
         )
         GL11.glEnd()
+*/
+        worldRenderer.begin(GL11.GL_POLYGON, DefaultVertexFormats.POSITION)
+        for (i in 0..90)
+            worldRenderer.pos(
+                xEnd + sin(Math.toRadians(i.toDouble())) * radius,
+                yEnd + cos(Math.toRadians(i.toDouble())) * radius,
+                0.0
+            ).endVertex()
+        for (i in 90..180)
+            worldRenderer.pos(
+                xEnd + sin(Math.toRadians(i.toDouble())) * radius,
+                yStart + cos(Math.toRadians(i.toDouble())) * radius,
+                0.0
+            ).endVertex()
+        for (i in 180..270)
+            worldRenderer.pos(
+                xStart + sin(Math.toRadians(i.toDouble())) * radius,
+                yStart + cos(Math.toRadians(i.toDouble())) * radius,
+                0.0
+            ).endVertex()
+        for (i in 270..360)
+            worldRenderer.pos(
+                xStart + sin(Math.toRadians(i.toDouble())) * radius,
+                yEnd + cos(Math.toRadians(i.toDouble())) * radius,
+                0.0
+            ).endVertex()
+        tessellator.draw()
 
         GL11.glLineWidth(1F)
         GL11.glEnable(GL11.GL_LINE_SMOOTH)
-        GL11.glHint(GL11.GL_LINE_SMOOTH_HINT, GL11.GL_NICEST)
+/*
         GL11.glBegin(GL11.GL_LINE_LOOP)
         for (i in 0..90) GL11.glVertex2d(
             xEnd + sin(Math.toRadians(i.toDouble())) * radius,
@@ -166,7 +222,34 @@ object RenderUtils {
             yEnd + cos(Math.toRadians(i.toDouble())) * radius
         )
         GL11.glEnd()
-        GL11.glEnable(GL11.GL_LINE_SMOOTH)
+        */
+        worldRenderer.begin(GL11.GL_LINE_LOOP, DefaultVertexFormats.POSITION)
+        for (i in 0..90)
+            worldRenderer.pos(
+                xEnd + sin(Math.toRadians(i.toDouble())) * radius,
+                yEnd + cos(Math.toRadians(i.toDouble())) * radius,
+                0.0
+            ).endVertex()
+        for (i in 90..180)
+            worldRenderer.pos(
+                xEnd + sin(Math.toRadians(i.toDouble())) * radius,
+                yStart + cos(Math.toRadians(i.toDouble())) * radius,
+                0.0
+            ).endVertex()
+        for (i in 180..270)
+            worldRenderer.pos(
+                xStart + sin(Math.toRadians(i.toDouble())) * radius,
+                yStart + cos(Math.toRadians(i.toDouble())) * radius,
+                0.0
+            ).endVertex()
+        for (i in 270..360)
+            worldRenderer.pos(
+                xStart + sin(Math.toRadians(i.toDouble())) * radius,
+                yEnd + cos(Math.toRadians(i.toDouble())) * radius,
+                0.0
+            ).endVertex()
+        tessellator.draw()
+        GL11.glDisable(GL11.GL_LINE_SMOOTH)
     }
 
     @JvmStatic
@@ -174,13 +257,20 @@ object RenderUtils {
         quickGLColor(color)
         GL11.glLineWidth(width)
         GL11.glEnable(GL11.GL_LINE_SMOOTH)
-        GL11.glHint(GL11.GL_LINE_SMOOTH_HINT, GL11.GL_NICEST)
+        /*
         GL11.glBegin(GL11.GL_LINE_LOOP)
         GL11.glVertex2f(x1, y1)
         GL11.glVertex2f(x2, y1)
         GL11.glVertex2f(x2, y2)
         GL11.glVertex2f(x1, y2)
         GL11.glEnd()
+        */
+        worldRenderer.begin(GL11.GL_LINE_LOOP, DefaultVertexFormats.POSITION)
+        worldRenderer.pos(x1.toDouble(), y1.toDouble(), 0.0).endVertex()
+        worldRenderer.pos(x2.toDouble(), y1.toDouble(), 0.0).endVertex()
+        worldRenderer.pos(x2.toDouble(), y2.toDouble(), 0.0).endVertex()
+        worldRenderer.pos(x1.toDouble(), y2.toDouble(), 0.0).endVertex()
+        tessellator.draw()
         GL11.glDisable(GL11.GL_LINE_SMOOTH)
         GL11.glLineWidth(1F)
     }
@@ -194,7 +284,6 @@ object RenderUtils {
         val xEnd = x2 - radius
         val yEnd = y2 - radius
 
-        GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO)
         GL11.glLineWidth(width)
         GL11.glEnable(GL11.GL_LINE_SMOOTH)
         //GL11.glBegin(GL11.GL_LINE_LOOP)
@@ -240,25 +329,32 @@ object RenderUtils {
         tessellator.draw()
         GL11.glDisable(GL11.GL_LINE_SMOOTH)
         GL11.glLineWidth(1F)
-        GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA)
     }
 
     @JvmStatic
     fun drawRect(x: Float, y: Float, width: Float, height: Float, color: Int) {
         quickGLColor(color)
 
-        GL11.glBegin(GL11.GL_QUADS)
+        /*GL11.glBegin(GL11.GL_QUADS)
         GL11.glVertex2f(x + width, y)
         GL11.glVertex2f(x, y)
         GL11.glVertex2f(x, y + height)
         GL11.glVertex2f(x + width, y + height)
 
         GL11.glEnd()
+        */
+        worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION)
+        worldRenderer.pos((x + width).toDouble(), y.toDouble(), 0.0).endVertex()
+        worldRenderer.pos(x.toDouble(), y.toDouble(), 0.0).endVertex()
+        worldRenderer.pos(x.toDouble(), (y + height).toDouble(), 0.0).endVertex()
+        worldRenderer.pos((x + width).toDouble(), (y + height).toDouble(), 0.0).endVertex()
+        tessellator.draw()
     }
 
     @JvmStatic
     fun drawCircle(x: Float, y: Float, radius: Float, color: Int) {
         quickGLColor(color)
+        /*
         GL11.glBegin(GL11.GL_POLYGON)
         for (i in 0..360)
             GL11.glVertex2f(
@@ -266,11 +362,21 @@ object RenderUtils {
                 (y + cos(Math.toRadians(i.toDouble())) * radius).toFloat()
             )
         GL11.glEnd()
+        */
+        worldRenderer.begin(GL11.GL_POLYGON, DefaultVertexFormats.POSITION)
+        for (i in 0..360)
+            worldRenderer.pos(
+                x + sin(Math.toRadians(i.toDouble())) * radius,
+                y + cos(Math.toRadians(i.toDouble())) * radius,
+                0.0
+            ).endVertex()
+        tessellator.draw()
     }
 
     @JvmStatic
     fun drawAntiAliasingCircle(x: Float, y: Float, radius: Float, color: Int) {
         quickGLColor(color)
+        /*
         GL11.glBegin(GL11.GL_POLYGON)
         for (i in 0..360)
             GL11.glVertex2f(
@@ -278,10 +384,19 @@ object RenderUtils {
                 (y + cos(Math.toRadians(i.toDouble())) * radius).toFloat()
             )
         GL11.glEnd()
+        */
+        worldRenderer.begin(GL11.GL_POLYGON, DefaultVertexFormats.POSITION)
+        for (i in 0..360)
+            worldRenderer.pos(
+                x + sin(Math.toRadians(i.toDouble())) * radius,
+                y + cos(Math.toRadians(i.toDouble())) * radius,
+                0.0
+            ).endVertex()
+        tessellator.draw()
 
         GL11.glLineWidth(1F)
         GL11.glEnable(GL11.GL_LINE_SMOOTH)
-        GL11.glHint(GL11.GL_LINE_SMOOTH_HINT, GL11.GL_NICEST)
+        /*
         GL11.glBegin(GL11.GL_LINE_LOOP)
         for (i in 0..360)
             GL11.glVertex2f(
@@ -289,6 +404,15 @@ object RenderUtils {
                 (y + cos(Math.toRadians(i.toDouble())) * radius).toFloat()
             )
         GL11.glEnd()
+        */
+        worldRenderer.begin(GL11.GL_LINE_LOOP, DefaultVertexFormats.POSITION)
+        for (i in 0..360)
+            worldRenderer.pos(
+                x + sin(Math.toRadians(i.toDouble())) * radius,
+                y + cos(Math.toRadians(i.toDouble())) * radius,
+                0.0
+            ).endVertex()
+        tessellator.draw()
         GL11.glDisable(GL11.GL_LINE_SMOOTH)
     }
 
@@ -297,11 +421,16 @@ object RenderUtils {
         quickGLColor(color)
         GL11.glLineWidth(width)
         GL11.glEnable(GL11.GL_LINE_SMOOTH)
-        GL11.glHint(GL11.GL_LINE_SMOOTH_HINT, GL11.GL_NICEST)
+        /*
         GL11.glBegin(GL11.GL_LINES)
         GL11.glVertex2f(x1, y1)
         GL11.glVertex2f(x2, y2)
         GL11.glEnd()
+        */
+        worldRenderer.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION)
+        worldRenderer.pos(x1.toDouble(), y1.toDouble(), 0.0).endVertex()
+        worldRenderer.pos(x2.toDouble(), y2.toDouble(), 0.0).endVertex()
+        tessellator.draw()
         GL11.glDisable(GL11.GL_LINE_SMOOTH)
     }
 

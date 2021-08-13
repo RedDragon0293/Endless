@@ -56,12 +56,12 @@ class FloatButton(override val value: FloatValue, isSub: Boolean) : AbstractValu
 
     override fun drawText(mouseX: Int, mouseY: Int) {
         super.drawText(mouseX, mouseY)
-        Fonts.light18.drawString(
+        Fonts.condensedLight18.drawString(
             valueString,
             if (isHovering(mouseX, mouseY))
-                x + (if (isSub) 212 else 232) - 110 - 4 - Fonts.light18.getStringWidth(valueString)
+                x + (if (isSub) 212 else 232) - 110 - 4 - Fonts.condensedLight18.getStringWidth(valueString)
             else
-                x + (if (isSub) 212 else 232) - 5 - Fonts.light18.getStringWidth(valueString),
+                x + (if (isSub) 212 else 232) - 5 - Fonts.condensedLight18.getStringWidth(valueString),
             y + 7,
             GuiClickGUI.textColor
         )

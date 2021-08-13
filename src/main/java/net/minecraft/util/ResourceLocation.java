@@ -1,5 +1,6 @@
 package net.minecraft.util;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 
 public class ResourceLocation
@@ -9,7 +10,7 @@ public class ResourceLocation
 
     protected ResourceLocation(int p_i45928_1_, String... resourceName)
     {
-        this.resourceDomain = org.apache.commons.lang3.StringUtils.isEmpty(resourceName[0]) ? "minecraft" : resourceName[0].toLowerCase();
+        this.resourceDomain = StringUtils.isEmpty(resourceName[0]) ? "minecraft" : resourceName[0].toLowerCase();
         this.resourcePath = resourceName[1];
         Validate.notNull(this.resourcePath);
     }
@@ -21,7 +22,7 @@ public class ResourceLocation
 
     public ResourceLocation(String resourceDomainIn, String resourcePathIn)
     {
-        this(0, new String[] {resourceDomainIn, resourcePathIn});
+        this(0, resourceDomainIn, resourcePathIn);
     }
 
     /**
@@ -37,7 +38,7 @@ public class ResourceLocation
 
         if (i >= 0)
         {
-            astring[1] = toSplit.substring(i + 1, toSplit.length());
+            astring[1] = toSplit.substring(i + 1);
 
             if (i > 1)
             {
