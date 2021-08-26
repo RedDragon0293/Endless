@@ -34,7 +34,7 @@ class GameFontRenderer(font: Font, companionStyle: Boolean = false) : FontRender
         }
     }
 
-    fun drawString(s: String, x: Float, y: Float, color: Int) = drawText(s, x, y, color, false)
+    fun drawString(s: String, x: Float, y: Float, color: Int) = drawString(s, x, y, color, false)
 
     override fun drawStringWithShadow(text: String, x: Float, y: Float, color: Int) =
         drawString(text, x, y, color, true)
@@ -47,10 +47,13 @@ class GameFontRenderer(font: Font, companionStyle: Boolean = false) : FontRender
 
     override fun drawString(text: String, x: Float, y: Float, color: Int, shadow: Boolean): Int {
         var newColor = color
+        var newtext = text
+        if (this.bidiFlag)
+            newtext = this.bidiReorder(text)
 
         if (shadow) {
             newColor = (newColor and 16579836) /*FC FC FC*/ shr 2 or newColor and -16777216 /*FF 00 00 00*/
-            drawText(text, x + 1F, y + 1F, newColor, true)
+            drawText(newtext, x + 1F, y + 1F, newColor, true)
         }
         newColor = color
 
@@ -58,7 +61,7 @@ class GameFontRenderer(font: Font, companionStyle: Boolean = false) : FontRender
             newColor = newColor or -16777216 /*FF 00 00 00*/
         }
 
-        return drawText(text, x, y, newColor, false)
+        return drawText(newtext, x, y, newColor, false)
     }
 
     private fun drawText(rawText: String?, x: Float, y: Float, colorHex: Int, ignoreColor: Boolean): Int {

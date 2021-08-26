@@ -409,13 +409,13 @@ public class FontRenderer implements IResourceManagerReloadListener {
     /**
      * Apply Unicode Bidirectional Algorithm to string and return a new possibly reordered string for visual rendering.
      */
-    private String bidiReorder(String p_147647_1_) {
+    protected String bidiReorder(String text) {
         try {
-            Bidi bidi = new Bidi((new ArabicShaping(8)).shape(p_147647_1_), 127);
+            Bidi bidi = new Bidi((new ArabicShaping(8)).shape(text), 127);
             bidi.setReorderingMode(0);
             return bidi.writeReordered(2);
         } catch (ArabicShapingException var3) {
-            return p_147647_1_;
+            return text;
         }
     }
 
