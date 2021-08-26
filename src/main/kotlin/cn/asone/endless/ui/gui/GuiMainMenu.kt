@@ -1,5 +1,6 @@
 package cn.asone.endless.ui.gui
 
+import cn.asone.endless.ui.font.Fonts
 import net.minecraft.client.gui.GuiScreen
 
 class GuiMainMenu : GuiScreen() {
@@ -9,9 +10,9 @@ class GuiMainMenu : GuiScreen() {
         if (mc.isDemo) {
             s = "$s Demo"
         }
-        drawString(fontRendererObj, s, 2, height - 10, -1)
+        drawString(Fonts.mcRegular18, s, 2, height - 10, -1)
         val s2 = "Copyright Mojang AB. Do not distribute!"
-        drawString(fontRendererObj, s2, width - fontRendererObj.getStringWidth(s2) - 2, height - 10, -1)
+        drawString(Fonts.mcRegular18, s2, width - Fonts.mcRegular18.getStringWidth(s2) - 2, height - 10, -1)
         super.drawScreen(mouseX, mouseY, partialTicks)
     }
 

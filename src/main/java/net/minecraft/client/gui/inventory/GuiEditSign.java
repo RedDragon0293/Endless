@@ -1,6 +1,5 @@
 package net.minecraft.client.gui.inventory;
 
-import java.io.IOException;
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
@@ -14,6 +13,8 @@ import net.minecraft.tileentity.TileEntitySign;
 import net.minecraft.util.ChatAllowedCharacters;
 import net.minecraft.util.ChatComponentText;
 import org.lwjgl.input.Keyboard;
+
+import java.io.IOException;
 
 public class GuiEditSign extends GuiScreen
 {
@@ -108,7 +109,7 @@ public class GuiEditSign extends GuiScreen
             s = s.substring(0, s.length() - 1);
         }
 
-        if (ChatAllowedCharacters.isAllowedCharacter(typedChar) && this.fontRendererObj.getStringWidth(s + typedChar) <= 90)
+        if (ChatAllowedCharacters.isAllowedCharacter(typedChar) && mc.fontRendererObj.getStringWidth(s + typedChar) <= 90)
         {
             s = s + typedChar;
         }
@@ -127,7 +128,7 @@ public class GuiEditSign extends GuiScreen
     public void drawScreen(int mouseX, int mouseY, float partialTicks)
     {
         this.drawDefaultBackground();
-        this.drawCenteredString(this.fontRendererObj, I18n.format("sign.edit", new Object[0]), this.width / 2, 40, 16777215);
+        this.drawCenteredString(mc.fontRendererObj, I18n.format("sign.edit", new Object[0]), this.width / 2, 40, 16777215);
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         GlStateManager.pushMatrix();
         GlStateManager.translate((float)(this.width / 2), 0.0F, 50.0F);

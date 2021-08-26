@@ -1,21 +1,13 @@
 package net.minecraft.client.gui;
 
-import java.io.IOException;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.src.Config;
 import net.optifine.Lang;
-import net.optifine.gui.GuiAnimationSettingsOF;
-import net.optifine.gui.GuiDetailSettingsOF;
-import net.optifine.gui.GuiOptionButtonOF;
-import net.optifine.gui.GuiOptionSliderOF;
-import net.optifine.gui.GuiOtherSettingsOF;
-import net.optifine.gui.GuiPerformanceSettingsOF;
-import net.optifine.gui.GuiQualitySettingsOF;
-import net.optifine.gui.GuiScreenOF;
-import net.optifine.gui.TooltipManager;
-import net.optifine.gui.TooltipProviderOptions;
+import net.optifine.gui.*;
 import net.optifine.shaders.gui.GuiShaders;
+
+import java.io.IOException;
 
 public class GuiVideoSettings extends GuiScreenOF
 {
@@ -198,7 +190,7 @@ public class GuiVideoSettings extends GuiScreenOF
     public void drawScreen(int mouseX, int mouseY, float partialTicks)
     {
         this.drawDefaultBackground();
-        this.drawCenteredString(this.fontRendererObj, this.screenTitle, this.width / 2, 15, 16777215);
+        this.drawCenteredString(mc.fontRendererObj, this.screenTitle, this.width / 2, 15, 16777215);
         String s = Config.getVersion();
         String s1 = "HD_U";
 
@@ -217,10 +209,10 @@ public class GuiVideoSettings extends GuiScreenOF
             s = "OptiFine L5 Light";
         }
 
-        this.drawString(this.fontRendererObj, s, 2, this.height - 10, 8421504);
+        this.drawString(mc.fontRendererObj, s, 2, this.height - 10, 8421504);
         String s2 = "Minecraft 1.8.9";
-        int i = this.fontRendererObj.getStringWidth(s2);
-        this.drawString(this.fontRendererObj, s2, this.width - i - 2, this.height - 10, 8421504);
+        int i = mc.fontRendererObj.getStringWidth(s2);
+        this.drawString(mc.fontRendererObj, s2, this.width - i - 2, this.height - 10, 8421504);
         super.drawScreen(mouseX, mouseY, partialTicks);
         this.tooltipManager.drawTooltips(mouseX, mouseY, this.buttonList);
     }

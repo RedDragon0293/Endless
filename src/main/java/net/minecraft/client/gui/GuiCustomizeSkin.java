@@ -1,10 +1,11 @@
 package net.minecraft.client.gui;
 
-import java.io.IOException;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EnumPlayerModelParts;
 import net.optifine.gui.GuiButtonOF;
 import net.optifine.gui.GuiScreenCapeOF;
+
+import java.io.IOException;
 
 public class GuiCustomizeSkin extends GuiScreen
 {
@@ -76,7 +77,7 @@ public class GuiCustomizeSkin extends GuiScreen
     public void drawScreen(int mouseX, int mouseY, float partialTicks)
     {
         this.drawDefaultBackground();
-        this.drawCenteredString(this.fontRendererObj, this.title, this.width / 2, 20, 16777215);
+        this.drawCenteredString(mc.fontRendererObj, this.title, this.width / 2, 20, 16777215);
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
 

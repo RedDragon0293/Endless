@@ -271,7 +271,7 @@ public class GuiContainerCreative extends InventoryEffectRenderer {
             super.initGui();
             this.buttonList.clear();
             Keyboard.enableRepeatEvents(true);
-            this.searchField = new GuiTextField(0, this.fontRendererObj, this.guiLeft + 82, this.guiTop + 6, 89, this.fontRendererObj.FONT_HEIGHT);
+            this.searchField = new GuiTextField(0, mc.fontRendererObj, this.guiLeft + 82, this.guiTop + 6, 89, mc.fontRendererObj.FONT_HEIGHT);
             this.searchField.setMaxStringLength(15);
             this.searchField.setEnableBackgroundDrawing(false);
             this.searchField.setVisible(false);
@@ -396,7 +396,7 @@ public class GuiContainerCreative extends InventoryEffectRenderer {
         if (creativetabs.drawInForegroundOfTab())
         {
             GlStateManager.disableBlend();
-            this.fontRendererObj.drawString(I18n.format(creativetabs.getTranslatedTabLabel(), new Object[0]), 8, 6, 4210752);
+            mc.fontRendererObj.drawString(I18n.format(creativetabs.getTranslatedTabLabel(), new Object[0]), 8, 6, 4210752);
         }
     }
 
@@ -822,7 +822,7 @@ public class GuiContainerCreative extends InventoryEffectRenderer {
         GlStateManager.enableRescaleNormal();
         ItemStack itemstack = p_147051_1_.getIconItemStack();
         this.itemRender.renderItemAndEffectIntoGUI(itemstack, l, i1);
-        this.itemRender.renderItemOverlays(this.fontRendererObj, itemstack, l, i1);
+        this.itemRender.renderItemOverlays(mc.fontRendererObj, itemstack, l, i1);
         GlStateManager.disableLighting();
         this.itemRender.zLevel = 0.0F;
         this.zLevel = 0.0F;

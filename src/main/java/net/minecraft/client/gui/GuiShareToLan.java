@@ -1,11 +1,12 @@
 package net.minecraft.client.gui;
 
-import java.io.IOException;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.world.WorldSettings;
+
+import java.io.IOException;
 
 public class GuiShareToLan extends GuiScreen
 {
@@ -109,8 +110,8 @@ public class GuiShareToLan extends GuiScreen
     public void drawScreen(int mouseX, int mouseY, float partialTicks)
     {
         this.drawDefaultBackground();
-        this.drawCenteredString(this.fontRendererObj, I18n.format("lanServer.title", new Object[0]), this.width / 2, 50, 16777215);
-        this.drawCenteredString(this.fontRendererObj, I18n.format("lanServer.otherPlayers", new Object[0]), this.width / 2, 82, 16777215);
+        this.drawCenteredString(mc.fontRendererObj, I18n.format("lanServer.title", new Object[0]), this.width / 2, 50, 16777215);
+        this.drawCenteredString(mc.fontRendererObj, I18n.format("lanServer.otherPlayers", new Object[0]), this.width / 2, 82, 16777215);
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
 }

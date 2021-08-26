@@ -1,6 +1,5 @@
 package net.minecraft.client.gui;
 
-import java.io.IOException;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.audio.SoundCategory;
@@ -10,6 +9,8 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
+
+import java.io.IOException;
 
 public class GuiScreenOptionsSounds extends GuiScreen
 {
@@ -71,7 +72,7 @@ public class GuiScreenOptionsSounds extends GuiScreen
     public void drawScreen(int mouseX, int mouseY, float partialTicks)
     {
         this.drawDefaultBackground();
-        this.drawCenteredString(this.fontRendererObj, this.field_146507_a, this.width / 2, 15, 16777215);
+        this.drawCenteredString(mc.fontRendererObj, this.field_146507_a, this.width / 2, 15, 16777215);
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
 

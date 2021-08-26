@@ -1,8 +1,9 @@
 package net.minecraft.client.gui;
 
-import java.io.IOException;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.settings.GameSettings;
+
+import java.io.IOException;
 
 public class ScreenChatOptions extends GuiScreen
 {
@@ -70,7 +71,7 @@ public class ScreenChatOptions extends GuiScreen
     public void drawScreen(int mouseX, int mouseY, float partialTicks)
     {
         this.drawDefaultBackground();
-        this.drawCenteredString(this.fontRendererObj, this.field_146401_i, this.width / 2, 20, 16777215);
+        this.drawCenteredString(mc.fontRendererObj, this.field_146401_i, this.width / 2, 20, 16777215);
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
 }

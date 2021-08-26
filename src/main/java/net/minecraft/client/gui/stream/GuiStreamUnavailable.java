@@ -1,10 +1,6 @@
 package net.minecraft.client.gui.stream;
 
 import com.google.common.collect.Lists;
-import java.io.IOException;
-import java.net.URI;
-import java.util.Arrays;
-import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
@@ -21,6 +17,11 @@ import org.apache.logging.log4j.Logger;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GLContext;
 import tv.twitch.ErrorCode;
+
+import java.io.IOException;
+import java.net.URI;
+import java.util.Arrays;
+import java.util.List;
 
 public class GuiStreamUnavailable extends GuiScreen
 {
@@ -53,7 +54,7 @@ public class GuiStreamUnavailable extends GuiScreen
     {
         if (this.field_152323_r.isEmpty())
         {
-            this.field_152323_r.addAll(this.fontRendererObj.listFormattedStringToWidth(this.field_152326_h.func_152561_a().getFormattedText(), (int)((float)this.width * 0.75F)));
+            this.field_152323_r.addAll(mc.fontRendererObj.listFormattedStringToWidth(this.field_152326_h.func_152561_a().getFormattedText(), (int)((float)this.width * 0.75F)));
 
             if (this.field_152327_i != null)
             {
@@ -90,13 +91,13 @@ public class GuiStreamUnavailable extends GuiScreen
     public void drawScreen(int mouseX, int mouseY, float partialTicks)
     {
         this.drawDefaultBackground();
-        int i = Math.max((int)((double)this.height * 0.85D / 2.0D - (double)((float)(this.field_152323_r.size() * this.fontRendererObj.FONT_HEIGHT) / 2.0F)), 50);
-        this.drawCenteredString(this.fontRendererObj, this.field_152324_f.getFormattedText(), this.width / 2, i - this.fontRendererObj.FONT_HEIGHT * 2, 16777215);
+        int i = Math.max((int)((double)this.height * 0.85D / 2.0D - (double)((float)(this.field_152323_r.size() * mc.fontRendererObj.FONT_HEIGHT) / 2.0F)), 50);
+        this.drawCenteredString(mc.fontRendererObj, this.field_152324_f.getFormattedText(), this.width / 2, i - mc.fontRendererObj.FONT_HEIGHT * 2, 16777215);
 
         for (String s : this.field_152323_r)
         {
-            this.drawCenteredString(this.fontRendererObj, s, this.width / 2, i, 10526880);
-            i += this.fontRendererObj.FONT_HEIGHT;
+            this.drawCenteredString(mc.fontRendererObj, s, this.width / 2, i, 10526880);
+            i += mc.fontRendererObj.FONT_HEIGHT;
         }
 
         super.drawScreen(mouseX, mouseY, partialTicks);

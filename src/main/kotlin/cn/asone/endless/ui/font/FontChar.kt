@@ -8,6 +8,13 @@ import java.awt.image.BufferedImage
  * @param bufferedImage 渲染出的字符图片
  */
 class FontChar(val char: Char, bufferedImage: BufferedImage) {
+    /**
+     * 图片width
+     */
     val width = bufferedImage.width
+    /**
+     * 最终用于渲染的图片
+     * GlStateManager.bindTexture(tex.getGlTextureId)
+     */
     val tex = DynamicTexture(bufferedImage)
 }

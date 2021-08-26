@@ -73,11 +73,6 @@ public abstract class GuiScreen extends Gui implements GuiYesNoCallback {
     public boolean allowUserInput;
 
     /**
-     * The FontRenderer used by GuiScreen
-     */
-    protected FontRenderer fontRendererObj;
-
-    /**
      * The button that was just pressed.
      */
     private GuiButton selectedButton;
@@ -181,7 +176,7 @@ public abstract class GuiScreen extends Gui implements GuiYesNoCallback {
             int i = 0;
 
             for (String s : textLines) {
-                int j = this.fontRendererObj.getStringWidth(s);
+                int j = mc.fontRendererObj.getStringWidth(s);
 
                 if (j > i) {
                     i = j;
@@ -221,7 +216,7 @@ public abstract class GuiScreen extends Gui implements GuiYesNoCallback {
 
             for (int k1 = 0; k1 < textLines.size(); ++k1) {
                 String s1 = textLines.get(k1);
-                this.fontRendererObj.drawStringWithShadow(s1, (float) l1, (float) i2, -1);
+                mc.fontRendererObj.drawStringWithShadow(s1, (float) l1, (float) i2, -1);
 
                 if (k1 == 0) {
                     i2 += 2;
@@ -299,7 +294,7 @@ public abstract class GuiScreen extends Gui implements GuiYesNoCallback {
                     List<String> list = Lists.newArrayList(ichatcomponent.getFormattedText(), ichatcomponent1.getFormattedText());
 
                     if (s1 != null) {
-                        list.addAll(this.fontRendererObj.listFormattedStringToWidth(s1, 150));
+                        list.addAll(mc.fontRendererObj.listFormattedStringToWidth(s1, 150));
                     }
 
                     this.drawHoveringText(list, p_175272_2_, p_175272_3_);
@@ -449,13 +444,13 @@ public abstract class GuiScreen extends Gui implements GuiYesNoCallback {
     public void setWorldAndResolution(Minecraft mc, int width, int height) {
         this.mc = mc;
         this.itemRender = mc.getRenderItem();
-        this.fontRendererObj = mc.fontRendererObj;
         this.width = width;
         this.height = height;
         this.buttonList.clear();
         this.initGui();
     }
 
+    @SuppressWarnings("unused")
     public void setGuiSize(int p_183500_1_, int p_183500_2_) {
         this.width = p_183500_1_;
         this.height = p_183500_2_;

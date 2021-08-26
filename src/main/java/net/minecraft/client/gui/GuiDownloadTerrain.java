@@ -1,11 +1,12 @@
 package net.minecraft.client.gui;
 
-import java.io.IOException;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.network.play.client.C00PacketKeepAlive;
 import net.optifine.CustomLoadingScreen;
 import net.optifine.CustomLoadingScreens;
+
+import java.io.IOException;
 
 public class GuiDownloadTerrain extends GuiScreen
 {
@@ -62,7 +63,7 @@ public class GuiDownloadTerrain extends GuiScreen
             this.drawBackground(0);
         }
 
-        this.drawCenteredString(this.fontRendererObj, I18n.format("multiplayer.downloadingTerrain", new Object[0]), this.width / 2, this.height / 2 - 50, 16777215);
+        this.drawCenteredString(mc.fontRendererObj, I18n.format("multiplayer.downloadingTerrain", new Object[0]), this.width / 2, this.height / 2 - 50, 16777215);
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
 

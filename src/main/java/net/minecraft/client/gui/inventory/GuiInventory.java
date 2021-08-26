@@ -1,6 +1,5 @@
 package net.minecraft.client.gui.inventory;
 
-import java.io.IOException;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.achievement.GuiAchievements;
@@ -13,6 +12,8 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+
+import java.io.IOException;
 
 public class GuiInventory extends InventoryEffectRenderer
 {
@@ -64,7 +65,7 @@ public class GuiInventory extends InventoryEffectRenderer
      */
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
     {
-        this.fontRendererObj.drawString(I18n.format("container.crafting", new Object[0]), 86, 16, 4210752);
+        mc.fontRendererObj.drawString(I18n.format("container.crafting", new Object[0]), 86, 16, 4210752);
     }
 
     /**

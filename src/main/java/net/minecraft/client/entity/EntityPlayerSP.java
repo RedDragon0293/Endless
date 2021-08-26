@@ -591,7 +591,6 @@ public class EntityPlayerSP extends AbstractClientPlayer {
      * use this to react to sunlight and start to burn.
      */
     public void onLivingUpdate() {
-        EventManager.INSTANCE.callEvent(new UpdateEvent());
         if (this.sprintingTicksLeft > 0) {
             --this.sprintingTicksLeft;
 
@@ -737,5 +736,6 @@ public class EntityPlayerSP extends AbstractClientPlayer {
             this.capabilities.isFlying = false;
             this.sendPlayerAbilities();
         }
+        EventManager.INSTANCE.callEvent(new UpdateEvent());
     }
 }

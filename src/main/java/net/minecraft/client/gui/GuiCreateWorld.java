@@ -83,10 +83,10 @@ public class GuiCreateWorld extends GuiScreen {
         this.btnAllowCommands.visible = false;
         this.buttonList.add(this.btnCustomizeType = new GuiButton(8, this.width / 2 + 5, 120, 150, 20, I18n.format("selectWorld.customizeType", new Object[0])));
         this.btnCustomizeType.visible = false;
-        this.field_146333_g = new GuiTextField(9, this.fontRendererObj, this.width / 2 - 100, 60, 200, 20);
+        this.field_146333_g = new GuiTextField(9, mc.fontRendererObj, this.width / 2 - 100, 60, 200, 20);
         this.field_146333_g.setFocused(true);
         this.field_146333_g.setText(this.field_146330_J);
-        this.field_146335_h = new GuiTextField(10, this.fontRendererObj, this.width / 2 - 100, 60, 200, 20);
+        this.field_146335_h = new GuiTextField(10, mc.fontRendererObj, this.width / 2 - 100, 60, 200, 20);
         this.field_146335_h.setText(this.field_146329_I);
         this.func_146316_a(this.field_146344_y);
         this.func_146314_g();
@@ -446,37 +446,37 @@ public class GuiCreateWorld extends GuiScreen {
     public void drawScreen(int mouseX, int mouseY, float partialTicks)
     {
         this.drawDefaultBackground();
-        this.drawCenteredString(this.fontRendererObj, I18n.format("selectWorld.create", new Object[0]), this.width / 2, 20, -1);
+        this.drawCenteredString(mc.fontRendererObj, I18n.format("selectWorld.create", new Object[0]), this.width / 2, 20, -1);
 
         if (this.field_146344_y)
         {
-            this.drawString(this.fontRendererObj, I18n.format("selectWorld.enterSeed", new Object[0]), this.width / 2 - 100, 47, -6250336);
-            this.drawString(this.fontRendererObj, I18n.format("selectWorld.seedInfo", new Object[0]), this.width / 2 - 100, 85, -6250336);
+            this.drawString(mc.fontRendererObj, I18n.format("selectWorld.enterSeed", new Object[0]), this.width / 2 - 100, 47, -6250336);
+            this.drawString(mc.fontRendererObj, I18n.format("selectWorld.seedInfo", new Object[0]), this.width / 2 - 100, 85, -6250336);
 
             if (this.btnMapFeatures.visible)
             {
-                this.drawString(this.fontRendererObj, I18n.format("selectWorld.mapFeatures.info", new Object[0]), this.width / 2 - 150, 122, -6250336);
+                this.drawString(mc.fontRendererObj, I18n.format("selectWorld.mapFeatures.info", new Object[0]), this.width / 2 - 150, 122, -6250336);
             }
 
             if (this.btnAllowCommands.visible)
             {
-                this.drawString(this.fontRendererObj, I18n.format("selectWorld.allowCommands.info", new Object[0]), this.width / 2 - 150, 172, -6250336);
+                this.drawString(mc.fontRendererObj, I18n.format("selectWorld.allowCommands.info", new Object[0]), this.width / 2 - 150, 172, -6250336);
             }
 
             this.field_146335_h.drawTextBox();
 
             if (WorldType.worldTypes[this.selectedIndex].showWorldInfoNotice())
             {
-                this.fontRendererObj.drawSplitString(I18n.format(WorldType.worldTypes[this.selectedIndex].func_151359_c(), new Object[0]), this.btnMapType.xPosition + 2, this.btnMapType.yPosition + 22, this.btnMapType.getButtonWidth(), 10526880);
+                mc.fontRendererObj.drawSplitString(I18n.format(WorldType.worldTypes[this.selectedIndex].func_151359_c(), new Object[0]), this.btnMapType.xPosition + 2, this.btnMapType.yPosition + 22, this.btnMapType.getButtonWidth(), 10526880);
             }
         }
         else
         {
-            this.drawString(this.fontRendererObj, I18n.format("selectWorld.enterName", new Object[0]), this.width / 2 - 100, 47, -6250336);
-            this.drawString(this.fontRendererObj, I18n.format("selectWorld.resultFolder", new Object[0]) + " " + this.field_146336_i, this.width / 2 - 100, 85, -6250336);
+            this.drawString(mc.fontRendererObj, I18n.format("selectWorld.enterName", new Object[0]), this.width / 2 - 100, 47, -6250336);
+            this.drawString(mc.fontRendererObj, I18n.format("selectWorld.resultFolder", new Object[0]) + " " + this.field_146336_i, this.width / 2 - 100, 85, -6250336);
             this.field_146333_g.drawTextBox();
-            this.drawString(this.fontRendererObj, this.field_146323_G, this.width / 2 - 100, 137, -6250336);
-            this.drawString(this.fontRendererObj, this.field_146328_H, this.width / 2 - 100, 149, -6250336);
+            this.drawString(mc.fontRendererObj, this.field_146323_G, this.width / 2 - 100, 137, -6250336);
+            this.drawString(mc.fontRendererObj, this.field_146328_H, this.width / 2 - 100, 149, -6250336);
         }
 
         super.drawScreen(mouseX, mouseY, partialTicks);

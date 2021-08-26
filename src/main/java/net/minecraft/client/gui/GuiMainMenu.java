@@ -209,8 +209,8 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
         this.buttonList.add(new GuiButton(14, this.width / 2 - 100, j + 24 * 2, "AltManager"));
 
         synchronized (this.threadLock) {
-            this.field_92023_s = this.fontRendererObj.getStringWidth(this.openGLWarning1);
-            this.field_92024_r = this.fontRendererObj.getStringWidth(this.openGLWarning2);
+            this.field_92023_s = mc.fontRendererObj.getStringWidth(this.openGLWarning1);
+            this.field_92024_r = mc.fontRendererObj.getStringWidth(this.openGLWarning2);
             int k = Math.max(this.field_92023_s, this.field_92024_r);
             this.field_92022_t = (this.width - k) / 2;
             this.field_92021_u = this.buttonList.get(0).yPosition - 24;
@@ -530,9 +530,9 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
         GlStateManager.translate((float) (this.width / 2 + 90), 70.0F, 0.0F);
         GlStateManager.rotate(-20.0F, 0.0F, 0.0F, 1.0F);
         float f = 1.8F - MathHelper.abs(MathHelper.sin((float) (Minecraft.getSystemTime() % 1000L) / 1000.0F * (float) Math.PI * 2.0F) * 0.1F);
-        f = f * 100.0F / (float) (this.fontRendererObj.getStringWidth(this.splashText) + 32);
+        f = f * 100.0F / (float) (mc.fontRendererObj.getStringWidth(this.splashText) + 32);
         GlStateManager.scale(f, f, f);
-        this.drawCenteredString(this.fontRendererObj, this.splashText, 0, -8, -256 /*FF FF FF 00*/);
+        this.drawCenteredString(mc.fontRendererObj, this.splashText, 0, -8, -256 /*FF FF FF 00*/);
         GlStateManager.popMatrix();
         String s = "Minecraft 1.8.9 × " + Endless.CLIENT_NAME + " " + Endless.CLIENT_VERSION;
 
@@ -540,15 +540,15 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
             s = s + " Demo";
         }
 
-        this.drawString(this.fontRendererObj, s, 2, this.height - 10, -1);
+        this.drawString(mc.fontRendererObj, s, 2, this.height - 10, -1);
 
         String s2 = "Copyright Mojang AB. Do not distribute!";
-        this.drawString(this.fontRendererObj, s2, this.width - this.fontRendererObj.getStringWidth(s2) - 2, this.height - 10, -1);
+        this.drawString(mc.fontRendererObj, s2, this.width - mc.fontRendererObj.getStringWidth(s2) - 2, this.height - 10, -1);
 
         if (this.openGLWarning1 != null && this.openGLWarning1.length() > 0) {
             drawRect(this.field_92022_t - 2, this.field_92021_u - 2, this.field_92020_v + 2, this.field_92019_w - 1, 1428160512);
-            this.drawString(this.fontRendererObj, this.openGLWarning1, this.field_92022_t, this.field_92021_u, -1);
-            this.drawString(this.fontRendererObj, this.openGLWarning2, (this.width - this.field_92024_r) / 2, this.buttonList.get(0).yPosition - 12, -1);
+            this.drawString(mc.fontRendererObj, this.openGLWarning1, this.field_92022_t, this.field_92021_u, -1);
+            this.drawString(mc.fontRendererObj, this.openGLWarning2, (this.width - this.field_92024_r) / 2, this.buttonList.get(0).yPosition - 12, -1);
         }
 
         super.drawScreen(mouseX, mouseY, partialTicks);

@@ -3,8 +3,6 @@ package net.minecraft.client.gui;
 import com.google.common.collect.Lists;
 import com.google.gson.JsonParseException;
 import io.netty.buffer.Unpooled;
-import java.io.IOException;
-import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
@@ -18,14 +16,13 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.client.C17PacketCustomPayload;
-import net.minecraft.util.ChatAllowedCharacters;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.IChatComponent;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.input.Keyboard;
+
+import java.io.IOException;
+import java.util.List;
 
 public class GuiScreenBook extends GuiScreen
 {
@@ -398,7 +395,7 @@ public class GuiScreenBook extends GuiScreen
     {
         String s = this.pageGetCurrent();
         String s1 = s + p_146459_1_;
-        int i = this.fontRendererObj.splitStringWidth(s1 + "" + EnumChatFormatting.BLACK + "_", 118);
+        int i = mc.fontRendererObj.splitStringWidth(s1 + "" + EnumChatFormatting.BLACK + "_", 118);
 
         if (i <= 128 && s1.length() < 256)
         {
@@ -434,15 +431,15 @@ public class GuiScreenBook extends GuiScreen
             }
 
             String s1 = I18n.format("book.editTitle", new Object[0]);
-            int k = this.fontRendererObj.getStringWidth(s1);
-            this.fontRendererObj.drawString(s1, i + 36 + (116 - k) / 2, j + 16 + 16, 0);
-            int l = this.fontRendererObj.getStringWidth(s);
-            this.fontRendererObj.drawString(s, i + 36 + (116 - l) / 2, j + 48, 0);
+            int k = mc.fontRendererObj.getStringWidth(s1);
+            mc.fontRendererObj.drawString(s1, i + 36 + (116 - k) / 2, j + 16 + 16, 0);
+            int l = mc.fontRendererObj.getStringWidth(s);
+            mc.fontRendererObj.drawString(s, i + 36 + (116 - l) / 2, j + 48, 0);
             String s2 = I18n.format("book.byAuthor", new Object[] {this.editingPlayer.getCommandSenderName()});
-            int i1 = this.fontRendererObj.getStringWidth(s2);
-            this.fontRendererObj.drawString(EnumChatFormatting.DARK_GRAY + s2, i + 36 + (116 - i1) / 2, j + 48 + 10, 0);
+            int i1 = mc.fontRendererObj.getStringWidth(s2);
+            mc.fontRendererObj.drawString(EnumChatFormatting.DARK_GRAY + s2, i + 36 + (116 - i1) / 2, j + 48 + 10, 0);
             String s3 = I18n.format("book.finalizeWarning", new Object[0]);
-            this.fontRendererObj.drawSplitString(s3, i + 36, j + 80, 116, 0);
+            mc.fontRendererObj.drawSplitString(s3, i + 36, j + 80, 116, 0);
         }
         else
         {
@@ -456,7 +453,7 @@ public class GuiScreenBook extends GuiScreen
 
             if (this.bookIsUnsigned)
             {
-                if (this.fontRendererObj.getBidiFlag())
+                if (mc.fontRendererObj.getBidiFlag())
                 {
                     s5 = s5 + "_";
                 }
@@ -476,7 +473,7 @@ public class GuiScreenBook extends GuiScreen
                     try
                     {
                         IChatComponent ichatcomponent = IChatComponent.Serializer.jsonToComponent(s5);
-                        this.field_175386_A = ichatcomponent != null ? GuiUtilRenderComponents.func_178908_a(ichatcomponent, 116, this.fontRendererObj, true, true) : null;
+                        this.field_175386_A = ichatcomponent != null ? GuiUtilRenderComponents.func_178908_a(ichatcomponent, 116, mc.fontRendererObj, true, true) : null;
                     }
                     catch (JsonParseException var13)
                     {
@@ -492,21 +489,21 @@ public class GuiScreenBook extends GuiScreen
                 this.field_175387_B = this.currPage;
             }
 
-            int j1 = this.fontRendererObj.getStringWidth(s4);
-            this.fontRendererObj.drawString(s4, i - j1 + this.bookImageWidth - 44, j + 16, 0);
+            int j1 = mc.fontRendererObj.getStringWidth(s4);
+            mc.fontRendererObj.drawString(s4, i - j1 + this.bookImageWidth - 44, j + 16, 0);
 
             if (this.field_175386_A == null)
             {
-                this.fontRendererObj.drawSplitString(s5, i + 36, j + 16 + 16, 116, 0);
+                mc.fontRendererObj.drawSplitString(s5, i + 36, j + 16 + 16, 116, 0);
             }
             else
             {
-                int k1 = Math.min(128 / this.fontRendererObj.FONT_HEIGHT, this.field_175386_A.size());
+                int k1 = Math.min(128 / mc.fontRendererObj.FONT_HEIGHT, this.field_175386_A.size());
 
                 for (int l1 = 0; l1 < k1; ++l1)
                 {
                     IChatComponent ichatcomponent2 = (IChatComponent)this.field_175386_A.get(l1);
-                    this.fontRendererObj.drawString(ichatcomponent2.getUnformattedText(), i + 36, j + 16 + 16 + l1 * this.fontRendererObj.FONT_HEIGHT, 0);
+                    mc.fontRendererObj.drawString(ichatcomponent2.getUnformattedText(), i + 36, j + 16 + 16 + l1 * mc.fontRendererObj.FONT_HEIGHT, 0);
                 }
 
                 IChatComponent ichatcomponent1 = this.func_175385_b(mouseX, mouseY);
@@ -598,7 +595,7 @@ public class GuiScreenBook extends GuiScreen
 
             if (i >= 0 && j >= 0)
             {
-                int k = Math.min(128 / this.fontRendererObj.FONT_HEIGHT, this.field_175386_A.size());
+                int k = Math.min(128 / mc.fontRendererObj.FONT_HEIGHT, this.field_175386_A.size());
 
                 if (i <= 116 && j < this.mc.fontRendererObj.FONT_HEIGHT * k + k)
                 {

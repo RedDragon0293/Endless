@@ -1,20 +1,17 @@
 package net.minecraft.client.gui;
 
 import com.google.common.collect.Lists;
+import net.minecraft.client.resources.*;
+import net.minecraft.util.Util;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.lwjgl.Sys;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Collections;
 import java.util.List;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.client.resources.ResourcePackListEntry;
-import net.minecraft.client.resources.ResourcePackListEntryDefault;
-import net.minecraft.client.resources.ResourcePackListEntryFound;
-import net.minecraft.client.resources.ResourcePackRepository;
-import net.minecraft.util.Util;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.lwjgl.Sys;
 
 public class GuiScreenResourcePacks extends GuiScreen
 {
@@ -228,8 +225,8 @@ public class GuiScreenResourcePacks extends GuiScreen
         this.drawBackground(0);
         this.availableResourcePacksList.drawScreen(mouseX, mouseY, partialTicks);
         this.selectedResourcePacksList.drawScreen(mouseX, mouseY, partialTicks);
-        this.drawCenteredString(this.fontRendererObj, I18n.format("resourcePack.title", new Object[0]), this.width / 2, 16, 16777215);
-        this.drawCenteredString(this.fontRendererObj, I18n.format("resourcePack.folderInfo", new Object[0]), this.width / 2 - 77, this.height - 26, 8421504);
+        this.drawCenteredString(mc.fontRendererObj, I18n.format("resourcePack.title", new Object[0]), this.width / 2, 16, 16777215);
+        this.drawCenteredString(mc.fontRendererObj, I18n.format("resourcePack.folderInfo", new Object[0]), this.width / 2 - 77, this.height - 26, 8421504);
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
 

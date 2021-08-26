@@ -418,7 +418,13 @@ object RenderUtils {
 
     @JvmStatic
     fun drawLine(x1: Float, y1: Float, x2: Float, y2: Float, width: Float, color: Int) {
-        quickGLColor(color)
+        drawLine(x1.toDouble(), y1.toDouble(), x2.toDouble(), y2.toDouble(), width, color)
+    }
+
+    @JvmStatic
+    fun drawLine(x1: Double, y1: Double, x2: Double, y2: Double, width: Float, color: Int? = null) {
+        if (color != null)
+            quickGLColor(color)
         GL11.glLineWidth(width)
         GL11.glEnable(GL11.GL_LINE_SMOOTH)
         /*
@@ -428,8 +434,8 @@ object RenderUtils {
         GL11.glEnd()
         */
         worldRenderer.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION)
-        worldRenderer.pos(x1.toDouble(), y1.toDouble(), 0.0).endVertex()
-        worldRenderer.pos(x2.toDouble(), y2.toDouble(), 0.0).endVertex()
+        worldRenderer.pos(x1, y1, 0.0).endVertex()
+        worldRenderer.pos(x2, y2, 0.0).endVertex()
         tessellator.draw()
         GL11.glDisable(GL11.GL_LINE_SMOOTH)
     }

@@ -1,10 +1,6 @@
 package net.optifine.gui;
 
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiOptionButton;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.GuiYesNo;
-import net.minecraft.client.gui.GuiYesNoCallback;
+import net.minecraft.client.gui.*;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.settings.GameSettings;
 
@@ -95,7 +91,7 @@ public class GuiOtherSettingsOF extends GuiScreen implements GuiYesNoCallback
     public void drawScreen(int x, int y, float f)
     {
         this.drawDefaultBackground();
-        this.drawCenteredString(this.fontRendererObj, this.title, this.width / 2, 15, 16777215);
+        this.drawCenteredString(mc.fontRendererObj, this.title, this.width / 2, 15, 16777215);
         super.drawScreen(x, y, f);
         this.tooltipManager.drawTooltips(x, y, this.buttonList);
     }

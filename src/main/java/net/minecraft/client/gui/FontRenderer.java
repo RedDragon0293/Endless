@@ -43,7 +43,7 @@ public class FontRenderer implements IResourceManagerReloadListener {
     /**
      * Array of the start/end column (in upper/lower nibble) for every glyph in the /font directory.
      */
-    private byte[] glyphWidth = new byte[65536];
+    public byte[] glyphWidth = new byte[65536];
 
     /**
      * Array of RGB triplets defining the 16 standard chat colors followed by 16 darker version of the same colors for
@@ -268,10 +268,10 @@ public class FontRenderer implements IResourceManagerReloadListener {
         }
     }
 
-    private float renderChar(char charIn, boolean p_181559_2_) {
+    private float renderChar(char charIn, boolean italic) {
         if (charIn != 32 && charIn != 160) {
-            int i = "\u00c0\u00c1\u00c2\u00c8\u00ca\u00cb\u00cd\u00d3\u00d4\u00d5\u00da\u00df\u00e3\u00f5\u011f\u0130\u0131\u0152\u0153\u015e\u015f\u0174\u0175\u017e\u0207\u0000\u0000\u0000\u0000\u0000\u0000\u0000 !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\u0000\u00c7\u00fc\u00e9\u00e2\u00e4\u00e0\u00e5\u00e7\u00ea\u00eb\u00e8\u00ef\u00ee\u00ec\u00c4\u00c5\u00c9\u00e6\u00c6\u00f4\u00f6\u00f2\u00fb\u00f9\u00ff\u00d6\u00dc\u00f8\u00a3\u00d8\u00d7\u0192\u00e1\u00ed\u00f3\u00fa\u00f1\u00d1\u00aa\u00ba\u00bf\u00ae\u00ac\u00bd\u00bc\u00a1\u00ab\u00bb\u2591\u2592\u2593\u2502\u2524\u2561\u2562\u2556\u2555\u2563\u2551\u2557\u255d\u255c\u255b\u2510\u2514\u2534\u252c\u251c\u2500\u253c\u255e\u255f\u255a\u2554\u2569\u2566\u2560\u2550\u256c\u2567\u2568\u2564\u2565\u2559\u2558\u2552\u2553\u256b\u256a\u2518\u250c\u2588\u2584\u258c\u2590\u2580\u03b1\u03b2\u0393\u03c0\u03a3\u03c3\u03bc\u03c4\u03a6\u0398\u03a9\u03b4\u221e\u2205\u2208\u2229\u2261\u00b1\u2265\u2264\u2320\u2321\u00f7\u2248\u00b0\u2219\u00b7\u221a\u207f\u00b2\u25a0\u0000".indexOf(charIn);
-            return i != -1 && !this.unicodeFlag ? this.renderDefaultChar(i, p_181559_2_) : this.renderUnicodeChar(charIn, p_181559_2_);
+            int asciiCharCode = "\u00c0\u00c1\u00c2\u00c8\u00ca\u00cb\u00cd\u00d3\u00d4\u00d5\u00da\u00df\u00e3\u00f5\u011f\u0130\u0131\u0152\u0153\u015e\u015f\u0174\u0175\u017e\u0207\u0000\u0000\u0000\u0000\u0000\u0000\u0000 !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\u0000\u00c7\u00fc\u00e9\u00e2\u00e4\u00e0\u00e5\u00e7\u00ea\u00eb\u00e8\u00ef\u00ee\u00ec\u00c4\u00c5\u00c9\u00e6\u00c6\u00f4\u00f6\u00f2\u00fb\u00f9\u00ff\u00d6\u00dc\u00f8\u00a3\u00d8\u00d7\u0192\u00e1\u00ed\u00f3\u00fa\u00f1\u00d1\u00aa\u00ba\u00bf\u00ae\u00ac\u00bd\u00bc\u00a1\u00ab\u00bb\u2591\u2592\u2593\u2502\u2524\u2561\u2562\u2556\u2555\u2563\u2551\u2557\u255d\u255c\u255b\u2510\u2514\u2534\u252c\u251c\u2500\u253c\u255e\u255f\u255a\u2554\u2569\u2566\u2560\u2550\u256c\u2567\u2568\u2564\u2565\u2559\u2558\u2552\u2553\u256b\u256a\u2518\u250c\u2588\u2584\u258c\u2590\u2580\u03b1\u03b2\u0393\u03c0\u03a3\u03c3\u03bc\u03c4\u03a6\u0398\u03a9\u03b4\u221e\u2205\u2208\u2229\u2261\u00b1\u2265\u2264\u2320\u2321\u00f7\u2248\u00b0\u2219\u00b7\u221a\u207f\u00b2\u25a0\u0000".indexOf(charIn);
+            return asciiCharCode != -1 && !this.unicodeFlag ? this.renderDefaultChar(asciiCharCode, italic) : this.renderUnicodeChar(charIn, italic);
         } else {
             return !this.unicodeFlag ? this.charWidthFloat[charIn] : 4.0F;
         }
@@ -280,12 +280,12 @@ public class FontRenderer implements IResourceManagerReloadListener {
     /**
      * Render a single character with the default.png font at current (posX,posY) location...
      */
-    private float renderDefaultChar(int p_78266_1_, boolean p_78266_2_) {
-        int i = p_78266_1_ % 16 * 8;
-        int j = p_78266_1_ / 16 * 8;
-        int k = p_78266_2_ ? 1 : 0;
+    private float renderDefaultChar(int charCode, boolean italic) {
+        int i = charCode % 16 * 8;
+        int j = charCode / 16 * 8;
+        int k = italic ? 1 : 0;
         this.bindTexture(this.locationFontTexture);
-        float f = this.charWidthFloat[p_78266_1_];
+        float f = this.charWidthFloat[charCode];
         float f1 = 7.99F;
         GL11.glBegin(GL11.GL_TRIANGLE_STRIP);
         GL11.glTexCoord2f((float) i / 128.0F, (float) j / 128.0F);
@@ -300,48 +300,60 @@ public class FontRenderer implements IResourceManagerReloadListener {
         return f;
     }
 
-    private ResourceLocation getUnicodePageLocation(int p_111271_1_) {
-        if (unicodePageLocations[p_111271_1_] == null) {
-            unicodePageLocations[p_111271_1_] = new ResourceLocation(String.format("textures/font/unicode_page_%02x.png", p_111271_1_));
-            unicodePageLocations[p_111271_1_] = FontUtils.getHdFontLocation(unicodePageLocations[p_111271_1_]);
+    private ResourceLocation getUnicodePageLocation(int pageIndex) {
+        if (unicodePageLocations[pageIndex] == null) {
+            unicodePageLocations[pageIndex] = new ResourceLocation(String.format("textures/font/unicode_page_%02x.png", pageIndex));
+            unicodePageLocations[pageIndex] = FontUtils.getHdFontLocation(unicodePageLocations[pageIndex]);
         }
 
-        return unicodePageLocations[p_111271_1_];
+        return unicodePageLocations[pageIndex];
     }
 
     /**
      * Load one of the /font/glyph_XX.png into a new GL texture and store the texture ID in glyphTextureName array.
      */
-    private void loadGlyphTexture(int p_78257_1_) {
-        this.bindTexture(this.getUnicodePageLocation(p_78257_1_));
+    private void loadGlyphTexture(int pageIndex) {
+        this.bindTexture(this.getUnicodePageLocation(pageIndex));
     }
 
     /**
      * Render a single Unicode character at current (posX,posY) location using one of the /font/glyph_XX.png files...
      */
-    private float renderUnicodeChar(char charAt, boolean p_78277_2_) {
+    private float renderUnicodeChar(char charAt, boolean italic) {
         if (this.glyphWidth[charAt] == 0) {
             return 0.0F;
         } else {
-            int i = charAt / 256;
-            this.loadGlyphTexture(i);
+            /*
+              字符对应图片所在页数
+             */
+            int pageIndex = charAt / 256;
+            this.loadGlyphTexture(pageIndex);
             int j = this.glyphWidth[charAt] >>> 4;
             int k = this.glyphWidth[charAt] & 15;
             float f = (float) j;
             float f1 = (float) (k + 1);
-            float f2 = (float) (charAt % 16 * 16) + f;
-            float f3 = (float) ((charAt & 255) / 16 * 16);
-            float f4 = f1 - f - 0.02F;
-            float f5 = p_78277_2_ ? 1.0F : 0.0F;
+            /*
+              图片中所在列
+             */
+            float xPos = (float) (charAt % 16 * 16) + f;
+            /*
+              图片中所在行
+             */
+            float yPos = (float) ((charAt & 0xFF) / 16 * 16);
+            /*
+              图片宽度
+             */
+            float width = f1 - f - 0.02F;
+            float italicOffset = italic ? 1.0F : 0.0F;
             GL11.glBegin(GL11.GL_TRIANGLE_STRIP);
-            GL11.glTexCoord2f(f2 / 256.0F, f3 / 256.0F);
-            GL11.glVertex3f(this.posX + f5, this.posY, 0.0F);
-            GL11.glTexCoord2f(f2 / 256.0F, (f3 + 15.98F) / 256.0F);
-            GL11.glVertex3f(this.posX - f5, this.posY + 7.99F, 0.0F);
-            GL11.glTexCoord2f((f2 + f4) / 256.0F, f3 / 256.0F);
-            GL11.glVertex3f(this.posX + f4 / 2.0F + f5, this.posY, 0.0F);
-            GL11.glTexCoord2f((f2 + f4) / 256.0F, (f3 + 15.98F) / 256.0F);
-            GL11.glVertex3f(this.posX + f4 / 2.0F - f5, this.posY + 7.99F, 0.0F);
+            GL11.glTexCoord2f(xPos / 256.0F, yPos / 256.0F);
+            GL11.glVertex3f(this.posX + italicOffset, this.posY, 0.0F);
+            GL11.glTexCoord2f(xPos / 256.0F, (yPos + 15.98F) / 256.0F);
+            GL11.glVertex3f(this.posX - italicOffset, this.posY + 7.99F, 0.0F);
+            GL11.glTexCoord2f((xPos + width) / 256.0F, yPos / 256.0F);
+            GL11.glVertex3f(this.posX + width / 2.0F + italicOffset, this.posY, 0.0F);
+            GL11.glTexCoord2f((xPos + width) / 256.0F, (yPos + 15.98F) / 256.0F);
+            GL11.glVertex3f(this.posX + width / 2.0F - italicOffset, this.posY + 7.99F, 0.0F);
             GL11.glEnd();
             return (f1 - f) / 2.0F + 1.0F;
         }
@@ -953,8 +965,8 @@ public class FontRenderer implements IResourceManagerReloadListener {
         GlStateManager.enableAlpha();
     }
 
-    protected void bindTexture(ResourceLocation p_bindTexture_1_) {
-        this.renderEngine.bindTexture(p_bindTexture_1_);
+    protected void bindTexture(ResourceLocation resourceLocation) {
+        this.renderEngine.bindTexture(resourceLocation);
     }
 
     protected InputStream getResourceInputStream(ResourceLocation p_getResourceInputStream_1_) throws IOException {

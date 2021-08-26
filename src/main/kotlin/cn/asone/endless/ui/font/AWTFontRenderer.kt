@@ -4,25 +4,25 @@ import cn.asone.endless.Endless
 import cn.asone.endless.utils.mc
 import net.minecraft.client.gui.Gui
 import net.minecraft.client.renderer.GlStateManager
+import net.minecraft.client.renderer.texture.DynamicTexture
 import org.lwjgl.opengl.GL11
 import java.awt.*
 import java.awt.image.BufferedImage
 import java.io.File
-import java.util.*
+import java.io.PrintWriter
 import javax.imageio.ImageIO
 
 class AWTFontRenderer(val font: Font) {
-    private val chars = HashMap<Int, FontChar>()
+    val scale = 0.5F
+    private val chars: Array<FontChar?> = Array(65535) { return@Array null }
 
     private val fontHeight: Int
     private val fontMetrics: FontMetrics
-    private val cacheDir = File(mc.mcDataDir, ".cache/${Endless.CLIENT_NAME}/fonts/${getFontDirName()}").apply {
-        if (!exists())
-            mkdirs()
-    }
+    private val cacheDir = File(mc.mcDataDir, ".cache/${Endless.CLIENT_NAME}/fonts/${getFontDirName()}")
 
     val height: Int
-        get() = (fontHeight - 8) / 2
+        get() = ((fontHeight - 8) * scale).toInt()
+
 
     init {
         val graphics = BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB).graphics as Graphics2D
@@ -39,7 +39,9 @@ class AWTFontRenderer(val font: Font) {
         //prepareCharImages('0', '9')
         //prepareCharImages('a', 'z')
         //prepareCharImages('A', 'Z')
-        prepareCharImages(32, 126)
+        for (ascii in 32 until 126) {
+            loadChar(ascii.toChar())
+        }
     }
 
     /**
@@ -51,10 +53,9 @@ class AWTFontRenderer(val font: Font) {
      * @param color of the text
      */
     fun drawString(text: String, x: Double, y: Double, color: Int) {
-        val scale = 0.5
         GlStateManager.pushMatrix()
         GL11.glTranslated(x, y - 3, 0.0)
-        GL11.glScaled(scale, scale, scale)
+        GL11.glScalef(scale, scale, scale)
         //GL11.glTranslated(x * 2F, y * 2.0 - 2.0, 0.0)
 
         val red = (color shr 16 and 0xff) / 255F
@@ -89,20 +90,20 @@ class AWTFontRenderer(val font: Font) {
         GlStateManager.popMatrix()
     }
 
-    private fun getFontDirName() = font.fontName.replace(" ", "_").lowercase(Locale.getDefault()) +
-            (if (font.isBold) {
-                "-bold"
-            } else {
-                ""
-            }) +
-            "${
-                if (font.isItalic) {
-                    "-italic"
-                } else {
-                    ""
-                }
-            }-" +
-            "${font.size}"
+    private fun getFontDirName() =
+        (
+                font.fontName.replace(" ", "_")
+                        + (
+                        if (font.isBold) {
+                            "-bold"
+                        } else if (font.isItalic) {
+                            "-italic"
+                        } else {
+                            ""
+                        }
+                        )
+                        + "-${font.size}"
+                )
 
     /**
      * Draw char from texture to display
@@ -158,7 +159,7 @@ class AWTFontRenderer(val font: Font) {
             width += (getFontChar(char.code)).width - 8
         }
 
-        return width / 2
+        return (width * scale).toInt()
     }
 
     private fun putHints(graphics: Graphics2D) {
@@ -183,7 +184,11 @@ class AWTFontRenderer(val font: Font) {
     /**
      * 获取char对应的缓存文件
      */
-    private fun getCharCacheFile(char: Char) = File(cacheDir, "${charInfo(char)}.png")
+    private fun getCharCacheFile(char: Char): File {
+        if (!cacheDir.exists())
+            cacheDir.mkdirs()
+        return File(cacheDir, "${charInfo(char)}.png")
+    }
 
     /**
      * @return 通过Char获取的ResourceLocation
@@ -206,7 +211,67 @@ class AWTFontRenderer(val font: Font) {
         graphics.color = Color.WHITE
         graphics.drawString(char.toString(), 3, 1 + fontMetrics.ascent)
 
-        return fontImage
+        if (char.code == 32)
+            return fontImage
+
+        for (m in 0 until fontImage.height) {
+            for (n in 0 until fontImage.width) {
+                if (fontImage.getRGB(n, m) != 0)
+                    return fontImage
+            }
+        }
+        val imageStream = AWTFontRenderer::class.java.getResourceAsStream(
+            String.format(
+                "/assets/minecraft/textures/font/unicode_page_%02x.png",
+                char.code / 256
+            )
+        )
+        if (imageStream == null) {
+            println(
+                "Failed to load mc font texture! Char: $char; Code: ${char.code}; Page: ${
+                    String.format(
+                        "%02x",
+                        char.code / 256
+                    )
+                }"
+            )
+            return fontImage
+        }
+        val image = ImageIO.read(imageStream)
+        val j: Int = mc.fonts.glyphWidth[char.code].toInt() ushr 4
+        val k: Int = mc.fonts.glyphWidth[char.code].toInt() and 15
+        val f1 = k + 1
+
+        /**
+         * 图片中所在列
+         */
+        val xPos: Int = (char.code % 16 * 16) + j
+
+        /**
+         * 图片中所在行
+         */
+        val yPos: Int = ((char.code and 0xFF) / 16 * 16)
+
+        /**
+         * 图片宽度
+         */
+        val width = f1 - j
+        val height =
+        if (fontHeight < 16)
+            16
+        else
+            fontHeight
+        val startY = (height - 16) / 2
+        println("Trying to load char $char, code ${char.code}")
+        println("width: $width, xPos: $xPos, yPos: $yPos")
+        val charImage = BufferedImage(width + 10, height, BufferedImage.TYPE_INT_ARGB)
+        for (m in 0 until width) {
+            for (n in 0..15) {
+                charImage.setRGB(m + 4, startY + n, image.getRGB(m + xPos, n + yPos))
+            }
+        }
+        println("Image width: ${charImage.width}  height: ${charImage.height}")
+        return charImage
     }
 
     /**
@@ -238,22 +303,32 @@ class AWTFontRenderer(val font: Font) {
         ImageIO.write(image, "png", getCharCacheFile(char))
     }
 
-    /**
-     * @param start 开始字符
-     * @param stop 结束字符
-     * 如果需要初始化单个直接loadChar(char)就行
-     * 预初始化字符图片
-     */
-    private fun prepareCharImages(start: Int, stop: Int) {
-        val startAscii = start.coerceAtMost(stop)
-        val stopAscii = stop.coerceAtLeast(start)
-
-        for (ascii in startAscii until stopAscii) {
-            loadChar(ascii.toChar())
-        }
-    }
-
     private fun getFontChar(charCode: Int): FontChar {
         return chars[charCode] ?: loadChar(charCode.toChar())
+    }
+
+    fun test() {
+        val printWriter = PrintWriter(File(mc.mcDataDir, "test.txt").apply {
+            if (!exists())
+                createNewFile()
+            else
+                delete()
+        })
+        for (i in chars) {
+            if (i != null) {
+                printWriter.println("${i.char.code}-${i.char}-${check(i.tex)}")
+            }
+        }
+        printWriter.close()
+    }
+
+    private fun check(image: DynamicTexture): Boolean {
+        for (i in image.dynamicTextureData) {
+            if (i != 0) {
+                //if (i)
+                return false
+            }
+        }
+        return true
     }
 }

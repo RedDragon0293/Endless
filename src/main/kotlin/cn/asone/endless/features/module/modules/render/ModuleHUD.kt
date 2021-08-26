@@ -5,6 +5,8 @@ import cn.asone.endless.event.Render2DEvent
 import cn.asone.endless.event.UpdateEvent
 import cn.asone.endless.features.module.AbstractModule
 import cn.asone.endless.features.module.ModuleCategory
+import cn.asone.endless.ui.hud.AbstractElement
+import cn.asone.endless.ui.hud.elements.ElementArraylist
 import cn.asone.endless.value.AbstractValue
 import cn.asone.endless.value.BoolValue
 
@@ -15,6 +17,9 @@ object ModuleHUD : AbstractModule("HUD", "Toggles visibility of the HUD.", Modul
     override val values: ArrayList<AbstractValue<*>> = arrayListOf(
         blackHotbarValue,
         arraylistValue
+    )
+    private val elements: ArrayList<AbstractElement> = arrayListOf(
+        ElementArraylist("Arraylist", 1F, 1F)
     )
     override val handledEvents: ArrayList<EventHook> = arrayListOf(
         EventHook(Render2DEvent::class.java, 100),
@@ -29,6 +34,6 @@ object ModuleHUD : AbstractModule("HUD", "Toggles visibility of the HUD.", Modul
     }
 
     override fun onUpdate() {
-
+        elements.forEach { it.updateBorder() }
     }
 }

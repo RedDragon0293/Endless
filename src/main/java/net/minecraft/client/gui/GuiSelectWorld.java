@@ -1,10 +1,5 @@
 package net.minecraft.client.gui;
 
-import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Collections;
-import java.util.Date;
 import net.minecraft.client.AnvilConverterException;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
@@ -17,6 +12,12 @@ import net.minecraft.world.storage.WorldInfo;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Collections;
+import java.util.Date;
 
 public class GuiSelectWorld extends GuiScreen implements GuiYesNoCallback
 {
@@ -230,7 +231,7 @@ public class GuiSelectWorld extends GuiScreen implements GuiYesNoCallback
     public void drawScreen(int mouseX, int mouseY, float partialTicks)
     {
         this.field_146638_t.drawScreen(mouseX, mouseY, partialTicks);
-        this.drawCenteredString(this.fontRendererObj, this.field_146628_f, this.width / 2, 20, 16777215);
+        this.drawCenteredString(mc.fontRendererObj, this.field_146628_f, this.width / 2, 20, 16777215);
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
 
@@ -320,9 +321,9 @@ public class GuiSelectWorld extends GuiScreen implements GuiYesNoCallback
                 }
             }
 
-            GuiSelectWorld.this.drawString(GuiSelectWorld.this.fontRendererObj, s, p_180791_2_ + 2, p_180791_3_ + 1, 16777215);
-            GuiSelectWorld.this.drawString(GuiSelectWorld.this.fontRendererObj, s1, p_180791_2_ + 2, p_180791_3_ + 12, 8421504);
-            GuiSelectWorld.this.drawString(GuiSelectWorld.this.fontRendererObj, s2, p_180791_2_ + 2, p_180791_3_ + 12 + 10, 8421504);
+            GuiSelectWorld.this.drawString(GuiSelectWorld.this.mc.fontRendererObj, s, p_180791_2_ + 2, p_180791_3_ + 1, 16777215);
+            GuiSelectWorld.this.drawString(GuiSelectWorld.this.mc.fontRendererObj, s1, p_180791_2_ + 2, p_180791_3_ + 12, 8421504);
+            GuiSelectWorld.this.drawString(GuiSelectWorld.this.mc.fontRendererObj, s2, p_180791_2_ + 2, p_180791_3_ + 12 + 10, 8421504);
         }
     }
 }

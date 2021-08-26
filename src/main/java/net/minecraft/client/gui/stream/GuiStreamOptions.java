@@ -1,6 +1,5 @@
 package net.minecraft.client.gui.stream;
 
-import java.io.IOException;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiOptionButton;
 import net.minecraft.client.gui.GuiOptionSlider;
@@ -8,6 +7,8 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.util.EnumChatFormatting;
+
+import java.io.IOException;
 
 public class GuiStreamOptions extends GuiScreen
 {
@@ -131,12 +132,12 @@ public class GuiStreamOptions extends GuiScreen
     public void drawScreen(int mouseX, int mouseY, float partialTicks)
     {
         this.drawDefaultBackground();
-        this.drawCenteredString(this.fontRendererObj, this.field_152319_i, this.width / 2, 20, 16777215);
-        this.drawCenteredString(this.fontRendererObj, this.field_152313_r, this.width / 2, this.field_152314_s, 16777215);
+        this.drawCenteredString(mc.fontRendererObj, this.field_152319_i, this.width / 2, 20, 16777215);
+        this.drawCenteredString(mc.fontRendererObj, this.field_152313_r, this.width / 2, this.field_152314_s, 16777215);
 
         if (this.field_152315_t)
         {
-            this.drawCenteredString(this.fontRendererObj, EnumChatFormatting.RED + I18n.format("options.stream.changes", new Object[0]), this.width / 2, 20 + this.fontRendererObj.FONT_HEIGHT, 16777215);
+            this.drawCenteredString(mc.fontRendererObj, EnumChatFormatting.RED + I18n.format("options.stream.changes", new Object[0]), this.width / 2, 20 + mc.fontRendererObj.FONT_HEIGHT, 16777215);
         }
 
         super.drawScreen(mouseX, mouseY, partialTicks);

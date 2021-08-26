@@ -173,6 +173,9 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
      * The font renderer used for displaying and measuring text
      */
     public FontRenderer fontRendererObj;
+    /**
+     * mc原版字体
+     */
     public FontRenderer fonts;
     public FontRenderer standardGalacticFontRenderer;
 
@@ -454,7 +457,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
         this.mcSoundHandler = new SoundHandler(this.mcResourceManager, this.gameSettings);
         this.mcResourceManager.registerReloadListener(this.mcSoundHandler);
         this.mcMusicTicker = new MusicTicker(this);
-        this.fonts = new FontRenderer(this.gameSettings, new ResourceLocation("textures/font/ascii.png"), this.renderEngine, false);
+        this.fonts = new FontRenderer(this.gameSettings, new ResourceLocation("textures/font/ascii.png"), this.renderEngine, true);
         if (this.gameSettings.language != null) {
             this.fonts.setUnicodeFlag(this.gameSettings.forceUnicodeFont);
             this.fonts.setBidiFlag(this.mcLanguageManager.isCurrentLanguageBidirectional());

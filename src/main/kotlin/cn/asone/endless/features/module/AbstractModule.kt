@@ -33,6 +33,13 @@ abstract class AbstractModule(
             }
             field = value
         }
+    var arrayName = name
+        get() {
+            return if (this.tag() != "")
+                field
+            else
+                "$field §7${tag()}"
+        }
 
     override val handledEvents: ArrayList<EventHook> = arrayListOf()
 
@@ -41,6 +48,8 @@ abstract class AbstractModule(
     fun toggle() {
         state = !state
     }
+
+    open fun tag(): String = ""
 
     open fun onEnable() {}
     open fun onDisable() {}

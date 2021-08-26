@@ -27,7 +27,7 @@ public class GuiAnimationSettingsOF extends GuiScreen
      */
     public void initGui()
     {
-        this.title = I18n.format("of.options.animationsTitle", new Object[0]);
+        this.title = I18n.format("of.options.animationsTitle");
         this.buttonList.clear();
 
         for (int i = 0; i < enumOptions.length; ++i)
@@ -91,7 +91,7 @@ public class GuiAnimationSettingsOF extends GuiScreen
     public void drawScreen(int x, int y, float f)
     {
         this.drawDefaultBackground();
-        this.drawCenteredString(this.fontRendererObj, this.title, this.width / 2, 15, 16777215);
+        this.drawCenteredString(mc.fontRendererObj, this.title, this.width / 2, 15, 16777215);
         super.drawScreen(x, y, f);
     }
 }

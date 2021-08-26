@@ -1,5 +1,6 @@
 package net.minecraft.client.main;
 
+import cn.asone.endless.Endless;
 import cn.asone.endless.config.ConfigManager;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -98,15 +99,25 @@ public class Main {
         Integer portValue = argsOptions.valueOf(port);
         Session session = new Session(username.value(argsOptions), uuidValue, accessToken.value(argsOptions), userType.value(argsOptions));
         GameConfiguration gameconfiguration = new GameConfiguration(new GameConfiguration.UserInformation(session, userPropertyMap, profilePropertyMap, proxy), new GameConfiguration.DisplayInformation(displayWidth, displayHeight, fullScreen, checkGLErrors), new GameConfiguration.FolderInformation(gameDirFile, resourcePacksFile, assetsFile, assetIndexValue), new GameConfiguration.GameInformation(demo, versionValue), new GameConfiguration.ServerInformation(serverValue, portValue));
+        /*
+         * 注册Endless保存配置文件hook
+         */
         Runtime.getRuntime().addShutdownHook(new Thread("Endless Shutdown Thread") {
             public void run() {
                 if (!Main.safelyQuit) {
-                    Main.logger.warn("检测到异常的退出. 紧急保存配置文件!");
-                    ConfigManager.INSTANCE.saveAllConfigs();
+                    if (!Endless.inited) {
+                        Main.logger.error(Endless.CLIENT_NAME + " 加载失败! 如果需要帮助, 请将日志发送给作者.");
+                    } else {
+                        Main.logger.warn("检测到异常的退出. 紧急保存配置文件!");
+                        ConfigManager.INSTANCE.saveAllConfigs();
+                    }
                 } else
                     Main.logger.info("检测到已正常退出客户端.");
             }
         });
+        /*
+         * 保存单人世界、游戏配置文件
+         */
         Runtime.getRuntime().addShutdownHook(new Thread("Client Shutdown Thread") {
             public void run() {
                 Main.logger.info("[Debug] Shutting down server...");

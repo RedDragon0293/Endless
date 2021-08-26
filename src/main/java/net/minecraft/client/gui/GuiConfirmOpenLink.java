@@ -1,7 +1,8 @@
 package net.minecraft.client.gui;
 
-import java.io.IOException;
 import net.minecraft.client.resources.I18n;
+
+import java.io.IOException;
 
 public class GuiConfirmOpenLink extends GuiYesNo
 {
@@ -66,7 +67,7 @@ public class GuiConfirmOpenLink extends GuiYesNo
 
         if (this.showSecurityWarning)
         {
-            this.drawCenteredString(this.fontRendererObj, this.openLinkWarning, this.width / 2, 110, 16764108);
+            this.drawCenteredString(mc.fontRendererObj, this.openLinkWarning, this.width / 2, 110, 16764108);
         }
     }
 

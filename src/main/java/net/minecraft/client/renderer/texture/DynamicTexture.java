@@ -1,18 +1,19 @@
 package net.minecraft.client.renderer.texture;
 
+import net.minecraft.client.resources.IResourceManager;
+
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import net.minecraft.client.resources.IResourceManager;
 
 public class DynamicTexture extends AbstractTexture
 {
-    private final int[] dynamicTextureData;
+    public final int[] dynamicTextureData;
 
     /** width of this icon in pixels */
-    private final int width;
+    public final int width;
 
     /** height of this icon in pixels */
-    private final int height;
+    public final int height;
 
     public DynamicTexture(BufferedImage bufferedImage)
     {
