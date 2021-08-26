@@ -4,12 +4,10 @@ import cn.asone.endless.Endless
 import cn.asone.endless.utils.mc
 import net.minecraft.client.gui.Gui
 import net.minecraft.client.renderer.GlStateManager
-import net.minecraft.client.renderer.texture.DynamicTexture
 import org.lwjgl.opengl.GL11
 import java.awt.*
 import java.awt.image.BufferedImage
 import java.io.File
-import java.io.PrintWriter
 import javax.imageio.ImageIO
 
 class AWTFontRenderer(val font: Font) {
@@ -191,12 +189,6 @@ class AWTFontRenderer(val font: Font) {
     }
 
     /**
-     * @return 通过Char获取的ResourceLocation
-     */
-    /*private fun getResourceLocationByChar(char: String) =
-        ResourceLocation("endless/font/${getFontDirName()}/${charInfo(char)}")*/
-
-    /**
      * 渲染字符图片
      */
     private fun renderCharImage(char: Char): BufferedImage {
@@ -262,15 +254,12 @@ class AWTFontRenderer(val font: Font) {
         else
             fontHeight
         val startY = (height - 16) / 2
-        println("Trying to load char $char, code ${char.code}")
-        println("width: $width, xPos: $xPos, yPos: $yPos")
         val charImage = BufferedImage(width + 10, height, BufferedImage.TYPE_INT_ARGB)
         for (m in 0 until width) {
             for (n in 0..15) {
                 charImage.setRGB(m + 4, startY + n, image.getRGB(m + xPos, n + yPos))
             }
         }
-        println("Image width: ${charImage.width}  height: ${charImage.height}")
         return charImage
     }
 
@@ -305,30 +294,5 @@ class AWTFontRenderer(val font: Font) {
 
     private fun getFontChar(charCode: Int): FontChar {
         return chars[charCode] ?: loadChar(charCode.toChar())
-    }
-
-    fun test() {
-        val printWriter = PrintWriter(File(mc.mcDataDir, "test.txt").apply {
-            if (!exists())
-                createNewFile()
-            else
-                delete()
-        })
-        for (i in chars) {
-            if (i != null) {
-                printWriter.println("${i.char.code}-${i.char}-${check(i.tex)}")
-            }
-        }
-        printWriter.close()
-    }
-
-    private fun check(image: DynamicTexture): Boolean {
-        for (i in image.dynamicTextureData) {
-            if (i != 0) {
-                //if (i)
-                return false
-            }
-        }
-        return true
     }
 }

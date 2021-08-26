@@ -247,8 +247,6 @@ class GameFontRenderer(font: Font, companionStyle: Boolean = false) : FontRender
         GlStateManager.enableTexture2D()
     }
 
-    fun test() = defaultFont.test()
-
     override fun getCharWidth(character: Char) = getStringWidth(character.toString())
 
     override fun onResourceManagerReload(resourceManager: IResourceManager) {}
