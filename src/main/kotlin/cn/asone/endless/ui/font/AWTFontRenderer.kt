@@ -14,10 +14,18 @@ class AWTFontRenderer(val font: Font) {
     val scale = 0.5F
     private val chars: Array<FontChar?> = Array(65535) { return@Array null }
 
+    /**
+     * 当前字体渲染出的单个字符图片的高度.
+     *
+     * 在[renderCharImage]中保证所有字符图片高度均为[fontHeight].
+     */
     private val fontHeight: Int
     private val fontMetrics: FontMetrics
     private val cacheDir = File(mc.mcDataDir, ".cache/${Endless.CLIENT_NAME}/fonts/${getFontDirName()}")
 
+    /**
+     * 当前字体在屏幕上渲染时的高度
+     */
     val height: Int
         get() = ((fontHeight - 8) * scale).toInt()
 
@@ -166,26 +174,13 @@ class AWTFontRenderer(val font: Font) {
         graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON)
     }
 
-    private fun charInfo(char: Char): String {
-        /*val charArr = char.toCharArray()
-        if (char.length == 1) {
-            return "char-${charArr[0].code}"
-        } else if (char.length == 2 && charArr[0] in '\ud800'..'\udfff' && charArr[1] in '\ud800'..'\udfff') {
-            val first = (charArr[0].code - 0xd800) * 0x400
-            val second = charArr[1].code - 0xdc00
-            return "char-${first + second + 0x10000}"
-        }*/
-        return "char-${char.code}"
-        //throw IllegalStateException("The char $char not UTF-8 or UTF-16")
-    }
-
     /**
      * 获取char对应的缓存文件
      */
     private fun getCharCacheFile(char: Char): File {
         if (!cacheDir.exists())
             cacheDir.mkdirs()
-        return File(cacheDir, "${charInfo(char)}.png")
+        return File(cacheDir, "char-${char.code}.png")
     }
 
     /**
@@ -203,21 +198,37 @@ class AWTFontRenderer(val font: Font) {
         graphics.color = Color.WHITE
         graphics.drawString(char.toString(), 3, 1 + fontMetrics.ascent)
 
+        /**
+         * 空格不需要替换
+         */
         if (char.code == 32)
             return fontImage
 
+        /**
+         * 判断图片是否为全空
+         */
         for (m in 0 until fontImage.height) {
             for (n in 0 until fontImage.width) {
                 if (fontImage.getRGB(n, m) != 0)
                     return fontImage
             }
         }
+
+        /**
+         * 从assets获取字体图片
+         * 字符总数量为65536, 字符图片共有256页, 每页256个字符
+         * 每页图片大小为256px×256px, 每个字符对应大小为16×16
+         */
         val imageStream = AWTFontRenderer::class.java.getResourceAsStream(
             String.format(
                 "/assets/minecraft/textures/font/unicode_page_%02x.png",
                 char.code / 256
             )
         )
+
+        /**
+         * 获取失败
+         */
         if (imageStream == null) {
             println(
                 "Failed to load mc font texture! Char: $char; Code: ${char.code}; Page: ${
@@ -229,30 +240,54 @@ class AWTFontRenderer(val font: Font) {
             )
             return fontImage
         }
+
+        /**
+         * 字符图片
+         */
         val image = ImageIO.read(imageStream)
-        val j: Int = mc.fonts.glyphWidth[char.code].toInt() ushr 4
+
+        /**
+         * 当前字符对应的图片的有效部分的起始x坐标
+         *
+         * 由于不是所有字符都会占满16×16的空间, 图片实际有效部分周围会有空白.
+         *
+         * 此值表示当前字符对于标准16×16起始的x坐标至此字符图片有效部分的起始x坐标的差
+         */
+        val xOffset: Int = mc.fonts.glyphWidth[char.code].toInt() ushr 4
         val k: Int = mc.fonts.glyphWidth[char.code].toInt() and 15
         val f1 = k + 1
 
         /**
-         * 图片中所在列
+         * 图片中所在x坐标
          */
-        val xPos: Int = (char.code % 16 * 16) + j
+        val xPos: Int = (char.code % 16 * 16) + xOffset
 
         /**
-         * 图片中所在行
+         * 图片中所在y坐标
          */
         val yPos: Int = ((char.code and 0xFF) / 16 * 16)
 
         /**
-         * 图片宽度
+         * 字符对应图片宽度
          */
-        val width = f1 - j
+        val width = f1 - xOffset
+
+        /**
+         * 字符图片对应高度
+         *
+         * 如果当前自定义字体渲染出的标准图片高度小于16(mc字体单个字符图片的高度),
+         * 则将值设为16以保证能够完整渲染图片并忽略可能的后果(因为当自定义字体图片高度小于16
+         * 时一般实际的渲染效果都不尽人意)
+         */
         val height =
-        if (fontHeight < 16)
-            16
-        else
-            fontHeight
+            if (fontHeight < 16)
+                16
+            else
+                fontHeight
+
+        /**
+         * 字符图片有效部分的起始y坐标
+         */
         val startY = (height - 16) / 2
         val charImage = BufferedImage(width + 10, height, BufferedImage.TYPE_INT_ARGB)
         for (m in 0 until width) {

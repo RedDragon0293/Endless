@@ -41,9 +41,8 @@ public class GuiClickableScrolledSelectionListProxy extends GuiSlot
         this.field_178046_u.renderBackground();
     }
 
-    protected void drawSlot(int entryID, int p_180791_2_, int p_180791_3_, int p_180791_4_, int mouseXIn, int mouseYIn)
-    {
-        this.field_178046_u.renderItem(entryID, p_180791_2_, p_180791_3_, p_180791_4_, mouseXIn, mouseYIn);
+    protected void drawSlot(int entryID, int posX, int posY, int p_180791_4_, int mouseXIn, int mouseYIn) {
+        this.field_178046_u.renderItem(entryID, posX, posY, p_180791_4_, mouseXIn, mouseYIn);
     }
 
     public int func_178044_e()

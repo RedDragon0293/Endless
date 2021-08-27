@@ -287,13 +287,11 @@ public class GuiSelectWorld extends GuiScreen implements GuiYesNoCallback
             GuiSelectWorld.this.drawDefaultBackground();
         }
 
-        protected void drawSlot(int entryID, int p_180791_2_, int p_180791_3_, int p_180791_4_, int mouseXIn, int mouseYIn)
-        {
-            SaveFormatComparator saveformatcomparator = (SaveFormatComparator)GuiSelectWorld.this.field_146639_s.get(entryID);
+        protected void drawSlot(int entryID, int posX, int posY, int p_180791_4_, int mouseXIn, int mouseYIn) {
+            SaveFormatComparator saveformatcomparator = (SaveFormatComparator) GuiSelectWorld.this.field_146639_s.get(entryID);
             String s = saveformatcomparator.getDisplayName();
 
-            if (StringUtils.isEmpty(s))
-            {
+            if (StringUtils.isEmpty(s)) {
                 s = GuiSelectWorld.this.field_146637_u + " " + (entryID + 1);
             }
 
@@ -310,20 +308,18 @@ public class GuiSelectWorld extends GuiScreen implements GuiYesNoCallback
             {
                 s2 = GuiSelectWorld.this.field_146635_w[saveformatcomparator.getEnumGameType().getID()];
 
-                if (saveformatcomparator.isHardcoreModeEnabled())
-                {
+                if (saveformatcomparator.isHardcoreModeEnabled()) {
                     s2 = EnumChatFormatting.DARK_RED + I18n.format("gameMode.hardcore", new Object[0]) + EnumChatFormatting.RESET;
                 }
 
-                if (saveformatcomparator.getCheatsEnabled())
-                {
+                if (saveformatcomparator.getCheatsEnabled()) {
                     s2 = s2 + ", " + I18n.format("selectWorld.cheats", new Object[0]);
                 }
             }
 
-            GuiSelectWorld.this.drawString(GuiSelectWorld.this.mc.fontRendererObj, s, p_180791_2_ + 2, p_180791_3_ + 1, 16777215);
-            GuiSelectWorld.this.drawString(GuiSelectWorld.this.mc.fontRendererObj, s1, p_180791_2_ + 2, p_180791_3_ + 12, 8421504);
-            GuiSelectWorld.this.drawString(GuiSelectWorld.this.mc.fontRendererObj, s2, p_180791_2_ + 2, p_180791_3_ + 12 + 10, 8421504);
+            GuiSelectWorld.this.drawString(GuiSelectWorld.this.mc.fontRendererObj, s, posX + 2, posY + 1, 16777215);
+            GuiSelectWorld.this.drawString(GuiSelectWorld.this.mc.fontRendererObj, s1, posX + 2, posY + 12, 8421504);
+            GuiSelectWorld.this.drawString(GuiSelectWorld.this.mc.fontRendererObj, s2, posX + 2, posY + 12 + 10, 8421504);
         }
     }
 }

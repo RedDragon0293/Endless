@@ -28,9 +28,8 @@ public abstract class GuiListExtended extends GuiSlot
     {
     }
 
-    protected void drawSlot(int entryID, int p_180791_2_, int p_180791_3_, int p_180791_4_, int mouseXIn, int mouseYIn)
-    {
-        this.getListEntry(entryID).drawEntry(entryID, p_180791_2_, p_180791_3_, this.getListWidth(), p_180791_4_, mouseXIn, mouseYIn, this.getSlotIndexFromScreenCoords(mouseXIn, mouseYIn) == entryID);
+    protected void drawSlot(int entryID, int posX, int posY, int p_180791_4_, int mouseXIn, int mouseYIn) {
+        this.getListEntry(entryID).drawEntry(entryID, posX, posY, this.getListWidth(), p_180791_4_, mouseXIn, mouseYIn, this.getSlotIndexFromScreenCoords(mouseXIn, mouseYIn) == entryID);
     }
 
     protected void func_178040_a(int p_178040_1_, int p_178040_2_, int p_178040_3_)

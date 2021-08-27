@@ -18,28 +18,26 @@ public class Util
             p_181617_0_.run();
             return p_181617_0_.get();
         } catch (ExecutionException executionexception) {
-            p_181617_1_.fatal((String) "Error executing task", (Throwable) executionexception);
+            p_181617_1_.fatal("Error executing task", executionexception);
 
             if (executionexception.getCause() instanceof OutOfMemoryError)
             {
-                OutOfMemoryError outofmemoryerror = (OutOfMemoryError)executionexception.getCause();
-                throw outofmemoryerror;
+                throw (OutOfMemoryError) executionexception.getCause();
             }
         }
         catch (InterruptedException interruptedexception)
         {
-            p_181617_1_.fatal((String)"Error executing task", (Throwable)interruptedexception);
+            p_181617_1_.fatal("Error executing task", interruptedexception);
         }
 
-        return (V)((Object)null);
+        return null;
     }
 
-    public static enum EnumOS
-    {
+    public enum EnumOS {
         LINUX,
         SOLARIS,
         WINDOWS,
         OSX,
-        UNKNOWN;
+        UNKNOWN
     }
 }

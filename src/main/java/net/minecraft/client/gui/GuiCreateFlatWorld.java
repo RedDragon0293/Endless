@@ -203,17 +203,15 @@ public class GuiCreateFlatWorld extends GuiScreen {
         {
         }
 
-        protected void drawSlot(int entryID, int p_180791_2_, int p_180791_3_, int p_180791_4_, int mouseXIn, int mouseYIn)
-        {
-            FlatLayerInfo flatlayerinfo = (FlatLayerInfo)GuiCreateFlatWorld.this.theFlatGeneratorInfo.getFlatLayers().get(GuiCreateFlatWorld.this.theFlatGeneratorInfo.getFlatLayers().size() - entryID - 1);
+        protected void drawSlot(int entryID, int posX, int posY, int p_180791_4_, int mouseXIn, int mouseYIn) {
+            FlatLayerInfo flatlayerinfo = (FlatLayerInfo) GuiCreateFlatWorld.this.theFlatGeneratorInfo.getFlatLayers().get(GuiCreateFlatWorld.this.theFlatGeneratorInfo.getFlatLayers().size() - entryID - 1);
             IBlockState iblockstate = flatlayerinfo.func_175900_c();
             Block block = iblockstate.getBlock();
             Item item = Item.getItemFromBlock(block);
             ItemStack itemstack = block != Blocks.air && item != null ? new ItemStack(item, 1, block.getMetaFromState(iblockstate)) : null;
             String s = itemstack == null ? "Air" : item.getItemStackDisplayName(itemstack);
 
-            if (item == null)
-            {
+            if (item == null) {
                 if (block != Blocks.water && block != Blocks.flowing_water)
                 {
                     if (block == Blocks.lava || block == Blocks.flowing_lava)
@@ -226,31 +224,27 @@ public class GuiCreateFlatWorld extends GuiScreen {
                     item = Items.water_bucket;
                 }
 
-                if (item != null)
-                {
+                if (item != null) {
                     itemstack = new ItemStack(item, 1, block.getMetaFromState(iblockstate));
                     s = block.getLocalizedName();
                 }
             }
 
-            this.func_148225_a(p_180791_2_, p_180791_3_, itemstack);
-            GuiCreateFlatWorld.this.mc.fontRendererObj.drawString(s, p_180791_2_ + 18 + 5, p_180791_3_ + 3, 16777215);
+            this.func_148225_a(posX, posY, itemstack);
+            GuiCreateFlatWorld.this.mc.fontRendererObj.drawString(s, posX + 18 + 5, posY + 3, 16777215);
             String s1;
 
-            if (entryID == 0)
-            {
-                s1 = I18n.format("createWorld.customize.flat.layer.top", new Object[] {Integer.valueOf(flatlayerinfo.getLayerCount())});
-            }
-            else if (entryID == GuiCreateFlatWorld.this.theFlatGeneratorInfo.getFlatLayers().size() - 1)
-            {
-                s1 = I18n.format("createWorld.customize.flat.layer.bottom", new Object[] {Integer.valueOf(flatlayerinfo.getLayerCount())});
+            if (entryID == 0) {
+                s1 = I18n.format("createWorld.customize.flat.layer.top", new Object[]{Integer.valueOf(flatlayerinfo.getLayerCount())});
+            } else if (entryID == GuiCreateFlatWorld.this.theFlatGeneratorInfo.getFlatLayers().size() - 1) {
+                s1 = I18n.format("createWorld.customize.flat.layer.bottom", new Object[]{Integer.valueOf(flatlayerinfo.getLayerCount())});
             }
             else
             {
                 s1 = I18n.format("createWorld.customize.flat.layer", new Object[] {Integer.valueOf(flatlayerinfo.getLayerCount())});
             }
 
-            GuiCreateFlatWorld.this.mc.fontRendererObj.drawString(s1, p_180791_2_ + 2 + 213 - GuiCreateFlatWorld.this.mc.fontRendererObj.getStringWidth(s1), p_180791_3_ + 3, 16777215);
+            GuiCreateFlatWorld.this.mc.fontRendererObj.drawString(s1, posX + 2 + 213 - GuiCreateFlatWorld.this.mc.fontRendererObj.getStringWidth(s1), posY + 3, 16777215);
         }
 
         protected int getScrollBarX()

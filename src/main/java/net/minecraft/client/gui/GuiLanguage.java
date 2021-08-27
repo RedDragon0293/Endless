@@ -59,6 +59,7 @@ public class GuiLanguage extends GuiScreen {
         this.buttonList.add(this.forceUnicodeFontBtn = new GuiOptionButton(100, this.width / 2 - 155, this.height - 38, GameSettings.Options.FORCE_UNICODE_FONT, this.gameSettings.getKeyBinding(GameSettings.Options.FORCE_UNICODE_FONT)));
         this.buttonList.add(this.confirmSettingsBtn = new GuiOptionButton(6, this.width / 2 - 155 + 160, this.height - 38, I18n.format("gui.done")));
         this.buttonList.add(this.forceCustomFontButton = new GuiButton(2333, 5, 8, 150, 20, "ForceCustomFont:" + I18n.format(Fonts.forceCustomFont.get() ? "options.on" : "options.off")));
+        forceUnicodeFontBtn.enabled = !Fonts.forceCustomFont.get();
         this.list = new GuiLanguage.List(this.mc);
         this.list.registerScrollButtons(7, 8);
     }
@@ -98,6 +99,7 @@ public class GuiLanguage extends GuiScreen {
                 case 2333:
                     Fonts.forceCustomFont.set(!Fonts.forceCustomFont.get());
                     forceCustomFontButton.displayString = "ForceCustomFont:" + I18n.format(Fonts.forceCustomFont.get() ? "options.on" : "options.off");
+                    forceUnicodeFontBtn.enabled = !Fonts.forceCustomFont.get();
                     break;
                 default:
                     this.list.actionPerformed(button);
@@ -156,9 +158,9 @@ public class GuiLanguage extends GuiScreen {
             GuiLanguage.this.drawDefaultBackground();
         }
 
-        protected void drawSlot(int entryID, int p_180791_2_, int p_180791_3_, int p_180791_4_, int mouseXIn, int mouseYIn) {
+        protected void drawSlot(int entryID, int posX, int posY, int p_180791_4_, int mouseXIn, int mouseYIn) {
             mc.fontRendererObj.setBidiFlag(true);
-            GuiLanguage.this.drawCenteredString(mc.fontRendererObj, this.languageMap.get(this.langCodeList.get(entryID)).toString(), this.width / 2, p_180791_3_ + 1, 16777215);
+            GuiLanguage.this.drawCenteredString(mc.fontRendererObj, this.languageMap.get(this.langCodeList.get(entryID)).toString(), this.width / 2, posY + 1, 16777215);
             mc.fontRendererObj.setBidiFlag(GuiLanguage.this.languageManager.getCurrentLanguage().isBidirectional());
         }
     }

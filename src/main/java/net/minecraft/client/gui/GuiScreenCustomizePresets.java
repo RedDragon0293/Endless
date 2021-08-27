@@ -225,11 +225,10 @@ public class GuiScreenCustomizePresets extends GuiScreen {
             tessellator.draw();
         }
 
-        protected void drawSlot(int entryID, int p_180791_2_, int p_180791_3_, int p_180791_4_, int mouseXIn, int mouseYIn)
-        {
-            GuiScreenCustomizePresets.Info guiscreencustomizepresets$info = (GuiScreenCustomizePresets.Info)GuiScreenCustomizePresets.field_175310_f.get(entryID);
-            this.func_178051_a(p_180791_2_, p_180791_3_, guiscreencustomizepresets$info.field_178953_b);
-            GuiScreenCustomizePresets.this.mc.fontRendererObj.drawString(guiscreencustomizepresets$info.field_178955_a, p_180791_2_ + 32 + 10, p_180791_3_ + 14, 16777215);
+        protected void drawSlot(int entryID, int posX, int posY, int p_180791_4_, int mouseXIn, int mouseYIn) {
+            GuiScreenCustomizePresets.Info guiscreencustomizepresets$info = (GuiScreenCustomizePresets.Info) GuiScreenCustomizePresets.field_175310_f.get(entryID);
+            this.func_178051_a(posX, posY, guiscreencustomizepresets$info.field_178953_b);
+            GuiScreenCustomizePresets.this.mc.fontRendererObj.drawString(guiscreencustomizepresets$info.field_178955_a, posX + 32 + 10, posY + 14, 16777215);
         }
     }
 }

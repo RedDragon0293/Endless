@@ -142,10 +142,9 @@ public class GuiSnooper extends GuiScreen
         {
         }
 
-        protected void drawSlot(int entryID, int p_180791_2_, int p_180791_3_, int p_180791_4_, int mouseXIn, int mouseYIn)
-        {
-            GuiSnooper.this.mc.fontRendererObj.drawString((String)GuiSnooper.this.field_146604_g.get(entryID), 10, p_180791_3_, 16777215);
-            GuiSnooper.this.mc.fontRendererObj.drawString((String)GuiSnooper.this.field_146609_h.get(entryID), 230, p_180791_3_, 16777215);
+        protected void drawSlot(int entryID, int posX, int posY, int p_180791_4_, int mouseXIn, int mouseYIn) {
+            GuiSnooper.this.mc.fontRendererObj.drawString((String) GuiSnooper.this.field_146604_g.get(entryID), 10, posY, 16777215);
+            GuiSnooper.this.mc.fontRendererObj.drawString((String) GuiSnooper.this.field_146609_h.get(entryID), 230, posY, 16777215);
         }
 
         protected int getScrollBarX()

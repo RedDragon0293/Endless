@@ -271,11 +271,10 @@ public class GuiFlatPresets extends GuiScreen {
         {
         }
 
-        protected void drawSlot(int entryID, int p_180791_2_, int p_180791_3_, int p_180791_4_, int mouseXIn, int mouseYIn)
-        {
-            GuiFlatPresets.LayerItem guiflatpresets$layeritem = (GuiFlatPresets.LayerItem)GuiFlatPresets.FLAT_WORLD_PRESETS.get(entryID);
-            this.func_178054_a(p_180791_2_, p_180791_3_, guiflatpresets$layeritem.field_148234_a, guiflatpresets$layeritem.field_179037_b);
-            GuiFlatPresets.this.mc.fontRendererObj.drawString(guiflatpresets$layeritem.field_148232_b, p_180791_2_ + 18 + 5, p_180791_3_ + 6, 16777215);
+        protected void drawSlot(int entryID, int posX, int posY, int p_180791_4_, int mouseXIn, int mouseYIn) {
+            GuiFlatPresets.LayerItem guiflatpresets$layeritem = (GuiFlatPresets.LayerItem) GuiFlatPresets.FLAT_WORLD_PRESETS.get(entryID);
+            this.func_178054_a(posX, posY, guiflatpresets$layeritem.field_148234_a, guiflatpresets$layeritem.field_179037_b);
+            GuiFlatPresets.this.mc.fontRendererObj.drawString(guiflatpresets$layeritem.field_148232_b, posX + 18 + 5, posY + 6, 16777215);
         }
     }
 }

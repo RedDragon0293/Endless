@@ -118,16 +118,14 @@ public class GuiIngestServers extends GuiScreen
         {
         }
 
-        protected void drawSlot(int entryID, int p_180791_2_, int p_180791_3_, int p_180791_4_, int mouseXIn, int mouseYIn)
-        {
+        protected void drawSlot(int entryID, int posX, int posY, int p_180791_4_, int mouseXIn, int mouseYIn) {
             IngestServer ingestserver = this.mc.getTwitchStream().func_152925_v()[entryID];
             String s = ingestserver.serverUrl.replaceAll("\\{stream_key\\}", "");
-            String s1 = (int)ingestserver.bitrateKbps + " kbps";
+            String s1 = (int) ingestserver.bitrateKbps + " kbps";
             String s2 = null;
             IngestServerTester ingestservertester = this.mc.getTwitchStream().func_152932_y();
 
-            if (ingestservertester != null)
-            {
+            if (ingestservertester != null) {
                 if (ingestserver == ingestservertester.func_153040_c())
                 {
                     s = EnumChatFormatting.GREEN + s;
@@ -150,24 +148,20 @@ public class GuiIngestServers extends GuiScreen
                 s1 = EnumChatFormatting.RED + "Down!";
             }
 
-            p_180791_2_ = p_180791_2_ - 15;
+            posX = posX - 15;
 
-            if (this.isSelected(entryID))
-            {
+            if (this.isSelected(entryID)) {
                 s2 = EnumChatFormatting.BLUE + "(Preferred)";
-            }
-            else if (ingestserver.defaultServer)
-            {
+            } else if (ingestserver.defaultServer) {
                 s2 = EnumChatFormatting.GREEN + "(Default)";
             }
 
-            GuiIngestServers.this.drawString(GuiIngestServers.this.mc.fontRendererObj, ingestserver.serverName, p_180791_2_ + 2, p_180791_3_ + 5, 16777215);
-            GuiIngestServers.this.drawString(GuiIngestServers.this.mc.fontRendererObj, s, p_180791_2_ + 2, p_180791_3_ + GuiIngestServers.this.mc.fontRendererObj.FONT_HEIGHT + 5 + 3, 3158064);
-            GuiIngestServers.this.drawString(GuiIngestServers.this.mc.fontRendererObj, s1, this.getScrollBarX() - 5 - GuiIngestServers.this.mc.fontRendererObj.getStringWidth(s1), p_180791_3_ + 5, 8421504);
+            GuiIngestServers.this.drawString(GuiIngestServers.this.mc.fontRendererObj, ingestserver.serverName, posX + 2, posY + 5, 16777215);
+            GuiIngestServers.this.drawString(GuiIngestServers.this.mc.fontRendererObj, s, posX + 2, posY + GuiIngestServers.this.mc.fontRendererObj.FONT_HEIGHT + 5 + 3, 3158064);
+            GuiIngestServers.this.drawString(GuiIngestServers.this.mc.fontRendererObj, s1, this.getScrollBarX() - 5 - GuiIngestServers.this.mc.fontRendererObj.getStringWidth(s1), posY + 5, 8421504);
 
-            if (s2 != null)
-            {
-                GuiIngestServers.this.drawString(GuiIngestServers.this.mc.fontRendererObj, s2, this.getScrollBarX() - 5 - GuiIngestServers.this.mc.fontRendererObj.getStringWidth(s2), p_180791_3_ + 5 + 3 + GuiIngestServers.this.mc.fontRendererObj.FONT_HEIGHT, 8421504);
+            if (s2 != null) {
+                GuiIngestServers.this.drawString(GuiIngestServers.this.mc.fontRendererObj, s2, this.getScrollBarX() - 5 - GuiIngestServers.this.mc.fontRendererObj.getStringWidth(s2), posY + 5 + 3 + GuiIngestServers.this.mc.fontRendererObj.FONT_HEIGHT, 8421504);
             }
         }
 
