@@ -28,9 +28,9 @@ object Endless {
         CommandManager
         ModuleManager
         EventManager.sort()
-        clickGUI = GuiClickGUI()
         ConfigManager.loadAllConfigs()
         Fonts.loadFonts()
+        clickGUI = GuiClickGUI()
 
         Display.setTitle("$CLIENT_NAME $CLIENT_VERSION | 1.8.9 - Cracked by AsOne & RedDragon0293")
         logger.info("成功加载 $CLIENT_NAME!")

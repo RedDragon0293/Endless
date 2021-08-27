@@ -44,8 +44,6 @@ abstract class AbstractElement(
      */
     abstract fun drawElement()
 
-    abstract fun updateBorder()
-
     /**
      * Check if [x] and [y] is in element border
      */
