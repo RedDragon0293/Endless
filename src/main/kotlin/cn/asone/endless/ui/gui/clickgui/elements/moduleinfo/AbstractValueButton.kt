@@ -47,7 +47,7 @@ abstract class AbstractValueButton(open val value: AbstractValue<*>, val isSub: 
     }
 
     open fun drawText(mouseX: Int, mouseY: Int) {
-        Fonts.light24.drawString(value.name, x + 5F, y + 5F, GuiClickGUI.textColor)
+        Fonts.light24.drawString(value.name, x + 5F, y + 4F, GuiClickGUI.textColor)
     }
 
     open fun drawBox(mouseX: Int, mouseY: Int) {

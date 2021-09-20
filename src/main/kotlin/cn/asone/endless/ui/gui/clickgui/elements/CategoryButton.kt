@@ -16,7 +16,7 @@ class CategoryButton(id: Int, x: Int, y: Int, text: String) : GuiButton(id, x, y
         Fonts.medium22.drawCenteredString(
             displayString,
             xPosition + 30F,
-            yPosition + 4.5F,
+            yPosition + 4F,
             if (GuiClickGUI.categoryIndex == this.id)
                 chosenColor
             else

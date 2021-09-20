@@ -39,7 +39,7 @@ public class GuiScreenCustomizePresets extends GuiScreen {
         this.field_175315_a = I18n.format("createWorld.customize.custom.presets.title", new Object[0]);
         this.field_175313_s = I18n.format("createWorld.customize.presets.share", new Object[0]);
         this.field_175312_t = I18n.format("createWorld.customize.presets.list", new Object[0]);
-        this.field_175317_i = new GuiTextField(2, mc.fontRendererObj, 50, 40, this.width - 100, 20);
+        this.field_175317_i = new GuiTextField(2, 50, 40, this.width - 100, 20);
         this.field_175311_g = new GuiScreenCustomizePresets.ListPreset();
         this.field_175317_i.setMaxStringLength(2000);
         this.field_175317_i.setText(this.field_175314_r.func_175323_a());

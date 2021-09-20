@@ -1,0 +1,209 @@
+package cn.asone.endless.ui.font;
+
+import cn.asone.endless.utils.RenderUtils;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.texture.TextureUtil;
+import net.minecraft.util.ResourceLocation;
+import org.lwjgl.opengl.GL11;
+
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.Arrays;
+
+public class RedFontRenderer {
+    public final Font font;
+    /**
+     * 储存字符图片及相应信息的数组. <p>
+     * 数组的大小为 65535, char所储存的字符对应 ascii 码最大值也为 65535. <p>
+     * 由于字符数量庞大, 在初始化的时候就加载所有字符图片是不必要的, 因此在调用时要先进行非空检查.
+     * </p>
+     * </p>
+     */
+    private final FontChar[] chars = new FontChar[65535];
+    private final FontMetrics fontMetrics;
+    /**
+     * 当前字体渲染出的单个字符图片的高度.<p>
+     * 在 {@link cn.asone.endless.ui.font.RedFontRenderer#generateCharImage(int)}
+     * 中保证所有字符图片高度均为此值.
+     * </p>
+     */
+    private final int fontImageHeight;
+    private final float scale = 0.5F;
+    public int fontHeight;
+
+    public RedFontRenderer(Font font) {
+        this.font = font;
+        Graphics2D graphics = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB).createGraphics();
+        graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        graphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+        graphics.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
+        graphics.setFont(font);
+        fontMetrics = graphics.getFontMetrics();
+        if (fontMetrics.getHeight() <= 0)
+            fontImageHeight = font.getSize();
+        else
+            fontImageHeight = fontMetrics.getHeight();
+
+        //从空格至波浪号预加载字符图片
+        for (int charCode = 32; charCode <= 126; charCode++) {
+            chars[charCode] = new FontChar((char) charCode, generateCharImage(charCode));
+        }
+        fontHeight = (int) (fontImageHeight * scale);
+    }
+
+    public int drawString(String text, double x, double y, int color) {
+        GL11.glPushMatrix();
+        GL11.glTranslated(x, y - 1, 0D);
+        GL11.glScalef(scale, scale, scale);
+        RenderUtils.quickGLColor(color);
+        int width = 0;
+        for (char ch : text.toCharArray()) {
+            int singleWidth = drawCharImage(ch);
+            width += singleWidth;
+            GL11.glTranslated(singleWidth, 0D, 0D);
+        }
+        GL11.glPopMatrix();
+        return (int) (width * scale);
+    }
+
+    public int drawChar(char charAt, double x, double y, int color) {
+        GL11.glPushMatrix();
+        GL11.glTranslated(x, y - 1, 0D);
+        GL11.glScalef(scale, scale, scale);
+        RenderUtils.quickGLColor(color);
+        int width = drawCharImage(charAt);
+        GL11.glPopMatrix();
+        return (int) (width * scale);
+    }
+
+    public int getStringWidth(String text) {
+        int width = 0;
+        for (char ch : text.toCharArray())
+            width += getFontChar(ch).getTex().width;
+        return (int) (width * scale);
+    }
+
+    public int getCharWidth(char charAt) {
+        return (int) (getFontChar(charAt).getTex().width * scale);
+    }
+
+    /**
+     * 将字体图片渲染到屏幕上
+     */
+    private int drawCharImage(int charAt) {
+        FontChar fontChar = getFontChar(charAt);
+        GlStateManager.bindTexture(fontChar.getTex().getGlTextureId());
+        Gui.drawModalRectWithCustomSizedTexture(
+                0,
+                0,
+                0,
+                0F,
+                fontChar.getTex().width,
+                fontImageHeight,
+                fontChar.getTex().width,
+                fontImageHeight
+        );
+        return fontChar.getTex().width;
+    }
+
+    /**
+     * 根据给定的字体将字符渲染为图片
+     *
+     * @param charAt 将要渲染的字符
+     * @return 字符图片
+     */
+    private BufferedImage generateCharImage(int charAt) {
+        //+2:在字符图片右留出1px的空隙
+        int charWidth = fontMetrics.charWidth(charAt) + 1;
+        if (charWidth <= 0)
+            charWidth = 1;
+        BufferedImage charImage = new BufferedImage(charWidth, fontImageHeight, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D graphics = charImage.createGraphics();
+        graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        graphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+        graphics.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
+        graphics.setFont(font);
+        graphics.setColor(Color.WHITE);
+        graphics.drawString(String.valueOf((char) charAt), 0, fontMetrics.getAscent());
+
+        /*
+         * 接下来的代码所做的工作是将字体不支持的字符替换为 Minecraft 自带的字符图片
+         */
+
+        //空格不需要转换
+        if (charAt == 32)
+            return charImage;
+        /*
+         * 判断字体图片是否为空白图片
+         */
+        for (int m = 0; m < charImage.getWidth(); m++) {
+            for (int n = 0; n < charImage.getHeight(); n++) {
+                if (charImage.getRGB(m, n) != 0)
+                    return charImage;
+            }
+        }
+
+        try {
+            /*
+             * 从原版FontRenderer获取字符图片
+             */
+            ResourceLocation location = Minecraft.getMinecraft().fonts.getUnicodePageLocation(charAt / 256);
+            BufferedImage globalImage = TextureUtil.readBufferedImage(Minecraft.getMinecraft().getResourceManager().getResource(location).getInputStream());
+
+            /*
+             * 当前字符对应的图片的有效部分的起始x坐标.
+             * 由于不是所有字符都会占满16×16的空间, 图片实际有效部分周围会有空白.
+             * 此值表示当前字符对于标准16×16起始的x坐标至此字符图片有效部分的起始x坐标的差.
+             */
+            int xOffset = Minecraft.getMinecraft().fonts.glyphWidth[charAt] >>> 4;
+
+            int k = Minecraft.getMinecraft().fonts.glyphWidth[charAt] & 15;
+            int f1 = k + 1;
+            /*
+             * 图片中所在列
+             */
+            int xPos = charAt % 16 * 16 + xOffset;
+            /*
+             * 图片中所在行
+             */
+            int yPos = (charAt & 0xFF / 16 * 16);
+            /*
+             * 字符对应图片宽度
+             */
+            int width = f1 - xOffset;
+            /*
+             * 字符图片对应高度
+             *
+             * 如果当前自定义字体渲染出的标准图片高度小于16(mc字体单个字符图片的高度),
+             * 则将值设为16以保证能够完整渲染图片并忽略可能的后果(因为当自定义字体图片高度小于16
+             * 时一般实际的渲染效果都不尽人意)
+             */
+            int height = Math.max(fontImageHeight, 16);
+            int startY = (height - 16) / 2;
+            BufferedImage image = new BufferedImage(width + 2, height, BufferedImage.TYPE_INT_ARGB);
+            for (int m = 0; m < width; m++) {
+                for (int n = 0; n < 15; n++) {
+                    image.setRGB(m, startY + n, globalImage.getRGB(m + xPos, n + yPos));
+                }
+            }
+            return image;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return charImage;
+        }
+    }
+
+    private FontChar getFontChar(int charAt) {
+        if (chars[charAt] == null) {
+            chars[charAt] = new FontChar((char) charAt, generateCharImage(charAt));
+        }
+        return chars[charAt];
+    }
+
+    public void refresh() {
+        Arrays.fill(chars, null);
+    }
+}

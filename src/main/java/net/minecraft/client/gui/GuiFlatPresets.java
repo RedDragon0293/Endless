@@ -52,7 +52,7 @@ public class GuiFlatPresets extends GuiScreen {
         this.presetsTitle = I18n.format("createWorld.customize.presets.title", new Object[0]);
         this.presetsShare = I18n.format("createWorld.customize.presets.share", new Object[0]);
         this.field_146436_r = I18n.format("createWorld.customize.presets.list", new Object[0]);
-        this.field_146433_u = new GuiTextField(2, mc.fontRendererObj, 50, 40, this.width - 100, 20);
+        this.field_146433_u = new GuiTextField(2, 50, 40, this.width - 100, 20);
         this.field_146435_s = new GuiFlatPresets.ListSlot();
         this.field_146433_u.setMaxStringLength(1230);
         this.field_146433_u.setText(this.parentScreen.func_146384_e());

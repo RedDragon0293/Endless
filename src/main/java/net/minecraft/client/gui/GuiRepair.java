@@ -39,7 +39,7 @@ public class GuiRepair extends GuiContainer implements ICrafting {
         Keyboard.enableRepeatEvents(true);
         int i = (this.width - this.xSize) / 2;
         int j = (this.height - this.ySize) / 2;
-        this.nameField = new GuiTextField(0, mc.fontRendererObj, i + 62, j + 24, 103, 12);
+        this.nameField = new GuiTextField(0, i + 62, j + 24, 103, 12);
         this.nameField.setTextColor(-1);
         this.nameField.setDisabledTextColour(-1);
         this.nameField.setEnableBackgroundDrawing(false);

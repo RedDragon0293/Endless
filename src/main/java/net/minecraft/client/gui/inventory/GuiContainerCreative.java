@@ -271,7 +271,7 @@ public class GuiContainerCreative extends InventoryEffectRenderer {
             super.initGui();
             this.buttonList.clear();
             Keyboard.enableRepeatEvents(true);
-            this.searchField = new GuiTextField(0, mc.fontRendererObj, this.guiLeft + 82, this.guiTop + 6, 89, mc.fontRendererObj.FONT_HEIGHT);
+            this.searchField = new GuiTextField(0, this.guiLeft + 82, this.guiTop + 6, 89, mc.fontRendererObj.FONT_HEIGHT);
             this.searchField.setMaxStringLength(15);
             this.searchField.setEnableBackgroundDrawing(false);
             this.searchField.setVisible(false);

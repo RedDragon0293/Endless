@@ -9,12 +9,8 @@ import java.awt.image.BufferedImage
  */
 class FontChar(val char: Char, bufferedImage: BufferedImage) {
     /**
-     * 图片width
-     */
-    val width = bufferedImage.width
-    /**
      * 最终用于渲染的图片
-     * GlStateManager.bindTexture(tex.getGlTextureId)
+     * @see net.minecraft.client.renderer.GlStateManager.bindTexture
      */
     val tex = DynamicTexture(bufferedImage)
 }

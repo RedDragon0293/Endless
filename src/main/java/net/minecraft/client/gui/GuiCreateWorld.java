@@ -83,10 +83,10 @@ public class GuiCreateWorld extends GuiScreen {
         this.btnAllowCommands.visible = false;
         this.buttonList.add(this.btnCustomizeType = new GuiButton(8, this.width / 2 + 5, 120, 150, 20, I18n.format("selectWorld.customizeType", new Object[0])));
         this.btnCustomizeType.visible = false;
-        this.field_146333_g = new GuiTextField(9, mc.fontRendererObj, this.width / 2 - 100, 60, 200, 20);
+        this.field_146333_g = new GuiTextField(9, this.width / 2 - 100, 60, 200, 20);
         this.field_146333_g.setFocused(true);
         this.field_146333_g.setText(this.field_146330_J);
-        this.field_146335_h = new GuiTextField(10, mc.fontRendererObj, this.width / 2 - 100, 60, 200, 20);
+        this.field_146335_h = new GuiTextField(10, this.width / 2 - 100, 60, 200, 20);
         this.field_146335_h.setText(this.field_146329_I);
         this.func_146316_a(this.field_146344_y);
         this.func_146314_g();

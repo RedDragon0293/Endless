@@ -65,7 +65,7 @@ class ListButton(override val value: ListValue, isSub: Boolean) : AbstractValueB
                 x + (if (isSub) 212 else 232) - 5 - Fonts.condensedLight18.getStringWidth(value.get()) - 2,
                 y + 3,
                 x + (if (isSub) 212 else 232) - 5 + 2,
-                y + 7 + Fonts.condensedLight18.height + 2,
+                y + 7 + Fonts.condensedLight18.FONT_HEIGHT + 2,
                 1F,
                 Color(140, 140, 140).rgb
             )
@@ -100,7 +100,7 @@ class ListButton(override val value: ListValue, isSub: Boolean) : AbstractValueB
             if (mouseX >= x + (if (isSub) 212 else 232) - 5 - Fonts.condensedLight18.getStringWidth(value.get()) - 2
                 && mouseX <= x + (if (isSub) 212 else 232) - 5 + 2
                 && mouseY >= y + 3
-                && mouseY <= y + 7 + Fonts.condensedLight18.height + 2
+                && mouseY <= y + 7 + Fonts.condensedLight18.FONT_HEIGHT + 2
             ) {
                 mc.soundHandler.playSound("gui.button.press", 1F)
                 GuiClickGUI.listButton = this

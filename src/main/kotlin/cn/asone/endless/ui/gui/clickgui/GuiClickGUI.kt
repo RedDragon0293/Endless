@@ -396,16 +396,16 @@ class GuiClickGUI : GuiScreen() {
                  * ListValue 滚轮
                  */
                 valueDiffY += wheel
-                if (valueDiffY < listButton!!.value.values.size * -(Fonts.light30.height + 4) - 8 + 210)
-                    valueDiffY = listButton!!.value.values.size * -(Fonts.light30.height + 4) + 210 - 8F
+                if (valueDiffY < listButton!!.value.values.size * -(Fonts.light30.FONT_HEIGHT + 4) - 8 + 210)
+                    valueDiffY = listButton!!.value.values.size * -(Fonts.light30.FONT_HEIGHT + 4) + 210 - 8F
                 if (valueDiffY > 0)
                     valueDiffY = 0F
                 /**
                  * calculate the index of the selection hovering currently
                  */
                 var i = 0
-                while (!(mouseY >= windowYStart + guiHeight / 2 - 80 + 2F + valueDiffY + i * (Fonts.light30.height + 4)
-                            && mouseY <= windowYStart + guiHeight / 2 - 80 + 2F + valueDiffY + (i + 1) * (Fonts.light30.height + 4))
+                while (!(mouseY >= windowYStart + guiHeight / 2 - 80 + 2F + valueDiffY + i * (Fonts.light30.FONT_HEIGHT + 4)
+                            && mouseY <= windowYStart + guiHeight / 2 - 80 + 2F + valueDiffY + (i + 1) * (Fonts.light30.FONT_HEIGHT + 4))
                 ) {
                     i++
                     if (i >= 100)
@@ -427,9 +427,9 @@ class GuiClickGUI : GuiScreen() {
                      */
                     RenderUtils.drawBorder(
                         windowXStart + guiWidth / 2 - Fonts.light30.getStringWidth(listButton!!.value.values[i]) / 2 - 2F,
-                        windowYStart + guiHeight / 2 - 80 + 2F + valueDiffY + i * (Fonts.light30.height + 4),
+                        windowYStart + guiHeight / 2 - 80 + 2F + valueDiffY + i * (Fonts.light30.FONT_HEIGHT + 4),
                         windowXStart + guiWidth / 2 + Fonts.light30.getStringWidth(listButton!!.value.values[i]) / 2 + 2F,
-                        windowYStart + guiHeight / 2 - 80 + 2F + valueDiffY + (i + 1) * (Fonts.light30.height + 4) - 2F,
+                        windowYStart + guiHeight / 2 - 80 + 2F + valueDiffY + (i + 1) * (Fonts.light30.FONT_HEIGHT + 4) - 2F,
                         1F,
                         Color(0, 111, 255).rgb
                     )
@@ -457,7 +457,7 @@ class GuiClickGUI : GuiScreen() {
             var var0 = windowYStart + guiHeight / 2 - 80 + 4F + valueDiffY
             listButton!!.value.values.forEach {
                 Fonts.light30.drawCenteredString(it, windowXStart + guiWidth / 2F, var0, textColor)
-                var0 += Fonts.light30.height + 4
+                var0 += Fonts.light30.FONT_HEIGHT + 4
             }
             GL11.glDisable(GL11.GL_SCISSOR_TEST)
             GL11.glPopMatrix()
@@ -492,8 +492,8 @@ class GuiClickGUI : GuiScreen() {
                 && mouseY in (windowYStart + guiHeight / 2 - 80)..(windowYStart + guiHeight / 2 + 130)
             ) {
                 var i = 0
-                while (!(mouseY >= windowYStart + guiHeight / 2 - 80 + 2F + valueDiffY + i * (Fonts.light30.height + 4)
-                            && mouseY <= windowYStart + guiHeight / 2 - 80 + 2F + valueDiffY + (i + 1) * (Fonts.light30.height + 4))
+                while (!(mouseY >= windowYStart + guiHeight / 2 - 80 + 2F + valueDiffY + i * (Fonts.light30.FONT_HEIGHT + 4)
+                            && mouseY <= windowYStart + guiHeight / 2 - 80 + 2F + valueDiffY + (i + 1) * (Fonts.light30.FONT_HEIGHT + 4))
                 ) {
                     i++
                     if (i >= 100)

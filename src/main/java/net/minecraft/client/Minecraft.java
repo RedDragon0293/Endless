@@ -687,8 +687,9 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
             list.add(resourcepackrepository$entry.getResourcePack());
         }
 
-        if (this.mcResourcePackRepository.getResourcePackInstance() != null) {
-            list.add(this.mcResourcePackRepository.getResourcePackInstance());
+        IResourcePack instance = this.mcResourcePackRepository.getResourcePackInstance();
+        if (instance != null) {
+            list.add(instance);
         }
 
         try {

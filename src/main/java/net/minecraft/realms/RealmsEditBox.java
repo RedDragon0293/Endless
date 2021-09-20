@@ -1,6 +1,5 @@
 package net.minecraft.realms;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiTextField;
 
 public class RealmsEditBox
@@ -9,7 +8,7 @@ public class RealmsEditBox
 
     public RealmsEditBox(int p_i45743_1_, int p_i45743_2_, int p_i45743_3_, int p_i45743_4_, int p_i45743_5_)
     {
-        this.editBox = new GuiTextField(p_i45743_1_, Minecraft.getMinecraft().fontRendererObj, p_i45743_2_, p_i45743_3_, p_i45743_4_, p_i45743_5_);
+        this.editBox = new GuiTextField(p_i45743_1_, p_i45743_2_, p_i45743_3_, p_i45743_4_, p_i45743_5_);
     }
 
     public String getValue()

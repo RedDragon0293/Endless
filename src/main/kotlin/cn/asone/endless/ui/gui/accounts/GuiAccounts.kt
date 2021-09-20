@@ -30,12 +30,12 @@ class GuiAccounts(val parent: GuiScreen) : GuiScreen() {
         loginButton = GuiButton(1, width / 2 - 100, height - 72, "Login")
         loginButton.enabled = false
         backButton = GuiButton(0, width / 2 - 100, height - 48, I18n.format("gui.back"))
-        username = GuiTextField(2, Fonts.mcRegular18, width / 2 - 100, 90, 200, 20)
+        username = GuiTextField(2, width / 2 - 100, 90, 200, 20)
         username.maxStringLength = 1024
         username.text = mc.session.username
-        password = GuiPasswordField(3, Fonts.mcRegular18, width / 2 - 100, 115, 200, 20)
+        password = GuiPasswordField(3, width / 2 - 100, 115, 200, 20)
         password.maxStringLength = 1024
-        thealtening = GuiTextField(4, Fonts.mcRegular18, width / 2 - 100, 140, 200, 20)
+        thealtening = GuiTextField(4, width / 2 - 100, 140, 200, 20)
         thealtening.maxStringLength = 100
         buttonList.add(loginButton)
         buttonList.add(backButton)
@@ -47,7 +47,7 @@ class GuiAccounts(val parent: GuiScreen) : GuiScreen() {
         Fonts.regular24.drawCenteredString(
             "Status: $status",
             (width / 2).toFloat(),
-            34F + Fonts.medium44.height + 8,
+            34F + Fonts.medium44.FONT_HEIGHT + 8,
             Color.white.rgb
         )
         Fonts.mcRegular18.drawString("Username: ${EnumChatFormatting.GREEN}${mc.session.username}", 4, 4, Color.white.rgb)

@@ -13,24 +13,17 @@ class GameFontRenderer(font: Font, companionStyle: Boolean = false) : FontRender
     mc.gameSettings,
     ResourceLocation("textures/font/ascii.png"), mc.textureManager, false
 ) {
-
-    private var defaultFont = AWTFontRenderer(font)
-    private var boldFont: AWTFontRenderer? = null
-    private var italicFont: AWTFontRenderer? = null
-    private var boldItalicFont: AWTFontRenderer? = null
-
-    val height: Int
-        get() = defaultFont.height
-
-    val size: Int
-        get() = defaultFont.font.size
+    private var defaultFont = RedFontRenderer(font)
+    private var boldFont: RedFontRenderer? = null
+    private var italicFont: RedFontRenderer? = null
+    private var boldItalicFont: RedFontRenderer? = null
 
     init {
-        FONT_HEIGHT = height
+        FONT_HEIGHT = defaultFont.fontHeight
         if (companionStyle) {
-            boldFont = AWTFontRenderer(font.deriveFont(Font.BOLD))
-            italicFont = AWTFontRenderer(font.deriveFont(Font.ITALIC))
-            boldItalicFont = AWTFontRenderer(font.deriveFont(Font.BOLD or Font.ITALIC))
+            boldFont = RedFontRenderer(font.deriveFont(Font.BOLD))
+            italicFont = RedFontRenderer(font.deriveFont(Font.ITALIC))
+            boldItalicFont = RedFontRenderer(font.deriveFont(Font.BOLD or Font.ITALIC))
         }
     }
 
@@ -43,17 +36,17 @@ class GameFontRenderer(font: Font, companionStyle: Boolean = false) : FontRender
         drawString(s, x - getStringWidth(s) / 2F, y, color, shadow)
 
     fun drawCenteredString(s: String, x: Float, y: Float, color: Int) =
-        drawText(s, x - getStringWidth(s) / 2F, y, color, false)
+        drawTextInternal(s, x - getStringWidth(s) / 2F, y, color, false)
 
     override fun drawString(text: String, x: Float, y: Float, color: Int, shadow: Boolean): Int {
         var newColor = color
-        var newtext = text
+        var newText = text
         if (this.bidiFlag)
-            newtext = this.bidiReorder(text)
+            newText = this.bidiReorder(text)
 
         if (shadow) {
             newColor = (newColor and 16579836) /*FC FC FC*/ shr 2 or newColor and -16777216 /*FF 00 00 00*/
-            drawText(newtext, x + 1F, y + 1F, newColor, true)
+            drawTextInternal(newText, x + 1F, y + 1F, newColor, true)
         }
         newColor = color
 
@@ -61,183 +54,173 @@ class GameFontRenderer(font: Font, companionStyle: Boolean = false) : FontRender
             newColor = newColor or -16777216 /*FF 00 00 00*/
         }
 
-        return drawText(newtext, x, y, newColor, false)
+        return drawTextInternal(newText, x, y, newColor, false)
     }
 
-    private fun drawText(rawText: String?, x: Float, y: Float, colorHex: Int, ignoreColor: Boolean): Int {
+    private fun drawTextInternal(rawText: String?, x: Float, y: Float, color: Int, ignoreColor: Boolean): Int {
         if (rawText == null)
             return 0
         if (rawText.isNullOrEmpty())
             return x.toInt()
 
-        GlStateManager.translate(x - 1.5, y + 0.5, 0.0)
+        //GlStateManager.translate(x - 1.5, y + 0.5, 0.0)
         GlStateManager.enableAlpha()
         GlStateManager.enableBlend()
         GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO)
         GlStateManager.enableTexture2D()
 
-        var hexColor = colorHex
+        var hexColor = color
         if (hexColor and -67108864 /*FC 00 00 00*/ == 0)
             hexColor = hexColor or -16777216 /*FF 00 00 00*/
 
         val alpha: Int = (hexColor shr 24 and 0xff)
 
-        if (rawText.contains("§")) {
-            val parts = rawText.split("§")
+        // Color code states
+        var obfuscated = false
+        var bold = false
+        var italic = false
+        var strikeThrough = false
+        var underline = false
+        var width = 0.0
+        var currentFont: RedFontRenderer = defaultFont
 
-            var currentFont = defaultFont
-
-            var width = 0.0
-
-            // Color code states
-            var obfuscated = false
-            var bold = false
-            var italic = false
-            var strikeThrough = false
-            var underline = false
-
-            parts.forEachIndexed { index, part ->
-                if (part.isEmpty())
-                    return@forEachIndexed
-
-                if (index == 0) {
-                    currentFont.drawString(part, width, 0.0, hexColor)
-                    width += currentFont.getStringWidth(part)
-                } else {
-                    val words = part.substring(1)
-                    val type = part[0]
-
-                    when (getColorIndex(type)) {
-                        in 0..15 -> {
-                            if (!ignoreColor) {
-                                hexColor = getColorCode(type) or (alpha shl 24)
-                            }
-
-                            bold = false
-                            italic = false
-                            obfuscated = false
-                            underline = false
-                            strikeThrough = false
+        var i = 0
+        while (i < rawText.length) {
+            var char = rawText[i]
+            if (char.code == 167 && i + 1 < rawText.length) {
+                val type = rawText[i + 1]
+                when (getColorIndex(type)) {
+                    in 0..15 -> {
+                        if (!ignoreColor) {
+                            hexColor = getColorCode(type) or (alpha shl 24)
                         }
-                        16 -> obfuscated = true
-                        17 -> bold = true
-                        18 -> strikeThrough = true
-                        19 -> underline = true
-                        20 -> italic = true
-                        21 -> {
-                            hexColor = colorHex
-                            if (hexColor and -67108864 == 0)
-                                hexColor = hexColor or -16777216
-
-                            bold = false
-                            italic = false
-                            obfuscated = false
-                            underline = false
-                            strikeThrough = false
-                        }
+                        bold = false
+                        italic = false
+                        currentFont = defaultFont
+                        obfuscated = false
+                        underline = false
+                        strikeThrough = false
                     }
-
-                    currentFont = if (bold && italic)
-                        boldItalicFont ?: defaultFont
-                    else if (bold)
-                        boldFont ?: defaultFont
-                    else if (italic)
-                        italicFont ?: defaultFont
-                    else
-                        defaultFont
-
-                    currentFont.drawString(
-                        if (obfuscated) StringUtils.randomObfuscatedText(words) else words,
-                        width,
-                        0.0,
-                        hexColor
-                    )
-
-                    if (strikeThrough) {
-                        drawLine(
-                            width + 1,
-                            currentFont.height / 2 - 1.0,
-                            (width + currentFont.getStringWidth(words)) + 1,
-                            currentFont.height / 2 - 1.0,
-                            FONT_HEIGHT / 16F,
-                        )
+                    16 -> obfuscated = true
+                    17 -> {
+                        bold = true
+                        currentFont = if (italic)
+                            boldItalicFont ?: defaultFont
+                        else
+                            boldFont ?: defaultFont
                     }
-
-                    if (underline) {
-                        drawLine(
-                            width + 1,
-                            currentFont.height - 1.0,
-                            (width + currentFont.getStringWidth(words)) + 1,
-                            currentFont.height - 1.0,
-                            FONT_HEIGHT / 16F,
-                        )
+                    18 -> strikeThrough = true
+                    19 -> underline = true
+                    20 -> {
+                        italic = true
+                        currentFont = if (bold)
+                            boldItalicFont ?: defaultFont
+                        else
+                            italicFont ?: defaultFont
                     }
+                    21 -> {
+                        hexColor = color
+                        if (hexColor and -67108864 == 0)
+                            hexColor = hexColor or -16777216
 
-                    width += currentFont.getStringWidth(words)
+                        bold = false
+                        italic = false
+                        currentFont = defaultFont
+                        obfuscated = false
+                        underline = false
+                        strikeThrough = false
+                    }
                 }
+                i++
+            } else {
+                if (obfuscated)
+                    char = StringUtils.randomObfuscatedChar(char)
+                val singleWidth = currentFont.drawChar(char, x + width, y.toDouble(), hexColor)
+                if (strikeThrough) {
+                    drawLine(
+                        x + width,
+                        y + currentFont.fontHeight / 2 - 1.0,
+                        x + width + singleWidth,
+                        y + currentFont.fontHeight / 2 - 1.0,
+                        FONT_HEIGHT / 16F,
+                    )
+                }
+
+                if (underline) {
+                    drawLine(
+                        x + width,
+                        y + currentFont.fontHeight - 1.0,
+                        x + width + singleWidth,
+                        y + currentFont.fontHeight - 1.0,
+                        FONT_HEIGHT / 16F,
+                    )
+                }
+                width += singleWidth
             }
-        } else
-            defaultFont.drawString(rawText, 0.0, 0.0, hexColor)
-
+            i++
+        }
         GlStateManager.disableBlend()
-        GlStateManager.translate(-(x - 1.5), -(y + 0.5), 0.0)
-        GlStateManager.color(1f, 1f, 1f, 1f)
+        GlStateManager.color(1F, 1F, 1F, 1F)
 
-        return (x + getStringWidth(rawText)).toInt()
+        return (x + width).toInt()
     }
 
     //override fun getColorCode(charCode: Char) = mc.fontRendererObj.getColorCode(charCode)
     //ColorUtils.hexColors[getColorIndex(charCode)] ColorUtils.hexColors[colorIndex] or (alpha shl 24)
 
     override fun getStringWidth(text: String): Int {
+        // Color code states
+        var obfuscated = false
+        var bold = false
+        var italic = false
+        var width = 0.0
+        var currentFont: RedFontRenderer = defaultFont
 
-        return if (text.contains("§")) {
-            val parts = text.split("§")
-
-            var currentFont = defaultFont
-            var width = 0
-            var bold = false
-            var italic = false
-
-            parts.forEachIndexed { index, part ->
-                if (part.isEmpty())
-                    return@forEachIndexed
-
-                if (index == 0) {
-                    width += currentFont.getStringWidth(part)
-                } else {
-                    val words = part.substring(1)
-                    val type = part[0]
-                    val colorIndex = getColorIndex(type)
-                    when {
-                        colorIndex < 16 -> {
-                            bold = false
-                            italic = false
-                        }
-                        colorIndex == 17 -> bold = true
-                        colorIndex == 20 -> italic = true
-                        colorIndex == 21 -> {
-                            bold = false
-                            italic = false
-                        }
+        var i = 0
+        while (i < text.length) {
+            var char = text[i]
+            if (char.code == 167 && i + 1 < text.length) {
+                val type = text[i + 1]
+                when (getColorIndex(type)) {
+                    in 0..15 -> {
+                        bold = false
+                        italic = false
+                        currentFont = defaultFont
+                        obfuscated = false
                     }
-
-                    currentFont = if (bold && italic)
-                        boldItalicFont ?: defaultFont
-                    else if (bold)
-                        boldFont ?: defaultFont
-                    else if (italic)
-                        italicFont ?: defaultFont
-                    else
-                        defaultFont
-
-                    width += currentFont.getStringWidth(words)
+                    16 -> obfuscated = true
+                    17 -> {
+                        bold = true
+                        currentFont = if (italic)
+                            boldItalicFont ?: defaultFont
+                        else
+                            boldFont ?: defaultFont
+                    }
+                    20 -> {
+                        italic = true
+                        currentFont = if (bold)
+                            boldItalicFont ?: defaultFont
+                        else
+                            italicFont ?: defaultFont
+                    }
+                    21 -> {
+                        bold = false
+                        italic = false
+                        currentFont = defaultFont
+                        obfuscated = false
+                    }
                 }
+                i++
+            } else {
+                if (obfuscated)
+                    char = StringUtils.randomObfuscatedChar(char)
+                val singleWidth = currentFont.getCharWidth(char)
+                width += singleWidth
             }
+            i++
+        }
 
-            width
-        } else
-            defaultFont.getStringWidth(text)
+        return width.toInt()
     }
 
     private fun drawLine(x: Double, y: Double, x1: Double, y1: Double, width: Float) {
@@ -252,7 +235,12 @@ class GameFontRenderer(font: Font, companionStyle: Boolean = false) : FontRender
 
     override fun getCharWidth(character: Char) = getStringWidth(character.toString())
 
-    override fun onResourceManagerReload(resourceManager: IResourceManager) {}
+    override fun onResourceManagerReload(resourceManager: IResourceManager) {
+        this.defaultFont.refresh()
+        this.boldFont?.refresh()
+        this.italicFont?.refresh()
+        this.boldItalicFont?.refresh()
+    }
 
     override fun bindTexture(resourceLocation: ResourceLocation?) {}
 
