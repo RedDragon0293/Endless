@@ -4,6 +4,8 @@ import cn.asone.endless.utils.StringUtils
 import cn.asone.endless.utils.mc
 import net.minecraft.client.gui.FontRenderer
 import net.minecraft.client.renderer.GlStateManager
+import net.minecraft.client.renderer.Tessellator
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats
 import net.minecraft.client.resources.IResourceManager
 import net.minecraft.util.ResourceLocation
 import org.lwjgl.opengl.GL11
@@ -133,15 +135,30 @@ class GameFontRenderer(font: Font, companionStyle: Boolean = false) : FontRender
                 }
                 i++
             } else {
-                if (obfuscated)
-                    char = StringUtils.randomObfuscatedChar(char)
+                if (obfuscated) {
+                    val currentWidth = getCharWidth(char)
+                    var randomChar: Char
+                    val index = StringUtils.randomCharacters.indexOf(char)
+                    var total = 0
+                    if (index != -1) {
+                        do {
+                            randomChar = StringUtils.randomCharacters.random()
+                            total++
+                        } while (currentWidth != getCharWidth(randomChar)
+                            /**
+                             * 若多次尝试后仍无法匹配则放弃混淆防止死循环
+                             */
+                            && total <= StringUtils.randomCharacters.length * 2
+                        )
+                        char = randomChar
+                    }
+                }
                 val singleWidth = currentFont.drawChar(char, x + width, y.toDouble(), hexColor)
                 if (strikeThrough) {
                     drawLine(
                         x + width,
-                        y + currentFont.fontHeight / 2 - 1.0,
-                        x + width + singleWidth,
-                        y + currentFont.fontHeight / 2 - 1.0,
+                        y + currentFont.fontHeight / 2 - 2.0,
+                        singleWidth.toFloat(),
                         FONT_HEIGHT / 16F,
                     )
                 }
@@ -149,9 +166,8 @@ class GameFontRenderer(font: Font, companionStyle: Boolean = false) : FontRender
                 if (underline) {
                     drawLine(
                         x + width,
-                        y + currentFont.fontHeight - 1.0,
-                        x + width + singleWidth,
-                        y + currentFont.fontHeight - 1.0,
+                        y + currentFont.fontHeight - 2.0,
+                        singleWidth.toFloat(),
                         FONT_HEIGHT / 16F,
                     )
                 }
@@ -212,8 +228,17 @@ class GameFontRenderer(font: Font, companionStyle: Boolean = false) : FontRender
                 }
                 i++
             } else {
-                if (obfuscated)
-                    char = StringUtils.randomObfuscatedChar(char)
+                if (obfuscated) {
+                    val currentWidth = super.getCharWidth(char)
+                    var randomChar: Char
+                    val index = StringUtils.randomCharacters.indexOf(char)
+                    if (index != -1) {
+                        do {
+                            randomChar = StringUtils.randomCharacters.random()
+                        } while (currentWidth != super.getCharWidth(randomChar))
+                        char = randomChar
+                    }
+                }
                 val singleWidth = currentFont.getCharWidth(char)
                 width += singleWidth
             }
@@ -223,14 +248,24 @@ class GameFontRenderer(font: Font, companionStyle: Boolean = false) : FontRender
         return width.toInt()
     }
 
-    private fun drawLine(x: Double, y: Double, x1: Double, y1: Double, width: Float) {
+    private fun drawLine(x: Double, y: Double, width: Float, height: Float) {
+        val tessellator = Tessellator.getInstance()
+        val worldrenderer = tessellator.worldRenderer
         GlStateManager.disableTexture2D()
+        worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION)
+        worldrenderer.pos(x, y, 0.0).endVertex()
+        worldrenderer.pos(x + width, y, 0.0).endVertex()
+        worldrenderer.pos(x + width, y - height, 0.0).endVertex()
+        worldrenderer.pos(x, y - height, 0.0).endVertex()
+        tessellator.draw()
+        GlStateManager.enableTexture2D()
+        /*GlStateManager.disableTexture2D()
         GL11.glLineWidth(width)
         GL11.glBegin(GL11.GL_LINES)
         GL11.glVertex2d(x, y)
         GL11.glVertex2d(x1, y1)
         GL11.glEnd()
-        GlStateManager.enableTexture2D()
+        GlStateManager.enableTexture2D()*/
     }
 
     override fun getCharWidth(character: Char) = getStringWidth(character.toString())

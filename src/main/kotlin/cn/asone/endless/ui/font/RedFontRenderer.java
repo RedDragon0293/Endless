@@ -61,9 +61,9 @@ public class RedFontRenderer {
         RenderUtils.quickGLColor(color);
         int width = 0;
         for (char ch : text.toCharArray()) {
-            int singleWidth = drawCharImage(ch);
+            int singleWidth = drawCharImage(ch, width);
             width += singleWidth;
-            GL11.glTranslated(singleWidth, 0D, 0D);
+            //GL11.glTranslated(singleWidth, 0D, 0D);
         }
         GL11.glPopMatrix();
         return (int) (width * scale);
@@ -74,7 +74,7 @@ public class RedFontRenderer {
         GL11.glTranslated(x, y - 1, 0D);
         GL11.glScalef(scale, scale, scale);
         RenderUtils.quickGLColor(color);
-        int width = drawCharImage(charAt);
+        int width = drawCharImage(charAt, 0);
         GL11.glPopMatrix();
         return (int) (width * scale);
     }
@@ -93,13 +93,13 @@ public class RedFontRenderer {
     /**
      * 将字体图片渲染到屏幕上
      */
-    private int drawCharImage(int charAt) {
+    private int drawCharImage(int charAt, int offset) {
         FontChar fontChar = getFontChar(charAt);
         GlStateManager.bindTexture(fontChar.getTex().getGlTextureId());
         Gui.drawModalRectWithCustomSizedTexture(
+                offset,
                 0,
-                0,
-                0,
+                offset,
                 0F,
                 fontChar.getTex().width,
                 fontImageHeight,
@@ -146,6 +146,8 @@ public class RedFontRenderer {
             }
         }
 
+        System.out.println("Trying to get original image for char " + (char) charAt + " , code " + charAt);
+
         try {
             /*
              * 从原版FontRenderer获取字符图片
@@ -158,7 +160,7 @@ public class RedFontRenderer {
              * 由于不是所有字符都会占满16×16的空间, 图片实际有效部分周围会有空白.
              * 此值表示当前字符对于标准16×16起始的x坐标至此字符图片有效部分的起始x坐标的差.
              */
-            int xOffset = Minecraft.getMinecraft().fonts.glyphWidth[charAt] >>> 4;
+            int xOffset = Minecraft.getMinecraft().fonts.glyphWidth[charAt] >>> 4 & 0xF;
 
             int k = Minecraft.getMinecraft().fonts.glyphWidth[charAt] & 15;
             int f1 = k + 1;
@@ -186,11 +188,11 @@ public class RedFontRenderer {
             BufferedImage image = new BufferedImage(width + 2, height, BufferedImage.TYPE_INT_ARGB);
             for (int m = 0; m < width; m++) {
                 for (int n = 0; n < 15; n++) {
-                    image.setRGB(m, startY + n, globalImage.getRGB(m + xPos, n + yPos));
+                    image.setRGB(m + 1, startY + n, globalImage.getRGB(m + xPos, n + yPos));
                 }
             }
             return image;
-        } catch (IOException e) {
+        } catch (IOException | IllegalArgumentException e) {
             e.printStackTrace();
             return charImage;
         }

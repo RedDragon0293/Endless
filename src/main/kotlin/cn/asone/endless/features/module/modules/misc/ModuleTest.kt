@@ -6,6 +6,7 @@ import cn.asone.endless.features.module.AbstractModule
 import cn.asone.endless.features.module.ModuleCategory
 import cn.asone.endless.ui.font.Fonts
 import cn.asone.endless.utils.RenderUtils
+import com.mojang.realmsclient.gui.ChatFormatting
 import net.minecraft.client.renderer.GlStateManager
 import java.awt.Color
 
@@ -28,10 +29,15 @@ object ModuleTest : AbstractModule(
             Color.black.rgb
         )
         GlStateManager.enableTexture2D()
-        val var0 = Fonts.mcRegular18.drawString("AAAAAAAAAAAAAAAAAAAAAAAAA", 10F, 10F, Color.white.rgb)
+        val var0 = Fonts.mcRegular18.drawString(
+            "${ChatFormatting.UNDERLINE}AAAAAAAAAAAAAAAAAAAAAAAAA",
+            10F,
+            10F,
+            Color.white.rgb
+        )
         RenderUtils.pre2D()
         RenderUtils.drawRect(
-            var0.toFloat(), 10F, var0 + 1F, 20F, Color(100, 100, 100, 100).rgb
+            var0.toFloat(), 10F, 1F, 10F, Color(100, 100, 100, 100).rgb
         )
         RenderUtils.post2D()
     }
