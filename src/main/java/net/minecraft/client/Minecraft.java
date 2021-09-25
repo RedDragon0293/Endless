@@ -276,7 +276,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
      * Keeps track of how long the debug crash keycombo (F3+C) has been pressed for, in order to crash after 10 seconds.
      */
     private long debugCrashKeyPressTime = -1L;
-    private IReloadableResourceManager mcResourceManager;
+    private IReloadableResourceManager resourceManager;
     private final IMetadataSerializer metadataSerializer_ = new IMetadataSerializer();
     private final List<IResourcePack> defaultResourcePacks = Lists.newArrayList();
     public final DefaultResourcePack mcDefaultResourcePack;
@@ -444,18 +444,18 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
         this.framebufferMc.setFramebufferColor(0.0F, 0.0F, 0.0F, 0.0F);
         this.registerMetadataSerializers();
         this.mcResourcePackRepository = new ResourcePackRepository(this.fileResourcepacks, new File(this.mcDataDir, "server-resource-packs"), this.mcDefaultResourcePack, this.metadataSerializer_, this.gameSettings);
-        this.mcResourceManager = new SimpleReloadableResourceManager(this.metadataSerializer_);
+        this.resourceManager = new SimpleReloadableResourceManager(this.metadataSerializer_);
         this.mcLanguageManager = new LanguageManager(this.metadataSerializer_, this.gameSettings.language);
-        this.mcResourceManager.registerReloadListener(this.mcLanguageManager);
+        this.resourceManager.registerReloadListener(this.mcLanguageManager);
         this.refreshResources();
-        this.renderEngine = new TextureManager(this.mcResourceManager);
-        this.mcResourceManager.registerReloadListener(this.renderEngine);
+        this.renderEngine = new TextureManager(this.resourceManager);
+        this.resourceManager.registerReloadListener(this.renderEngine);
         this.drawSplashScreen(this.renderEngine);
         this.initStream();
         this.skinManager = new SkinManager(this.renderEngine, new File(this.fileAssets, "skins"), this.sessionService);
         this.saveLoader = new AnvilSaveConverter(new File(this.mcDataDir, "saves"));
-        this.mcSoundHandler = new SoundHandler(this.mcResourceManager, this.gameSettings);
-        this.mcResourceManager.registerReloadListener(this.mcSoundHandler);
+        this.mcSoundHandler = new SoundHandler(this.resourceManager, this.gameSettings);
+        this.resourceManager.registerReloadListener(this.mcSoundHandler);
         this.mcMusicTicker = new MusicTicker(this);
         this.fonts = new FontRenderer(this.gameSettings, new ResourceLocation("textures/font/ascii.png"), this.renderEngine, true);
         if (this.gameSettings.language != null) {
@@ -464,10 +464,10 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
         }
 
         this.standardGalacticFontRenderer = new FontRenderer(this.gameSettings, new ResourceLocation("textures/font/ascii_sga.png"), this.renderEngine, false);
-        this.mcResourceManager.registerReloadListener(this.fonts);
-        this.mcResourceManager.registerReloadListener(this.standardGalacticFontRenderer);
-        this.mcResourceManager.registerReloadListener(new GrassColorReloadListener());
-        this.mcResourceManager.registerReloadListener(new FoliageColorReloadListener());
+        this.resourceManager.registerReloadListener(this.fonts);
+        this.resourceManager.registerReloadListener(this.standardGalacticFontRenderer);
+        this.resourceManager.registerReloadListener(new GrassColorReloadListener());
+        this.resourceManager.registerReloadListener(new FoliageColorReloadListener());
         AchievementList.openInventory.setStatStringFormatter(p_74535_1_ -> {
             try {
                 return String.format(p_74535_1_, GameSettings.getKeyDisplayString(Minecraft.this.gameSettings.keyBindInventory.getKeyCode()));
@@ -495,22 +495,23 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
         this.renderEngine.bindTexture(TextureMap.locationBlocksTexture);
         this.textureMapBlocks.setBlurMipmapDirect(false, this.gameSettings.mipmapLevels > 0);
         this.modelManager = new ModelManager(this.textureMapBlocks);
-        this.mcResourceManager.registerReloadListener(this.modelManager);
+        this.resourceManager.registerReloadListener(this.modelManager);
         this.renderItem = new RenderItem(this.renderEngine, this.modelManager);
         this.renderManager = new RenderManager(this.renderEngine, this.renderItem);
         this.itemRenderer = new ItemRenderer(this);
-        this.mcResourceManager.registerReloadListener(this.renderItem);
-        this.entityRenderer = new EntityRenderer(this, this.mcResourceManager);
-        this.mcResourceManager.registerReloadListener(this.entityRenderer);
+        this.resourceManager.registerReloadListener(this.renderItem);
+        this.entityRenderer = new EntityRenderer(this, this.resourceManager);
+        this.resourceManager.registerReloadListener(this.entityRenderer);
         this.blockRenderDispatcher = new BlockRendererDispatcher(this.modelManager.getBlockModelShapes(), this.gameSettings);
-        this.mcResourceManager.registerReloadListener(this.blockRenderDispatcher);
+        this.resourceManager.registerReloadListener(this.blockRenderDispatcher);
         this.renderGlobal = new RenderGlobal(this);
-        this.mcResourceManager.registerReloadListener(this.renderGlobal);
+        this.resourceManager.registerReloadListener(this.renderGlobal);
         this.guiAchievement = new GuiAchievement(this);
         GlStateManager.viewport(0, 0, this.displayWidth, this.displayHeight);
         this.effectRenderer = new EffectRenderer(this.theWorld, this.renderEngine);
         this.checkGLError("Post startup");
         Endless.INSTANCE.startClient();
+        this.resourceManager.registerReloadListener(Fonts.INSTANCE);
         if (Fonts.forceCustomFont.get())
             fontRendererObj = Fonts.mcRegular18;
         else
@@ -693,13 +694,13 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
         }
 
         try {
-            this.mcResourceManager.reloadResources(list);
+            this.resourceManager.reloadResources(list);
         } catch (RuntimeException runtimeexception) {
             logger.info("Caught error stitching, removing all assigned resourcepacks", runtimeexception);
             list.clear();
             list.addAll(this.defaultResourcePacks);
             this.mcResourcePackRepository.setRepositories(Collections.emptyList());
-            this.mcResourceManager.reloadResources(list);
+            this.resourceManager.reloadResources(list);
             this.gameSettings.resourcePacks.clear();
             this.gameSettings.field_183018_l.clear();
             this.gameSettings.saveOptions();
@@ -2465,7 +2466,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
     }
 
     public IResourceManager getResourceManager() {
-        return this.mcResourceManager;
+        return this.resourceManager;
     }
 
     public ResourcePackRepository getResourcePackRepository() {

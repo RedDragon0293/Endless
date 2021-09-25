@@ -58,7 +58,8 @@ public class GuiLanguage extends GuiScreen {
     public void initGui() {
         this.buttonList.add(this.forceUnicodeFontBtn = new GuiOptionButton(100, this.width / 2 - 155, this.height - 38, GameSettings.Options.FORCE_UNICODE_FONT, this.gameSettings.getKeyBinding(GameSettings.Options.FORCE_UNICODE_FONT)));
         this.buttonList.add(this.confirmSettingsBtn = new GuiOptionButton(6, this.width / 2 - 155 + 160, this.height - 38, I18n.format("gui.done")));
-        this.buttonList.add(this.forceCustomFontButton = new GuiButton(2333, 5, 8, 150, 20, "ForceCustomFont:" + I18n.format(Fonts.forceCustomFont.get() ? "options.on" : "options.off")));
+        this.buttonList.add(this.forceCustomFontButton = new GuiButton(2333, 5, 8, 150, 20, "ForceCustomFont: " + I18n.format(Fonts.forceCustomFont.get() ? "options.on" : "options.off")));
+        this.buttonList.add(new GuiButton(666, 5 + 150 + 5, 8, 150, 20, "ClearCache"));
         forceUnicodeFontBtn.enabled = !Fonts.forceCustomFont.get();
         this.list = new GuiLanguage.List(this.mc);
         this.list.registerScrollButtons(7, 8);
@@ -96,9 +97,12 @@ public class GuiLanguage extends GuiScreen {
                     }
 
                     break;
+                case 666:
+                    Fonts.INSTANCE.onResourceManagerReload(null);
+                    break;
                 case 2333:
                     Fonts.forceCustomFont.set(!Fonts.forceCustomFont.get());
-                    forceCustomFontButton.displayString = "ForceCustomFont:" + I18n.format(Fonts.forceCustomFont.get() ? "options.on" : "options.off");
+                    forceCustomFontButton.displayString = "ForceCustomFont: " + I18n.format(Fonts.forceCustomFont.get() ? "options.on" : "options.off");
                     forceUnicodeFontBtn.enabled = !Fonts.forceCustomFont.get();
                     break;
                 default:

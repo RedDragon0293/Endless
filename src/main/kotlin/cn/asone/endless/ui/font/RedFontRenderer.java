@@ -1,20 +1,23 @@
 package cn.asone.endless.ui.font;
 
 import cn.asone.endless.utils.RenderUtils;
+import cn.asone.endless.utils.StringUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.util.ResourceLocation;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.Arrays;
 
 public class RedFontRenderer {
     public final Font font;
+    private static final Logger logger = LogManager.getLogger("RedFontRenderer");
     /**
      * 储存字符图片及相应信息的数组. <p>
      * 数组的大小为 65535, char所储存的字符对应 ascii 码最大值也为 65535. <p>
@@ -71,7 +74,7 @@ public class RedFontRenderer {
 
     public int drawChar(char charAt, double x, double y, int color) {
         GL11.glPushMatrix();
-        GL11.glTranslated(x, y - 1, 0D);
+        GL11.glTranslated(x, y - 1.5, 0D);
         GL11.glScalef(scale, scale, scale);
         RenderUtils.quickGLColor(color);
         int width = drawCharImage(charAt, 0);
@@ -136,63 +139,88 @@ public class RedFontRenderer {
         //空格不需要转换
         if (charAt == 32)
             return charImage;
-        /*
-         * 判断字体图片是否为空白图片
-         */
-        for (int m = 0; m < charImage.getWidth(); m++) {
-            for (int n = 0; n < charImage.getHeight(); n++) {
-                if (charImage.getRGB(m, n) != 0)
-                    return charImage;
+        if (font.canDisplay(charAt))
+            /*
+             * 判断字体图片是否为空白图片
+             */
+            for (int m = 0; m < charImage.getWidth(); m++) {
+                for (int n = 0; n < charImage.getHeight(); n++) {
+                    if (charImage.getRGB(m, n) != 0)
+                        return charImage;
+                }
             }
-        }
 
-        System.out.println("Trying to get original image for char " + (char) charAt + " , code " + charAt);
+        logger.info("Trying to get original image for char " + (char) charAt + " , code " + charAt);
 
         try {
             /*
              * 从原版FontRenderer获取字符图片
              */
-            ResourceLocation location = Minecraft.getMinecraft().fonts.getUnicodePageLocation(charAt / 256);
-            BufferedImage globalImage = TextureUtil.readBufferedImage(Minecraft.getMinecraft().getResourceManager().getResource(location).getInputStream());
+            int index = StringUtils.randomCharacters.indexOf(charAt);
+            /*
+             * Unicode style
+             */
+            if (index == -1) {
+                ResourceLocation location = Minecraft.getMinecraft().fonts.getUnicodePageLocation(charAt / 256);
+                BufferedImage globalImage = TextureUtil.readBufferedImage(Minecraft.getMinecraft().getResourceManager().getResource(location).getInputStream());
 
-            /*
-             * 当前字符对应的图片的有效部分的起始x坐标.
-             * 由于不是所有字符都会占满16×16的空间, 图片实际有效部分周围会有空白.
-             * 此值表示当前字符对于标准16×16起始的x坐标至此字符图片有效部分的起始x坐标的差.
-             */
-            int xOffset = Minecraft.getMinecraft().fonts.glyphWidth[charAt] >>> 4 & 0xF;
+                /*
+                 * 当前字符对应的图片的有效部分的起始x坐标.
+                 * 由于不是所有字符都会占满16×16的空间, 图片实际有效部分周围会有空白.
+                 * 此值表示当前字符对于标准16×16起始的x坐标至此字符图片有效部分的起始x坐标的差.
+                 */
+                int xOffset = Minecraft.getMinecraft().fonts.glyphWidth[charAt] >>> 4 & 0xF;
 
-            int k = Minecraft.getMinecraft().fonts.glyphWidth[charAt] & 15;
-            int f1 = k + 1;
-            /*
-             * 图片中所在列
-             */
-            int xPos = charAt % 16 * 16 + xOffset;
-            /*
-             * 图片中所在行
-             */
-            int yPos = (charAt & 0xFF / 16 * 16);
-            /*
-             * 字符对应图片宽度
-             */
-            int width = f1 - xOffset;
-            /*
-             * 字符图片对应高度
-             *
-             * 如果当前自定义字体渲染出的标准图片高度小于16(mc字体单个字符图片的高度),
-             * 则将值设为16以保证能够完整渲染图片并忽略可能的后果(因为当自定义字体图片高度小于16
-             * 时一般实际的渲染效果都不尽人意)
-             */
-            int height = Math.max(fontImageHeight, 16);
-            int startY = (height - 16) / 2;
-            BufferedImage image = new BufferedImage(width + 2, height, BufferedImage.TYPE_INT_ARGB);
-            for (int m = 0; m < width; m++) {
-                for (int n = 0; n < 15; n++) {
-                    image.setRGB(m + 1, startY + n, globalImage.getRGB(m + xPos, n + yPos));
+                int k = Minecraft.getMinecraft().fonts.glyphWidth[charAt] & 15;
+                int f1 = k + 1;
+                /*
+                 * 图片中所在列
+                 */
+                int xPos = charAt % 16 * 16 + xOffset;
+                /*
+                 * 图片中所在行
+                 */
+                int yPos = (charAt & 0xFF / 16 * 16);
+                /*
+                 * 字符对应图片宽度
+                 */
+                int width = f1 - xOffset;
+                /*
+                 * 字符图片对应高度
+                 *
+                 * 如果当前自定义字体渲染出的标准图片高度小于16(mc字体单个字符图片的高度),
+                 * 则将值设为16以保证能够完整渲染图片并忽略可能的后果(因为当自定义字体图片高度小于16
+                 * 时一般实际的渲染效果都不尽人意)
+                 */
+                int height = Math.max(fontImageHeight, 16);
+                int startY = (height - 16) / 2;
+                BufferedImage image = new BufferedImage(width + 2, height, BufferedImage.TYPE_INT_ARGB);
+                for (int m = 0; m < width; m++) {
+                    for (int n = 0; n < 16; n++) {
+                        image.setRGB(m + 1, startY + n, globalImage.getRGB(m + xPos, n + yPos));
+                    }
                 }
+                return image;
+            } else {
+                /*
+                 * 从 ascii.png 获取图片
+                 */
+                int xPos = index % 16 * 8;
+                int yPos = index / 16 * 8;
+                //float width = Minecraft.getMinecraft().fonts.charWidthFloat[index];
+                ResourceLocation location = Minecraft.getMinecraft().fonts.locationFontTexture;
+                BufferedImage globalImage = TextureUtil.readBufferedImage(Minecraft.getMinecraft().getResourceManager().getResource(location).getInputStream());
+                int height = Math.max(fontImageHeight, 16);
+                int startY = (height - 16) / 2;
+                BufferedImage image = new BufferedImage(16, height, BufferedImage.TYPE_INT_ARGB);
+                for (int m = 0; m < 16; m++) {
+                    for (int n = 0; n < 16; n++) {
+                        image.setRGB(m, startY + n, globalImage.getRGB(m / 2 + xPos, n / 2 + yPos));
+                    }
+                }
+                return image;
             }
-            return image;
-        } catch (IOException | IllegalArgumentException e) {
+        } catch (IOException | IllegalArgumentException | NullPointerException e) {
             e.printStackTrace();
             return charImage;
         }
@@ -206,6 +234,9 @@ public class RedFontRenderer {
     }
 
     public void refresh() {
-        Arrays.fill(chars, null);
+        for (int i = 0; i < 32; i++)
+            chars[i] = null;
+        for (int i = 127; i < 65535; i++)
+            chars[i] = null;
     }
 }

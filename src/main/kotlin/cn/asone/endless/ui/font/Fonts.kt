@@ -7,12 +7,14 @@ import cn.asone.endless.utils.mc
 import cn.asone.endless.value.AbstractValue
 import cn.asone.endless.value.BoolValue
 import cn.asone.endless.value.ValueRegister
+import net.minecraft.client.resources.IResourceManager
+import net.minecraft.client.resources.IResourceManagerReloadListener
 import java.awt.Font
 import java.io.File
 import java.io.FileInputStream
 import java.util.*
 
-object Fonts : ValueRegister {
+object Fonts : ValueRegister, IResourceManagerReloadListener {
     private val fontsDir: File = File(ConfigManager.rootDir, "fonts").apply {
         if (!exists())
             if (!mkdir())
@@ -73,6 +75,7 @@ object Fonts : ValueRegister {
         condensedLight16 = GameFontRenderer(getAssetsFont("HarmonyOS_Sans_Condensed_Light.ttf", 16))
         condensedLight18 = GameFontRenderer(getAssetsFont("HarmonyOS_Sans_Condensed_Light.ttf", 18))
         mcRegular18 = GameFontRenderer(getAssetsFont("HarmonyOS_Sans_Regular.ttf", 18), true)
+        //mcRegular18 = GameFontRenderer(getFont("Roboto-Regular.ttf", 18), true)
         regular20 = GameFontRenderer(getAssetsFont("HarmonyOS_Sans_Regular.ttf", 20))
         medium22 = GameFontRenderer(getAssetsFont("HarmonyOS_Sans_Medium.ttf", 22))
         light24 = GameFontRenderer(getAssetsFont("HarmonyOS_Sans_Light.ttf", 24))
@@ -121,6 +124,20 @@ object Fonts : ValueRegister {
             e.printStackTrace()
             Font("default", Font.PLAIN, size)
         }
+    }
+
+    override fun onResourceManagerReload(resourceManager: IResourceManager?) {
+        condensedLight16.refresh()
+        condensedLight18.refresh()
+        mcRegular18.refresh()
+        regular20.refresh()
+        medium22.refresh()
+        light24.refresh()
+        regular24.refresh()
+        regular26.refresh()
+        light30.refresh()
+        regular38.refresh()
+        medium44.refresh()
     }
 
     override val values: ArrayList<AbstractValue<*>> = arrayListOf(

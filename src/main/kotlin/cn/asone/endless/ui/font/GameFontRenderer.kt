@@ -48,7 +48,7 @@ class GameFontRenderer(font: Font, companionStyle: Boolean = false) : FontRender
 
         if (shadow) {
             newColor = (newColor and 16579836) /*FC FC FC*/ shr 2 or newColor and -16777216 /*FF 00 00 00*/
-            drawTextInternal(newText, x + 1F, y + 1F, newColor, true)
+            drawTextInternal(newText, x + 0.5F, y + 0.5F, newColor, true)
         }
         newColor = color
 
@@ -268,14 +268,16 @@ class GameFontRenderer(font: Font, companionStyle: Boolean = false) : FontRender
         GlStateManager.enableTexture2D()*/
     }
 
-    override fun getCharWidth(character: Char) = getStringWidth(character.toString())
-
-    override fun onResourceManagerReload(resourceManager: IResourceManager) {
+    fun refresh() {
         this.defaultFont.refresh()
         this.boldFont?.refresh()
         this.italicFont?.refresh()
         this.boldItalicFont?.refresh()
     }
+
+    override fun getCharWidth(character: Char) = getStringWidth(character.toString())
+
+    override fun onResourceManagerReload(resourceManager: IResourceManager) {}
 
     override fun bindTexture(resourceLocation: ResourceLocation?) {}
 
