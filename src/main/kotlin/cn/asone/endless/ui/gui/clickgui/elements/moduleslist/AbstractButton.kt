@@ -4,8 +4,8 @@ import cn.asone.endless.ui.font.Fonts
 import cn.asone.endless.ui.gui.clickgui.GuiClickGUI
 import cn.asone.endless.ui.gui.clickgui.elements.moduleinfo.AbstractValueButton
 import cn.asone.endless.utils.RenderUtils
-import cn.asone.endless.utils.mc
-import cn.asone.endless.utils.playSound
+import cn.asone.endless.utils.extensions.mc
+import cn.asone.endless.utils.extensions.playSound
 import java.awt.Color
 
 /**

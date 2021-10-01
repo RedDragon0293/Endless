@@ -1,7 +1,7 @@
 package cn.asone.endless.ui.font
 
 import cn.asone.endless.utils.StringUtils
-import cn.asone.endless.utils.mc
+import cn.asone.endless.utils.extensions.mc
 import net.minecraft.client.gui.FontRenderer
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.client.renderer.Tessellator

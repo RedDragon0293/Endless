@@ -2,7 +2,7 @@ package cn.asone.endless.features.module
 
 import cn.asone.endless.event.EventHook
 import cn.asone.endless.event.ListenableClass
-import cn.asone.endless.utils.playSound
+import cn.asone.endless.utils.extensions.playSound
 import cn.asone.endless.value.AbstractValue
 import cn.asone.endless.value.ValueRegister
 import org.lwjgl.input.Keyboard

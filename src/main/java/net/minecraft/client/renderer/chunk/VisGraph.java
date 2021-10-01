@@ -1,19 +1,15 @@
 package net.minecraft.client.renderer.chunk;
 
-import java.util.ArrayDeque;
-import java.util.BitSet;
-import java.util.EnumSet;
-import java.util.Queue;
-import java.util.Set;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IntegerCache;
 
-public class VisGraph
-{
-    private static final int field_178616_a = (int)Math.pow(16.0D, 0.0D);
-    private static final int field_178614_b = (int)Math.pow(16.0D, 1.0D);
-    private static final int field_178615_c = (int)Math.pow(16.0D, 2.0D);
+import java.util.*;
+
+public class VisGraph {
+    private static final int field_178616_a = (int) Math.pow(16.0D, 0.0D);
+    private static final int field_178614_b = (int) Math.pow(16.0D, 1.0D);
+    private static final int field_178615_c = (int) Math.pow(16.0D, 2.0D);
     private final BitSet field_178612_d = new BitSet(4096);
     private static final int[] field_178613_e = new int[1352];
     private int field_178611_f = 4096;
@@ -69,7 +65,7 @@ public class VisGraph
     {
         Set<EnumFacing> set = EnumSet.<EnumFacing>noneOf(EnumFacing.class);
         Queue<Integer> queue = new ArrayDeque(384);
-        queue.add(IntegerCache.func_181756_a(p_178604_1_));
+        queue.add(IntegerCache.getInteger(p_178604_1_));
         this.field_178612_d.set(p_178604_1_, true);
 
         while (!((Queue)queue).isEmpty())
@@ -84,7 +80,7 @@ public class VisGraph
                 if (j >= 0 && !this.field_178612_d.get(j))
                 {
                     this.field_178612_d.set(j, true);
-                    queue.add(IntegerCache.func_181756_a(j));
+                    queue.add(IntegerCache.getInteger(j));
                 }
             }
         }

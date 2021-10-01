@@ -2,15 +2,15 @@ package net.minecraft.potion;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
 import net.minecraft.src.Config;
 import net.minecraft.util.IntegerCache;
 import net.optifine.CustomColors;
 
-public class PotionHelper
-{
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+
+public class PotionHelper {
     public static final String field_77924_a = null;
     public static final String sugarEffect = "-0+1-2-3&4-4+13";
     public static final String ghastTearEffect = "+0-1-2-3&4-4+13";
@@ -138,7 +138,7 @@ public class PotionHelper
      */
     public static int getLiquidColor(int dataValue, boolean bypassCache)
     {
-        Integer integer = IntegerCache.func_181756_a(dataValue);
+        Integer integer = IntegerCache.getInteger(dataValue);
 
         if (!bypassCache)
         {

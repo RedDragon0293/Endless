@@ -7,8 +7,6 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.util.ResourceLocation;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
@@ -17,7 +15,7 @@ import java.io.IOException;
 
 public class RedFontRenderer {
     public final Font font;
-    private static final Logger logger = LogManager.getLogger("RedFontRenderer");
+    //private static final Logger logger = LogManager.getLogger("RedFontRenderer");
     /**
      * 储存字符图片及相应信息的数组. <p>
      * 数组的大小为 65535, char所储存的字符对应 ascii 码最大值也为 65535. <p>
@@ -150,7 +148,7 @@ public class RedFontRenderer {
                 }
             }
 
-        logger.info("Trying to get original image for char " + (char) charAt + " , code " + charAt);
+        //logger.info("Trying to get original image for char " + (char) charAt + " , code " + charAt);
 
         try {
             /*

@@ -1,8 +1,8 @@
 package cn.asone.endless.features.command
 
 import cn.asone.endless.utils.ClientUtils
-import cn.asone.endless.utils.mc
-import cn.asone.endless.utils.playSound
+import cn.asone.endless.utils.extensions.mc
+import cn.asone.endless.utils.extensions.playSound
 import java.util.*
 
 abstract class AbstractCommand(val name: String, vararg val alias: String) {

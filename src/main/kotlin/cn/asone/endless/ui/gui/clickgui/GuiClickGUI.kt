@@ -11,7 +11,7 @@ import cn.asone.endless.ui.gui.clickgui.elements.moduleslist.AbstractButton
 import cn.asone.endless.ui.gui.clickgui.elements.moduleslist.DisabledButton
 import cn.asone.endless.ui.gui.clickgui.elements.moduleslist.ModuleButton
 import cn.asone.endless.utils.RenderUtils
-import cn.asone.endless.utils.playSound
+import cn.asone.endless.utils.extensions.playSound
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiButton
 import net.minecraft.client.gui.GuiScreen

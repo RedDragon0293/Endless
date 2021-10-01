@@ -1,8 +1,8 @@
 package cn.asone.endless.ui.gui.clickgui.elements.moduleinfo
 
 import cn.asone.endless.utils.RenderUtils
-import cn.asone.endless.utils.mc
-import cn.asone.endless.utils.playSound
+import cn.asone.endless.utils.extensions.mc
+import cn.asone.endless.utils.extensions.playSound
 import cn.asone.endless.value.BoolValue
 import org.lwjgl.opengl.GL11
 import java.awt.Color

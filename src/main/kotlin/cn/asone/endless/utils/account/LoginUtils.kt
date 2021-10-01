@@ -2,7 +2,7 @@ package cn.asone.endless.utils.account
 
 import cn.asone.endless.ui.gui.accounts.GuiAccounts
 import cn.asone.endless.utils.ClientUtils
-import cn.asone.endless.utils.mc
+import cn.asone.endless.utils.extensions.mc
 import com.google.gson.JsonParser
 import com.mojang.authlib.Agent
 import com.mojang.authlib.exceptions.AuthenticationException

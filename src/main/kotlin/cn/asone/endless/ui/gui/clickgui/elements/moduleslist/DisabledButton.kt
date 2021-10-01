@@ -2,8 +2,8 @@ package cn.asone.endless.ui.gui.clickgui.elements.moduleslist
 
 import cn.asone.endless.ui.gui.clickgui.GuiClickGUI
 import cn.asone.endless.utils.RenderUtils
-import cn.asone.endless.utils.mc
-import cn.asone.endless.utils.playSound
+import cn.asone.endless.utils.extensions.mc
+import cn.asone.endless.utils.extensions.playSound
 
 abstract class DisabledButton(name: String) : AbstractButton(name) {
     override fun drawBox(mouseX: Int, mouseY: Int) {

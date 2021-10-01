@@ -1,5 +1,6 @@
 package cn.asone.endless.utils
 
+import cn.asone.endless.utils.extensions.mc
 import net.minecraft.client.gui.Gui
 import net.minecraft.client.gui.ScaledResolution
 import net.minecraft.client.renderer.GlStateManager

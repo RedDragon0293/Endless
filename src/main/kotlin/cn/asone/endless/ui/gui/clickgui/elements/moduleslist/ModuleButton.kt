@@ -3,8 +3,8 @@ package cn.asone.endless.ui.gui.clickgui.elements.moduleslist
 import cn.asone.endless.features.module.AbstractModule
 import cn.asone.endless.ui.gui.clickgui.GuiClickGUI
 import cn.asone.endless.ui.gui.clickgui.elements.moduleinfo.AbstractValueButton
-import cn.asone.endless.utils.mc
-import cn.asone.endless.utils.playSound
+import cn.asone.endless.utils.extensions.mc
+import cn.asone.endless.utils.extensions.playSound
 
 class ModuleButton(val module: AbstractModule) :
     AbstractButton(module.name) {

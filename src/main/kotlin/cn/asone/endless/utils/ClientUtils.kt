@@ -1,6 +1,7 @@
 package cn.asone.endless.utils
 
 import cn.asone.endless.Endless
+import cn.asone.endless.utils.extensions.mc
 import net.minecraft.util.ChatComponentText
 import org.apache.logging.log4j.LogManager
 

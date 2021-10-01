@@ -3,12 +3,16 @@ package cn.asone.endless.ui.font
 import cn.asone.endless.Endless
 import cn.asone.endless.config.ConfigManager
 import cn.asone.endless.utils.ClientUtils
-import cn.asone.endless.utils.mc
+import cn.asone.endless.utils.extensions.mc
+import cn.asone.endless.utils.io.FileUtils
+import cn.asone.endless.utils.io.HttpUtils
+import cn.asone.endless.utils.security.SecurityUtils
 import cn.asone.endless.value.AbstractValue
 import cn.asone.endless.value.BoolValue
 import cn.asone.endless.value.ValueRegister
 import net.minecraft.client.resources.IResourceManager
 import net.minecraft.client.resources.IResourceManagerReloadListener
+import org.apache.commons.codec.digest.DigestUtils
 import java.awt.Font
 import java.io.File
 import java.io.FileInputStream
@@ -69,21 +73,56 @@ object Fonts : ValueRegister, IResourceManagerReloadListener {
     lateinit var medium44: GameFontRenderer
 
     @JvmStatic
+    fun downloadFonts() {
+        runCatching {
+            val zipFile = File(fontsDir, "HarmonyOS_Sans.zip")
+            if (zipFile.exists()) {
+                val digest = DigestUtils.getSha1Digest()
+                digest.update(zipFile.readBytes())
+                val result = SecurityUtils.toHashValue(digest.digest())
+                if (!result.equals("5e078001b9d855872f2d6034a32d8f37e62b7f2f", true)) {
+                    ClientUtils.logger.warn("字体文件已经损坏. 重新下载字体文件.")
+                    HttpUtils.download(
+                        "https://reddragon0293.coding.net/p/endless/d/EndlessCloud/git/raw/main/HarmonyOS_Sans.zip?download=true",
+                        zipFile
+                    )
+                }
+                ClientUtils.logger.info("正在解压字体文件...")
+                FileUtils.extractZip(zipFile)
+            } else {
+                ClientUtils.logger.info("正在下载字体文件...")
+                HttpUtils.download(
+                    "https://reddragon0293.coding.net/p/endless/d/EndlessCloud/git/raw/main/HarmonyOS_Sans.zip?download=true",
+                    zipFile
+                )
+                //https://gitee.com/reddragon0293/endless-cloud/raw/master/fonts/HarmonyOS_Sans.zip
+                //https://cloud.liquidbounce.net/LiquidBounce/fonts/Roboto.zip
+                //https://github.com/RedDragon0293/EndlessCloud/raw/main/HarmonyOS_Sans.zip
+                ClientUtils.logger.info("正在解压字体文件...")
+                FileUtils.extractZip(zipFile)
+            }
+        }.onFailure {
+            ClientUtils.logger.error("下载字体文件失败！")
+            it.printStackTrace()
+        }
+    }
+
+    @JvmStatic
     fun loadFonts() {
         ClientUtils.logger.info("正在初始化默认字体...")
         val var0 = System.currentTimeMillis()
-        condensedLight16 = GameFontRenderer(getAssetsFont("HarmonyOS_Sans_Condensed_Light.ttf", 16))
-        condensedLight18 = GameFontRenderer(getAssetsFont("HarmonyOS_Sans_Condensed_Light.ttf", 18))
-        mcRegular18 = GameFontRenderer(getAssetsFont("HarmonyOS_Sans_Regular.ttf", 18), true)
+        condensedLight16 = GameFontRenderer(getFont("HarmonyOS_Sans_Condensed_Light.ttf", 16))
+        condensedLight18 = GameFontRenderer(getFont("HarmonyOS_Sans_Condensed_Light.ttf", 18))
+        mcRegular18 = GameFontRenderer(getFont("HarmonyOS_Sans_Regular.ttf", 18), true)
         //mcRegular18 = GameFontRenderer(getFont("Roboto-Regular.ttf", 18), true)
-        regular20 = GameFontRenderer(getAssetsFont("HarmonyOS_Sans_Regular.ttf", 20))
-        medium22 = GameFontRenderer(getAssetsFont("HarmonyOS_Sans_Medium.ttf", 22))
-        light24 = GameFontRenderer(getAssetsFont("HarmonyOS_Sans_Light.ttf", 24))
-        regular24 = GameFontRenderer(getAssetsFont("HarmonyOS_Sans_Regular.ttf", 24))
-        regular26 = GameFontRenderer(getAssetsFont("HarmonyOS_Sans_Regular.ttf", 26))
-        light30 = GameFontRenderer(getAssetsFont("HarmonyOS_Sans_Light.ttf", 30))
-        regular38 = GameFontRenderer(getAssetsFont("HarmonyOS_Sans_Regular.ttf", 38))
-        medium44 = GameFontRenderer(getAssetsFont("HarmonyOS_Sans_Medium.ttf", 44))
+        regular20 = GameFontRenderer(getFont("HarmonyOS_Sans_Regular.ttf", 20))
+        medium22 = GameFontRenderer(getFont("HarmonyOS_Sans_Medium.ttf", 22))
+        light24 = GameFontRenderer(getFont("HarmonyOS_Sans_Light.ttf", 24))
+        regular24 = GameFontRenderer(getFont("HarmonyOS_Sans_Regular.ttf", 24))
+        regular26 = GameFontRenderer(getFont("HarmonyOS_Sans_Regular.ttf", 26))
+        light30 = GameFontRenderer(getFont("HarmonyOS_Sans_Light.ttf", 30))
+        regular38 = GameFontRenderer(getFont("HarmonyOS_Sans_Regular.ttf", 38))
+        medium44 = GameFontRenderer(getFont("HarmonyOS_Sans_Medium.ttf", 44))
 
         ClientUtils.logger.info("成功初始化默认字体, 用时${(System.currentTimeMillis() - var0) / 1000F}秒.")
     }
