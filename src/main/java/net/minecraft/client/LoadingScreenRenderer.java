@@ -25,9 +25,11 @@ public class LoadingScreenRenderer implements IProgressUpdate
      */
     private String currentlyDisplayedText = "";
 
-    /** The system's time represented in milliseconds. */
+    /**
+     * The system's time represented in milliseconds.
+     */
     private long systemTime = Minecraft.getSystemTime();
-    private boolean field_73724_e;
+    private boolean loadingSuccess;
     private final ScaledResolution scaledResolution;
     private final Framebuffer framebuffer;
 
@@ -43,18 +45,16 @@ public class LoadingScreenRenderer implements IProgressUpdate
      * this string, followed by "working..." and then the "% complete" are the 3 lines shown. This resets progress to 0,
      * and the WorkingString to "working...".
      */
-    public void resetProgressAndMessage(String message)
-    {
-        this.field_73724_e = false;
+    public void resetProgressAndMessage(String message) {
+        this.loadingSuccess = false;
         this.displayString(message);
     }
 
     /**
      * Shows the 'Saving level' string.
      */
-    public void displaySavingString(String message)
-    {
-        this.field_73724_e = true;
+    public void displaySavingString(String message) {
+        this.loadingSuccess = true;
         this.displayString(message);
     }
 
@@ -64,8 +64,7 @@ public class LoadingScreenRenderer implements IProgressUpdate
 
         if (!this.mc.running)
         {
-            if (!this.field_73724_e)
-            {
+            if (!this.loadingSuccess) {
                 throw new MinecraftError();
             }
         }
@@ -99,8 +98,7 @@ public class LoadingScreenRenderer implements IProgressUpdate
     {
         if (!this.mc.running)
         {
-            if (!this.field_73724_e)
-            {
+            if (!this.loadingSuccess) {
                 throw new MinecraftError();
             }
         }
@@ -120,8 +118,7 @@ public class LoadingScreenRenderer implements IProgressUpdate
     {
         if (!this.mc.running)
         {
-            if (!this.field_73724_e)
-            {
+            if (!this.loadingSuccess) {
                 throw new MinecraftError();
             }
         }

@@ -154,7 +154,7 @@ public class RedFontRenderer {
             /*
              * 从原版FontRenderer获取字符图片
              */
-            int index = StringUtils.randomCharacters.indexOf(charAt);
+            int index = StringUtils.asciiCharacters.indexOf(charAt);
             /*
              * Unicode style
              */

@@ -10,7 +10,7 @@ import java.util.zip.ZipInputStream
 object FileUtils {
     @JvmStatic
     fun createBackupFile(file: File) {
-        val backupFile = File(file.parentFile, "${file.name}_bak")
+        val backupFile = File(file.parentFile, "${file.name}.bak")
         if (backupFile.exists()) {
             if (SecurityUtils.getSha1String(backupFile).equals(SecurityUtils.getSha1String(file), true)
                 && SecurityUtils.getMd5String(backupFile).equals(SecurityUtils.getMd5String(file), true)

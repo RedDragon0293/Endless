@@ -13,7 +13,6 @@ import org.lwjgl.opengl.Display
 object Endless {
     const val CLIENT_NAME = "Endless"
     const val CLIENT_VERSION = "Beta 0.1.0"
-    const val CLIENT_CLOUD = "https://gitee.com/reddragon0293/endless-cloud/raw/master"
     const val MINECRAFT_VERSION = "1.8.9"
     lateinit var clickGUI: GuiClickGUI
     @JvmField

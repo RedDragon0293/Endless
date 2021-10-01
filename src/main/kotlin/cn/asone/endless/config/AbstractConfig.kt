@@ -1,6 +1,7 @@
 package cn.asone.endless.config
 
 import cn.asone.endless.utils.ClientUtils
+import cn.asone.endless.utils.io.FileUtils
 import com.google.gson.*
 import java.io.*
 
@@ -26,11 +27,7 @@ abstract class AbstractConfig(val file: File) {
             ClientUtils.logger.error("无法加载配置文件 ${file.name}!")
             it.printStackTrace()
             reader.close()
-            val backupFile = File(ConfigManager.rootDir, "${file.name}_bak")
-            if (backupFile.exists())
-                backupFile.delete()
-            if (file.exists())
-                file.renameTo(backupFile)
+            FileUtils.createBackupFile(file)
             saveConfig()
             return
         }.onSuccess {
