@@ -23,6 +23,7 @@ import net.minecraft.client.gui.achievement.GuiAchievement;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.gui.stream.GuiStreamUnavailable;
 import net.minecraft.client.main.GameConfiguration;
+import net.minecraft.client.main.Main;
 import net.minecraft.client.multiplayer.GuiConnecting;
 import net.minecraft.client.multiplayer.PlayerControllerMP;
 import net.minecraft.client.multiplayer.ServerData;
@@ -564,6 +565,8 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
         Display.setTitle("Minecraft 1.8.9");
 
         try {
+            Main.window.setVisible(false);
+            Main.window.setEnabled(false);
             Display.create((new PixelFormat()).withDepthBits(24));
         } catch (LWJGLException lwjglexception) {
             logger.error("Couldn't set pixel format", lwjglexception);
@@ -577,6 +580,8 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
                 this.updateDisplayMode();
             }
 
+            Main.window.setVisible(false);
+            Main.window.setEnabled(false);
             Display.create();
         }
     }

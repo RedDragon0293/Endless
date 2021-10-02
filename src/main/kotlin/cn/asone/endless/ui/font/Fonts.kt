@@ -16,7 +16,6 @@ import org.apache.commons.codec.digest.DigestUtils
 import java.awt.Font
 import java.io.File
 import java.io.FileInputStream
-import java.util.*
 
 object Fonts : ValueRegister, IResourceManagerReloadListener {
     private val fontsDir: File = File(ConfigManager.rootDir, "fonts").apply {
@@ -149,7 +148,7 @@ object Fonts : ValueRegister, IResourceManagerReloadListener {
     fun getAssetsFont(name: String, size: Int): Font {
         return try {
             val inputStream = Fonts::class.java.getResourceAsStream(
-                "/assets/minecraft/${Endless.CLIENT_NAME.lowercase(Locale.getDefault())}/fonts/$name"
+                "/assets/minecraft/${Endless.CLIENT_NAME.lowercase()}/fonts/$name"
             )
             if (inputStream == null) {
                 ClientUtils.logger.error("无法加载字体 $name. 使用默认字体.")

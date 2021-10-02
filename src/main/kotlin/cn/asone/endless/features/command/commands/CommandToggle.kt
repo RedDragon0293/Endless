@@ -3,7 +3,6 @@ package cn.asone.endless.features.command.commands
 import cn.asone.endless.features.command.AbstractCommand
 import cn.asone.endless.features.module.ModuleManager
 import cn.asone.endless.utils.ClientUtils
-import java.util.*
 
 class CommandToggle : AbstractCommand("Toggle", "t") {
     override fun onExecute(command: String) {
@@ -20,7 +19,7 @@ class CommandToggle : AbstractCommand("Toggle", "t") {
         if (args.size == 1) {
             module.toggle()
         } else {
-            val newState = args[1].lowercase(Locale.getDefault())
+            val newState = args[1].lowercase()
             if (newState == "on" || newState == "off")
                 module.state = newState == "on"
             else {

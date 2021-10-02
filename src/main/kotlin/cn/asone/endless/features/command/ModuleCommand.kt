@@ -4,12 +4,11 @@ import cn.asone.endless.features.module.AbstractModule
 import cn.asone.endless.utils.ClientUtils
 import cn.asone.endless.utils.StringUtils
 import cn.asone.endless.value.*
-import java.util.*
 
 class ModuleCommand(val module: AbstractModule) : AbstractCommand(module.name) {
     override fun onExecute(command: String) {
         val valueNames = module.values
-            .joinToString(separator = "/") { it.name.lowercase(Locale.getDefault()) }
+            .joinToString(separator = "/") { it.name.lowercase() }
 
         val args = command.split(' ').toTypedArray()
         if (args.isEmpty() || (args.size == 1 && args[0] == "")) {
@@ -35,12 +34,12 @@ class ModuleCommand(val module: AbstractModule) : AbstractCommand(module.name) {
             } else {
                 if (args.size < 2) {
                     if (currentValue is IntValue || currentValue is FloatValue || currentValue is TextValue)
-                        chatSyntax("${args[0].lowercase(Locale.getDefault())} <值>")
+                        chatSyntax("${args[0].lowercase()} <值>")
                     else if (currentValue is ListValue)
                         chatSyntax(
-                            "${args[0].lowercase(Locale.getDefault())} <${
+                            "${args[0].lowercase()} <${
                                 currentValue.values.joinToString(separator = "/")
-                                    .lowercase(Locale.getDefault())
+                                    .lowercase()
                             }>"
                         )
                     return
@@ -75,10 +74,10 @@ class ModuleCommand(val module: AbstractModule) : AbstractCommand(module.name) {
                         is ListValue -> {
                             if (!currentValue.contains(args[1])) {
                                 chatSyntax(
-                                    "${args[0].lowercase(Locale.getDefault())} <${
+                                    "${args[0].lowercase()} <${
                                         currentValue.values.joinToString(
                                             separator = "/"
-                                        ).lowercase(Locale.getDefault())
+                                        ).lowercase()
                                     }>"
                                 )
                                 return
