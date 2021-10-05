@@ -142,7 +142,6 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
     private static Minecraft theMinecraft;
     public PlayerControllerMP playerController;
     private boolean fullscreen;
-    private boolean enableGLErrorChecking = true;
     private boolean hasCrashed;
 
     /**
@@ -157,7 +156,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
     /**
      * Instance of PlayerUsageSnooper.
      */
-    private PlayerUsageSnooper usageSnooper = new PlayerUsageSnooper("client", this, MinecraftServer.getCurrentTimeMillis());
+    private final PlayerUsageSnooper usageSnooper = new PlayerUsageSnooper("client", this, MinecraftServer.getCurrentTimeMillis());
     public WorldClient theWorld;
     public RenderGlobal renderGlobal;
     private RenderManager renderManager;
@@ -292,9 +291,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
     private final MinecraftSessionService sessionService;
     private SkinManager skinManager;
     private final Queue<FutureTask<?>> scheduledTasks = Queues.newArrayDeque();
-    private long field_175615_aJ = 0L;
     private final Thread mcThread = Thread.currentThread();
-    private ModelManager modelManager;
 
     /**
      * The BlockRenderDispatcher instance that will be used based off gamesettings
@@ -310,9 +307,6 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
      * String that shows the debug information
      */
     public String debug = "";
-    public boolean field_175613_B = false;
-    public boolean field_175614_C = false;
-    public boolean field_175611_D = false;
     public boolean renderChunksMany = true;
 
     /**
@@ -495,15 +489,15 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
         this.renderEngine.loadTickableTexture(TextureMap.locationBlocksTexture, this.textureMapBlocks);
         this.renderEngine.bindTexture(TextureMap.locationBlocksTexture);
         this.textureMapBlocks.setBlurMipmapDirect(false, this.gameSettings.mipmapLevels > 0);
-        this.modelManager = new ModelManager(this.textureMapBlocks);
-        this.resourceManager.registerReloadListener(this.modelManager);
-        this.renderItem = new RenderItem(this.renderEngine, this.modelManager);
+        ModelManager modelManager = new ModelManager(this.textureMapBlocks);
+        this.resourceManager.registerReloadListener(modelManager);
+        this.renderItem = new RenderItem(this.renderEngine, modelManager);
         this.renderManager = new RenderManager(this.renderEngine, this.renderItem);
         this.itemRenderer = new ItemRenderer(this);
         this.resourceManager.registerReloadListener(this.renderItem);
         this.entityRenderer = new EntityRenderer(this, this.resourceManager);
         this.resourceManager.registerReloadListener(this.entityRenderer);
-        this.blockRenderDispatcher = new BlockRendererDispatcher(this.modelManager.getBlockModelShapes(), this.gameSettings);
+        this.blockRenderDispatcher = new BlockRendererDispatcher(modelManager.getBlockModelShapes(), this.gameSettings);
         this.resourceManager.registerReloadListener(this.blockRenderDispatcher);
         this.renderGlobal = new RenderGlobal(this);
         this.resourceManager.registerReloadListener(this.renderGlobal);
@@ -565,9 +559,9 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
         Display.setTitle("Minecraft 1.8.9");
 
         try {
+            Display.create((new PixelFormat()).withDepthBits(24));
             Main.window.setVisible(false);
             Main.window.setEnabled(false);
-            Display.create((new PixelFormat()).withDepthBits(24));
         } catch (LWJGLException lwjglexception) {
             logger.error("Couldn't set pixel format", lwjglexception);
 
@@ -580,9 +574,9 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
                 this.updateDisplayMode();
             }
 
+            Display.create();
             Main.window.setVisible(false);
             Main.window.setEnabled(false);
-            Display.create();
         }
     }
 
@@ -880,7 +874,8 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
      * Checks for an OpenGL error. If there is one, prints the error ID and error string.
      */
     private void checkGLError(String message) {
-        if (this.enableGLErrorChecking) {
+        boolean enableGLErrorChecking = true;
+        if (enableGLErrorChecking) {
             int i = GL11.glGetError();
 
             if (i != 0) {

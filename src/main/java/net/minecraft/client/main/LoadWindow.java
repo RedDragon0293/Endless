@@ -11,6 +11,14 @@ import java.io.InputStream;
 import java.util.ArrayList;
 
 public class LoadWindow extends JFrame {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void paint(Graphics graphics) {
+
+    }
+
     public void init() {
         this.setTitle(Endless.CLIENT_NAME + " " + Endless.CLIENT_VERSION);
         this.setAlwaysOnTop(true);
@@ -28,7 +36,7 @@ public class LoadWindow extends JFrame {
         }
         this.setUndecorated(true);
         this.setResizable(false);
-        this.setType(Type.UTILITY);
+        this.setType(Type.POPUP);
         this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         this.setLocationByPlatform(false);
 
@@ -62,10 +70,10 @@ public class LoadWindow extends JFrame {
         label.setOpaque(true);
         label.setBackground(Color.BLACK);
         label.setForeground(Color.WHITE);
-        label.setLocation(1, 1);
 
         this.add(label);
         this.setSize(width, metrics.getHeight());
         this.setLocationRelativeTo(null);
+        this.pack();
     }
 }
