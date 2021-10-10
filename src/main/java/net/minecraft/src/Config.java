@@ -2133,7 +2133,7 @@ public class Config
         else
         {
             mcDebugLast = minecraft.debug;
-            FrameTimer frametimer = minecraft.func_181539_aj();
+            FrameTimer frametimer = minecraft.getFrameTimer();
             long[] along = frametimer.func_181746_c();
             int i = frametimer.func_181750_b();
             int j = frametimer.func_181749_a();

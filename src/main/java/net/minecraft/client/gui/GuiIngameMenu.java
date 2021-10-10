@@ -52,7 +52,7 @@ public class GuiIngameMenu extends GuiScreen
 
             case 1:
                 boolean flag = this.mc.isIntegratedServerRunning();
-                boolean flag1 = this.mc.func_181540_al();
+                boolean flag1 = this.mc.isConnectedToRealms();
                 button.enabled = false;
                 this.mc.theWorld.sendQuittingDisconnectingPacket();
                 this.mc.loadWorld((WorldClient)null);
