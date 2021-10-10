@@ -13,21 +13,20 @@ public class Util
         return s.contains("win") ? Util.EnumOS.WINDOWS : (s.contains("mac") ? Util.EnumOS.OSX : (s.contains("solaris") ? Util.EnumOS.SOLARIS : (s.contains("sunos") ? Util.EnumOS.SOLARIS : (s.contains("linux") ? Util.EnumOS.LINUX : (s.contains("unix") ? Util.EnumOS.LINUX : Util.EnumOS.UNKNOWN)))));
     }
 
-    public static <V> V runTask(FutureTask<V> p_181617_0_, Logger p_181617_1_) {
+    public static <V> V runTask(FutureTask<V> task, Logger logger) {
         try {
-            p_181617_0_.run();
-            return p_181617_0_.get();
+            task.run();
+            return task.get();
         } catch (ExecutionException executionexception) {
-            p_181617_1_.fatal("Error executing task", executionexception);
+            logger.fatal("Error executing task", executionexception);
 
-            if (executionexception.getCause() instanceof OutOfMemoryError)
-            {
+            if (executionexception.getCause() instanceof OutOfMemoryError) {
                 throw (OutOfMemoryError) executionexception.getCause();
             }
         }
         catch (InterruptedException interruptedexception)
         {
-            p_181617_1_.fatal("Error executing task", interruptedexception);
+            logger.fatal("Error executing task", interruptedexception);
         }
 
         return null;

@@ -1066,12 +1066,12 @@ public class EntityRenderer implements IResourceManagerReloadListener {
         return i > 200 ? 1.0F : 0.7F + MathHelper.sin(((float) i - partialTicks) * (float) Math.PI * 0.2F) * 0.3F;
     }
 
-    public void updateCameraAndRender(float partialTicks, long p_181560_2_) {
+    public void updateCameraAndRender(float partialTicks, long startNanoTime) {
         Config.renderPartialTicks = partialTicks;
         this.frameInit();
-        boolean flag = Display.isActive();
+        boolean isActive = Display.isActive();
 
-        if (!flag && this.mc.gameSettings.pauseOnLostFocus && (!this.mc.gameSettings.touchscreen || !Mouse.isButtonDown(1))) {
+        if (!isActive && this.mc.gameSettings.pauseOnLostFocus && (!this.mc.gameSettings.touchscreen || !Mouse.isButtonDown(1))) {
             if (Minecraft.getSystemTime() - this.prevFrameTime > 500L) {
                 this.mc.displayInGameMenu();
             }
@@ -1081,13 +1081,13 @@ public class EntityRenderer implements IResourceManagerReloadListener {
 
         this.mc.mcProfiler.startSection("mouse");
 
-        if (flag && Minecraft.isRunningOnMac && this.mc.inGameHasFocus && !Mouse.isInsideWindow()) {
+        if (isActive && Minecraft.isRunningOnMac && this.mc.inGameHasFocus && !Mouse.isInsideWindow()) {
             Mouse.setGrabbed(false);
             Mouse.setCursorPosition(Display.getWidth() / 2, Display.getHeight() / 2);
             Mouse.setGrabbed(true);
         }
 
-        if (this.mc.inGameHasFocus && flag) {
+        if (this.mc.inGameHasFocus && isActive) {
             this.mc.mouseHelper.mouseXYChange();
             float f = this.mc.gameSettings.mouseSensitivity * 0.6F + 0.2F;
             float f1 = f * f * f * 8.0F;
@@ -1118,17 +1118,15 @@ public class EntityRenderer implements IResourceManagerReloadListener {
         if (!this.mc.skipRenderWorld) {
             anaglyphEnable = this.mc.gameSettings.anaglyph;
             final ScaledResolution scaledresolution = new ScaledResolution(this.mc);
-            int i1 = scaledresolution.getScaledWidth();
-            int j1 = scaledresolution.getScaledHeight();
-            final int k1 = Mouse.getX() * i1 / this.mc.displayWidth;
-            final int l1 = j1 - Mouse.getY() * j1 / this.mc.displayHeight - 1;
-            int i2 = this.mc.gameSettings.limitFramerate;
+            final int mouseX = Mouse.getX() * scaledresolution.getScaledWidth() / this.mc.displayWidth;
+            final int mouseY = scaledresolution.getScaledHeight() - Mouse.getY() * scaledresolution.getScaledHeight() / this.mc.displayHeight - 1;
+            int limitFramerate = this.mc.gameSettings.limitFramerate;
 
             if (this.mc.theWorld != null) {
                 this.mc.mcProfiler.startSection("level");
-                int j = Math.min(Minecraft.getDebugFPS(), i2);
+                int j = Math.min(Minecraft.getDebugFPS(), limitFramerate);
                 j = Math.max(j, 60);
-                long k = System.nanoTime() - p_181560_2_;
+                long k = System.nanoTime() - startNanoTime;
                 long l = Math.max((long) (1000000000 / j / 4) - k, 0L);
                 this.renderWorld(partialTicks, System.nanoTime() + l);
 
@@ -1179,12 +1177,12 @@ public class EntityRenderer implements IResourceManagerReloadListener {
                 GlStateManager.clear(256);
 
                 try {
-                    this.mc.currentScreen.drawScreen(k1, l1, partialTicks);
+                    this.mc.currentScreen.drawScreen(mouseX, mouseY, partialTicks);
                 } catch (Throwable throwable) {
                     CrashReport crashreport = CrashReport.makeCrashReport(throwable, "Rendering screen");
                     CrashReportCategory crashreportcategory = crashreport.makeCategory("Screen render details");
                     crashreportcategory.addCrashSectionCallable("Screen name", () -> EntityRenderer.this.mc.currentScreen.getClass().getCanonicalName());
-                    crashreportcategory.addCrashSectionCallable("Mouse location", () -> String.format("Scaled: (%d, %d). Absolute: (%d, %d)", k1, l1, Mouse.getX(), Mouse.getY()));
+                    crashreportcategory.addCrashSectionCallable("Mouse location", () -> String.format("Scaled: (%d, %d). Absolute: (%d, %d)", mouseX, mouseY, Mouse.getX(), Mouse.getY()));
                     crashreportcategory.addCrashSectionCallable("Screen size", () -> String.format("Scaled: (%d, %d). Absolute: (%d, %d). Scale factor of %d", scaledresolution.getScaledWidth(), scaledresolution.getScaledHeight(), EntityRenderer.this.mc.displayWidth, EntityRenderer.this.mc.displayHeight, scaledresolution.getScaleFactor()));
                     throw new ReportedException(crashreport);
                 }
@@ -1198,11 +1196,6 @@ public class EntityRenderer implements IResourceManagerReloadListener {
         if (this.mc.gameSettings.ofProfiler) {
             this.mc.gameSettings.showDebugProfilerChart = true;
         }
-    }
-
-    public void renderStreamIndicator(float partialTicks) {
-        this.setupOverlayRendering();
-        this.mc.ingameGUI.renderStreamIndicator(new ScaledResolution(this.mc));
     }
 
     private boolean isDrawBlockOutline() {

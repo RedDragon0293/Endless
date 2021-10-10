@@ -124,10 +124,12 @@ public class Main {
          */
         Runtime.getRuntime().addShutdownHook(new Thread("Client Shutdown Thread") {
             public void run() {
-                Main.logger.info("[Debug] Shutting down server...");
-                Minecraft.stopIntegratedServer();
-                Main.logger.info("正在保存Minecraft配置文件...");
-                Minecraft.getMinecraft().gameSettings.saveOptions();
+                if (Minecraft.getMinecraft() != null) {
+                    Main.logger.info("[Debug] Shutting down server...");
+                    Minecraft.stopIntegratedServer();
+                    Main.logger.info("正在保存Minecraft配置文件...");
+                    Minecraft.getMinecraft().gameSettings.saveOptions();
+                }
             }
         });
         Thread.currentThread().setName("Client thread");

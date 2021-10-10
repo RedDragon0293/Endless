@@ -5,18 +5,21 @@ import cn.asone.endless.Endless;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 
 public class LoadWindow extends JFrame {
+    public boolean exitConfirm = true;
     /**
      * {@inheritDoc}
      */
     @Override
     public void paint(Graphics graphics) {
-
+        super.paint(graphics);
     }
 
     public void init() {
@@ -34,10 +37,10 @@ public class LoadWindow extends JFrame {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        this.setUndecorated(true);
+        //this.setUndecorated(true);
         this.setResizable(false);
         this.setType(Type.POPUP);
-        this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setLocationByPlatform(false);
 
         try {
@@ -74,6 +77,86 @@ public class LoadWindow extends JFrame {
         this.add(label);
         this.setSize(width, metrics.getHeight());
         this.setLocationRelativeTo(null);
+        this.addWindowListener(new CloseListener());
         this.pack();
+    }
+
+    public class CloseListener implements WindowListener {
+        /**
+         * Invoked the first time a window is made visible.
+         */
+        @Override
+        public void windowOpened(WindowEvent e) {
+
+        }
+
+        /**
+         * Invoked when the user attempts to close the window
+         * from the window's system menu.
+         */
+        @Override
+        public void windowClosing(WindowEvent e) {
+            int i = JOptionPane.showConfirmDialog(e.getComponent(), Endless.CLIENT_NAME + "未加载完成. 确定要退出吗?", "确认", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
+            if (i == JOptionPane.YES_OPTION && exitConfirm) {
+                System.exit(0);
+            }
+        }
+
+        /**
+         * Invoked when a window has been closed as the result
+         * of calling dispose on the window.
+         */
+        @Override
+        public void windowClosed(WindowEvent e) {
+
+        }
+
+        /**
+         * Invoked when a window is changed from a normal to a
+         * minimized state. For many platforms, a minimized window
+         * is displayed as the icon specified in the window's
+         * iconImage property.
+         *
+         * @see Frame#setIconImage
+         */
+        @Override
+        public void windowIconified(WindowEvent e) {
+
+        }
+
+        /**
+         * Invoked when a window is changed from a minimized
+         * to a normal state.
+         */
+        @Override
+        public void windowDeiconified(WindowEvent e) {
+
+        }
+
+        /**
+         * Invoked when the Window is set to be the active Window. Only a Frame or
+         * a Dialog can be the active Window. The native windowing system may
+         * denote the active Window or its children with special decorations, such
+         * as a highlighted title bar. The active Window is always either the
+         * focused Window, or the first Frame or Dialog that is an owner of the
+         * focused Window.
+         */
+        @Override
+        public void windowActivated(WindowEvent e) {
+
+        }
+
+        /**
+         * Invoked when a Window is no longer the active Window. Only a Frame or a
+         * Dialog can be the active Window. The native windowing system may denote
+         * the active Window or its children with special decorations, such as a
+         * highlighted title bar. The active Window is always either the focused
+         * Window, or the first Frame or Dialog that is an owner of the focused
+         * Window.
+         */
+        @Override
+        public void windowDeactivated(WindowEvent e) {
+
+        }
     }
 }

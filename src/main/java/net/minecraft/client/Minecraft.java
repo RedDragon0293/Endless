@@ -5,7 +5,10 @@ import cn.asone.endless.event.EventManager;
 import cn.asone.endless.event.KeyEvent;
 import cn.asone.endless.ui.font.Fonts;
 import cn.asone.endless.utils.RenderUtils;
-import com.google.common.collect.*;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Queues;
+import com.google.common.collect.Sets;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListenableFutureTask;
@@ -21,7 +24,6 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.*;
 import net.minecraft.client.gui.achievement.GuiAchievement;
 import net.minecraft.client.gui.inventory.GuiInventory;
-import net.minecraft.client.gui.stream.GuiStreamUnavailable;
 import net.minecraft.client.main.GameConfiguration;
 import net.minecraft.client.main.Main;
 import net.minecraft.client.multiplayer.GuiConnecting;
@@ -45,9 +47,6 @@ import net.minecraft.client.resources.model.ModelManager;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.client.shader.Framebuffer;
-import net.minecraft.client.stream.IStream;
-import net.minecraft.client.stream.NullStream;
-import net.minecraft.client.stream.TwitchStream;
 import net.minecraft.crash.CrashReport;
 import net.minecraft.crash.CrashReportCategory;
 import net.minecraft.entity.Entity;
@@ -260,8 +259,8 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
      * Join player counter
      */
     private int joinPlayerCounter;
-    public final FrameTimer field_181542_y = new FrameTimer();
-    long field_181543_z = System.nanoTime();
+    public final FrameTimer frameTimer = new FrameTimer();
+    long startNanoTime = System.nanoTime();
     private final boolean jvm64bit;
     private final boolean isDemo;
     private NetworkManager myNetworkManager;
@@ -282,7 +281,6 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
     public final DefaultResourcePack mcDefaultResourcePack;
     private ResourcePackRepository mcResourcePackRepository;
     private LanguageManager mcLanguageManager;
-    private IStream stream;
     private Framebuffer framebufferMc;
     private TextureMap textureMapBlocks;
     private SoundHandler mcSoundHandler;
@@ -446,7 +444,6 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
         this.renderEngine = new TextureManager(this.resourceManager);
         this.resourceManager.registerReloadListener(this.renderEngine);
         this.drawSplashScreen(this.renderEngine);
-        this.initStream();
         this.skinManager = new SkinManager(this.renderEngine, new File(this.fileAssets, "skins"), this.sessionService);
         this.saveLoader = new AnvilSaveConverter(new File(this.mcDataDir, "saves"));
         this.mcSoundHandler = new SoundHandler(this.resourceManager, this.gameSettings);
@@ -545,20 +542,12 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
         this.metadataSerializer_.registerMetadataSectionType(new LanguageMetadataSectionSerializer(), LanguageMetadataSection.class);
     }
 
-    private void initStream() {
-        try {
-            this.stream = new TwitchStream(this, Iterables.getFirst(this.twitchDetails.get("twitch_access_token"), null));
-        } catch (Throwable throwable) {
-            this.stream = new NullStream(throwable);
-            logger.error("Couldn't initialize twitch stream");
-        }
-    }
-
     private void createDisplay() throws LWJGLException {
         Display.setResizable(true);
         Display.setTitle("Minecraft 1.8.9");
 
         try {
+            Main.window.exitConfirm = false;
             Display.create((new PixelFormat()).withDepthBits(24));
             Main.window.setVisible(false);
             Main.window.setEnabled(false);
@@ -769,7 +758,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
         this.displayHeight = displaymode.getHeight();
     }
 
-    private void drawSplashScreen(TextureManager textureManagerInstance) {
+    private void drawSplashScreen(TextureManager renderEngine) {
         ScaledResolution scaledresolution = new ScaledResolution(this);
         int i = scaledresolution.getScaleFactor();
         Framebuffer framebuffer = new Framebuffer(scaledresolution.getScaledWidth() * i, scaledresolution.getScaledHeight() * i, true);
@@ -788,8 +777,8 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
 
         try {
             inputstream = this.mcDefaultResourcePack.getInputStream(locationMojangPng);
-            this.mojangLogo = textureManagerInstance.getDynamicTextureLocation("logo", new DynamicTexture(ImageIO.read(inputstream)));
-            textureManagerInstance.bindTexture(this.mojangLogo);
+            this.mojangLogo = renderEngine.getDynamicTextureLocation("logo", new DynamicTexture(ImageIO.read(inputstream)));
+            renderEngine.bindTexture(this.mojangLogo);
         } catch (IOException ioexception) {
             logger.error(("Unable to load logo: " + locationMojangPng), ioexception);
         } finally {
@@ -805,9 +794,9 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
         worldrenderer.pos(0.0D, 0.0D, 0.0D).tex(0.0D, 0.0D).color(255, 255, 255, 255).endVertex();
         tessellator.draw();
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-        int j = 256;
-        int k = 256;
-        this.func_181536_a((scaledresolution.getScaledWidth() - j) / 2, (scaledresolution.getScaledHeight() - k) / 2, 0, 0, j, k, 255, 255, 255, 255);
+        int width = 256;
+        int height = 256;
+        this.draw((scaledresolution.getScaledWidth() - width) / 2, (scaledresolution.getScaledHeight() - height) / 2, 0, 0, width, height, 255, 255, 255, 255);
         GlStateManager.disableLighting();
         GlStateManager.disableFog();
         framebuffer.unbindFramebuffer();
@@ -817,15 +806,15 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
         this.updateDisplay();
     }
 
-    public void func_181536_a(int p_181536_1_, int p_181536_2_, int p_181536_3_, int p_181536_4_, int p_181536_5_, int p_181536_6_, int p_181536_7_, int p_181536_8_, int p_181536_9_, int p_181536_10_) {
+    public void draw(int posX, int posY, int texX, int texY, int width, int height, int colorRed, int colorBlue, int colorGreen, int colorAlpha) {
         float f = 0.00390625F;
         float f1 = 0.00390625F;
         WorldRenderer worldrenderer = Tessellator.getInstance().getWorldRenderer();
         worldrenderer.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR);
-        worldrenderer.pos(p_181536_1_, (p_181536_2_ + p_181536_6_), 0.0D).tex(((float) p_181536_3_ * f), ((float) (p_181536_4_ + p_181536_6_) * f1)).color(p_181536_7_, p_181536_8_, p_181536_9_, p_181536_10_).endVertex();
-        worldrenderer.pos((p_181536_1_ + p_181536_5_), (p_181536_2_ + p_181536_6_), 0.0D).tex(((float) (p_181536_3_ + p_181536_5_) * f), ((float) (p_181536_4_ + p_181536_6_) * f1)).color(p_181536_7_, p_181536_8_, p_181536_9_, p_181536_10_).endVertex();
-        worldrenderer.pos((p_181536_1_ + p_181536_5_), p_181536_2_, 0.0D).tex(((float) (p_181536_3_ + p_181536_5_) * f), ((float) p_181536_4_ * f1)).color(p_181536_7_, p_181536_8_, p_181536_9_, p_181536_10_).endVertex();
-        worldrenderer.pos(p_181536_1_, p_181536_2_, 0.0D).tex(((float) p_181536_3_ * f), ((float) p_181536_4_ * f1)).color(p_181536_7_, p_181536_8_, p_181536_9_, p_181536_10_).endVertex();
+        worldrenderer.pos(posX, posY + height, 0.0D).tex(texX * f, (texY + height) * f1).color(colorRed, colorBlue, colorGreen, colorAlpha).endVertex();
+        worldrenderer.pos(posX + width, posY + height, 0.0D).tex((texX + width) * f, (texY + height) * f1).color(colorRed, colorBlue, colorGreen, colorAlpha).endVertex();
+        worldrenderer.pos(posX + width, posY, 0.0D).tex((texX + width) * f, texY * f1).color(colorRed, colorBlue, colorGreen, colorAlpha).endVertex();
+        worldrenderer.pos(posX, posY, 0.0D).tex(texX * f, texY * f1).color(colorRed, colorBlue, colorGreen, colorAlpha).endVertex();
         Tessellator.getInstance().draw();
     }
 
@@ -893,7 +882,6 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
      */
     public void shutdownMinecraftApplet() {
         try {
-            this.stream.shutdownStream();
             logger.warn("##########正在关闭客户端!##########");
             Endless.INSTANCE.stopClient();
             try {
@@ -1003,22 +991,19 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
         this.framebufferMc.framebufferRender(this.displayWidth, this.displayHeight);
         GlStateManager.popMatrix();
         GlStateManager.pushMatrix();
-        this.entityRenderer.renderStreamIndicator(this.timer.renderPartialTicks);
         GlStateManager.popMatrix();
         this.mcProfiler.startSection("root");
         this.updateDisplay();
         Thread.yield();
-        this.mcProfiler.startSection("stream");
         this.mcProfiler.startSection("update");
         this.mcProfiler.endStartSection("submit");
-        this.mcProfiler.endSection();
         this.mcProfiler.endSection();
         this.checkGLError("Post render");
         ++this.fpsCounter;
         this.isGamePaused = this.isSingleplayer() && this.currentScreen != null && this.currentScreen.doesGuiPauseGame() && !this.theIntegratedServer.getPublic();
         long k = System.nanoTime();
-        this.field_181542_y.func_181747_a(k - this.field_181543_z);
-        this.field_181543_z = k;
+        this.frameTimer.addFrame(k - this.startNanoTime);
+        this.startNanoTime = k;
 
         while (getSystemTime() >= this.debugUpdateTime + 1000L) {
             debugFPS = this.fpsCounter;
@@ -2497,55 +2482,17 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
         return this.thePlayer != null ? (this.thePlayer.worldObj.provider instanceof WorldProviderHell ? MusicTicker.MusicType.NETHER : (this.thePlayer.worldObj.provider instanceof WorldProviderEnd ? (BossStatus.bossName != null && BossStatus.statusBarTime > 0 ? MusicTicker.MusicType.END_BOSS : MusicTicker.MusicType.END) : (this.thePlayer.capabilities.isCreativeMode && this.thePlayer.capabilities.allowFlying ? MusicTicker.MusicType.CREATIVE : MusicTicker.MusicType.GAME))) : MusicTicker.MusicType.MENU;
     }
 
-    public IStream getTwitchStream() {
-        return this.stream;
-    }
-
     public void dispatchKeyPresses() {
         int i = Keyboard.getEventKey() == 0 ? Keyboard.getEventCharacter() : Keyboard.getEventKey();
 
         if (i != 0 && !Keyboard.isRepeatEvent()) {
             if (!(this.currentScreen instanceof GuiControls) || ((GuiControls) this.currentScreen).time <= getSystemTime() - 20L) {
                 if (Keyboard.getEventKeyState()) {
-                    if (i == this.gameSettings.keyBindStreamStartStop.getKeyCode()) {
-                        if (this.getTwitchStream().isBroadcasting()) {
-                            this.getTwitchStream().stopBroadcasting();
-                        } else if (this.getTwitchStream().isReadyToBroadcast()) {
-                            this.displayGuiScreen(new GuiYesNo((result, id) -> {
-                                if (result) {
-                                    Minecraft.this.getTwitchStream().func_152930_t();
-                                }
-
-                                Minecraft.this.displayGuiScreen(null);
-                            }, I18n.format("stream.confirm_start"), "", 0));
-                        } else if (this.getTwitchStream().func_152928_D() && this.getTwitchStream().func_152936_l()) {
-                            if (this.theWorld != null) {
-                                this.ingameGUI.getChatGUI().printChatMessage(new ChatComponentText("Not ready to start streaming yet!"));
-                            }
-                        } else {
-                            GuiStreamUnavailable.func_152321_a(this.currentScreen);
-                        }
-                    } else if (i == this.gameSettings.keyBindStreamPauseUnpause.getKeyCode()) {
-                        if (this.getTwitchStream().isBroadcasting()) {
-                            if (this.getTwitchStream().isPaused()) {
-                                this.getTwitchStream().unpause();
-                            } else {
-                                this.getTwitchStream().pause();
-                            }
-                        }
-                    } else if (i == this.gameSettings.keyBindStreamCommercials.getKeyCode()) {
-                        if (this.getTwitchStream().isBroadcasting()) {
-                            this.getTwitchStream().requestCommercial();
-                        }
-                    } else if (i == this.gameSettings.keyBindStreamToggleMic.getKeyCode()) {
-                        this.stream.muteMicrophone(true);
-                    } else if (i == this.gameSettings.keyBindFullscreen.getKeyCode()) {
+                    if (i == this.gameSettings.keyBindFullscreen.getKeyCode()) {
                         this.toggleFullscreen();
                     } else if (i == this.gameSettings.keyBindScreenshot.getKeyCode()) {
                         this.ingameGUI.getChatGUI().printChatMessage(ScreenShotHelper.saveScreenshot(this.mcDataDir, this.displayWidth, this.displayHeight, this.framebufferMc));
                     }
-                } else if (i == this.gameSettings.keyBindStreamToggleMic.getKeyCode()) {
-                    this.stream.muteMicrophone(false);
                 }
             }
         }
@@ -2617,7 +2564,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
     }
 
     public FrameTimer func_181539_aj() {
-        return this.field_181542_y;
+        return this.frameTimer;
     }
 
     public static Map<String, String> getSessionInfo() {

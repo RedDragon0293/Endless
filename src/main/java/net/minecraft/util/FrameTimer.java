@@ -7,13 +7,11 @@ public class FrameTimer
     private int field_181754_c;
     private int field_181755_d;
 
-    public void func_181747_a(long p_181747_1_)
-    {
+    public void addFrame(long p_181747_1_) {
         this.field_181752_a[this.field_181755_d] = p_181747_1_;
         ++this.field_181755_d;
 
-        if (this.field_181755_d == 240)
-        {
+        if (this.field_181755_d == 240) {
             this.field_181755_d = 0;
         }
 
