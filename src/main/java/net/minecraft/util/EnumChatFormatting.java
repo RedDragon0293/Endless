@@ -32,23 +32,19 @@ public enum EnumChatFormatting {
     ITALIC("ITALIC", 'o', true),
     RESET("RESET", 'r', -1);
 
-    private static final Map<String, EnumChatFormatting> nameMapping = Maps.<String, EnumChatFormatting>newHashMap();
+    private static final Map<String, EnumChatFormatting> nameMapping = Maps.newHashMap();
 
     /**
      * Matches formatting codes that indicate that the client should treat the following text as bold, recolored,
      * obfuscated, etc.
      */
-    private static final Pattern formattingCodePattern = Pattern.compile("(?i)" + String.valueOf('\u00a7') + "[0-9A-FK-OR]");
+    private static final Pattern formattingCodePattern = Pattern.compile("(?i)" + '\u00a7' + "[0-9A-FK-OR]");
 
     /**
      * The name of this color/formatting
      */
     private final String name;
 
-    /**
-     * The formatting code that produces this format.
-     */
-    private final char formattingCode;
     private final boolean fancyStyling;
 
     /**
@@ -76,7 +72,9 @@ public enum EnumChatFormatting {
 
     EnumChatFormatting(String formattingName, char formattingCodeIn, boolean fancyStylingIn, int colorIndex) {
         this.name = formattingName;
-        this.formattingCode = formattingCodeIn;
+        /**
+         * The formatting code that produces this format.
+         */
         this.fancyStyling = fancyStylingIn;
         this.colorIndex = colorIndex;
         this.controlString = "\u00a7" + formattingCodeIn;
@@ -147,7 +145,7 @@ public enum EnumChatFormatting {
     }
 
     public static Collection<String> getValidValues(boolean p_96296_0_, boolean p_96296_1_) {
-        List<String> list = Lists.<String>newArrayList();
+        List<String> list = Lists.newArrayList();
 
         for (EnumChatFormatting enumchatformatting : values()) {
             if ((!enumchatformatting.isColor() || p_96296_0_) && (!enumchatformatting.isFancyStyling() || p_96296_1_)) {

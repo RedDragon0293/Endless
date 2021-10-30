@@ -6,8 +6,8 @@ import cn.asone.endless.features.module.AbstractModule
 import cn.asone.endless.features.module.ModuleCategory
 import cn.asone.endless.ui.font.Fonts
 import cn.asone.endless.utils.RenderUtils
-import com.mojang.realmsclient.gui.ChatFormatting
 import net.minecraft.client.renderer.GlStateManager
+import net.minecraft.util.EnumChatFormatting
 import java.awt.Color
 
 object ModuleTest : AbstractModule(
@@ -30,7 +30,7 @@ object ModuleTest : AbstractModule(
         )
         GlStateManager.enableTexture2D()
         val var0 = Fonts.mcRegular18.drawString(
-            "${ChatFormatting.UNDERLINE}AAAAAAAAAAAAAAAAAAAAAAAAA",
+            "${EnumChatFormatting.UNDERLINE}AAAAAAAAAAAAAAAAAAAAAAAAA",
             10F,
             10F,
             Color.white.rgb

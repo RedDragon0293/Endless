@@ -55,7 +55,10 @@ allprojects {
 
 dependencies {
     api group: 'javax.vecmath', name: 'vecmath', version: '1.5.2'
-    api ("net.minecraft:minecraft:1.8.9")
+    api ("net.minecraft:minecraft:1.8.9") {
+        exclude group: 'tv.twitch'
+        exclude group: 'com.mojang', module: 'realms'
+    }
     api group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib', version: kotlin_version
     api 'com.thealtening.auth:auth:3.0.2'
     compile fileTree(include: ['*.jar'], dir: 'libs')

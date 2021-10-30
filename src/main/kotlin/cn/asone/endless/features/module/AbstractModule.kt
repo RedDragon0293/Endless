@@ -11,7 +11,7 @@ abstract class AbstractModule(
     val name: String,
     val description: String,
     val category: Int,
-    var keyBind: Int = Keyboard.CHAR_NONE,
+    var keyBind: Int = Keyboard.KEY_NONE,
     var canEnable: Boolean = true
 ) : ListenableClass(), ValueRegister {
     var state = false
