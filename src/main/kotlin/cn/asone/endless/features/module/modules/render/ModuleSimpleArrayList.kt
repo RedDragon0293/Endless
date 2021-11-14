@@ -12,7 +12,7 @@ import java.awt.Color
 object ModuleSimpleArrayList : AbstractModule(
     "SimpleArrayList",
     "A pretty simple arraylist just to be continued",
-    ModuleCategory.RENDER
+    ModuleCategory.VISUAL
 ) {
     private val list: List<AbstractModule> by lazy {
         ModuleManager.modules.sortedBy { -Fonts.regular24.getStringWidth(it.arrayName) }

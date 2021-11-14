@@ -20,7 +20,7 @@ import java.awt.Color
 object ModuleClickGUI : AbstractModule(
     "ClickGUI",
     "Opens the ClickGUI.",
-    ModuleCategory.RENDER,
+    ModuleCategory.VISUAL,
     Keyboard.KEY_RSHIFT,
     false
 ) {

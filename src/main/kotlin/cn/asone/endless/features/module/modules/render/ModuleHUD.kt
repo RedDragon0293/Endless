@@ -9,7 +9,7 @@ import cn.asone.endless.ui.hud.elements.ElementArraylist
 import cn.asone.endless.value.AbstractValue
 import cn.asone.endless.value.BoolValue
 
-object ModuleHUD : AbstractModule("HUD", "Toggles visibility of the HUD.", ModuleCategory.RENDER) {
+object ModuleHUD : AbstractModule("HUD", "Toggles visibility of the HUD.", ModuleCategory.VISUAL) {
     val blackHotbarValue = BoolValue("BlackHotbar", true)
     val smoothHotbarValue = BoolValue("Smooth", false)
     private val arraylistValue = BoolValue("Arraylist", true)

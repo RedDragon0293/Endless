@@ -1,11 +1,6 @@
 package net.minecraft.client.shader;
 
 import com.google.common.collect.Maps;
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.ByteBuffer;
-import java.util.Map;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.client.util.JsonException;
@@ -14,15 +9,19 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.lwjgl.BufferUtils;
 
-public class ShaderLoader
-{
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.ByteBuffer;
+import java.util.Map;
+
+public class ShaderLoader {
     private final ShaderLoader.ShaderType shaderType;
     private final String shaderFilename;
     private int shader;
     private int shaderAttachCount = 0;
 
-    private ShaderLoader(ShaderLoader.ShaderType type, int shaderId, String filename)
-    {
+    private ShaderLoader(ShaderLoader.ShaderType type, int shaderId, String filename) {
         this.shaderType = type;
         this.shader = shaderId;
         this.shaderFilename = filename;
@@ -69,7 +68,7 @@ public class ShaderLoader
             if (OpenGlHelper.glGetShaderi(i, OpenGlHelper.GL_COMPILE_STATUS) == 0)
             {
                 String s = StringUtils.trim(OpenGlHelper.glGetShaderInfoLog(i, 32768));
-                JsonException jsonexception = new JsonException("Couldn\'t compile " + type.getShaderName() + " program: " + s);
+                JsonException jsonexception = new JsonException("Couldn't compile " + type.getShaderName() + " program: " + s);
                 jsonexception.func_151381_b(resourcelocation.getResourcePath());
                 throw jsonexception;
             }
