@@ -8,12 +8,14 @@ import cn.asone.endless.utils.ClientUtils
 import cn.asone.endless.value.ValueRegister
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
+import viamcp.ViaMCP
 import java.io.File
 
 class GlobalConfig : AbstractConfig(File(ConfigManager.rootDir, "global.json")) {
     val register: HashMap<String, ValueRegister> = hashMapOf(
         Pair("FakeForge", FakeForge),
-        Pair("CustomFont", Fonts)
+        Pair("CustomFont", Fonts),
+        Pair("ViaVersion", ViaMCP.getInstance())
     )
 
     override fun configParser(entry: Map.Entry<String, JsonElement>) {
