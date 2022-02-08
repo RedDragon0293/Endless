@@ -76,7 +76,9 @@ shadowJar {
         include(dependency('net.minecraft:minecraft'))
         include(dependency('org.jetbrains.kotlin:kotlin-stdlib'))
         include(dependency('javax.vecmath:vecmath'))
-        include(dependency('com.thealtening.auth:auth'))
+        include(dependency('org.yaml:snakeyaml'))
+        //include(dependency('com.thealtening.auth:auth'))
+        include(dependency(fileTree(include: ['*.jar'], dir: 'libs')))
     }
 }
 configurations {
