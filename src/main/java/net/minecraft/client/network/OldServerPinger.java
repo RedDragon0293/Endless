@@ -4,25 +4,12 @@ import com.google.common.base.Charsets;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import com.mojang.authlib.GameProfile;
+import com.mojangorigin.authlib.GameProfile;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelException;
-import io.netty.channel.ChannelFutureListener;
-import io.netty.channel.ChannelHandler;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelOption;
-import io.netty.channel.EventLoopGroup;
-import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.channel.*;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ServerAddress;
 import net.minecraft.client.multiplayer.ServerData;
@@ -43,6 +30,12 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+
 public class OldServerPinger
 {
     private static final Splitter PING_RESPONSE_SPLITTER = Splitter.on('\u0000').limit(6);
@@ -52,7 +45,7 @@ public class OldServerPinger
     public void ping(final ServerData server) throws UnknownHostException
     {
         ServerAddress serveraddress = ServerAddress.func_78860_a(server.serverIP);
-        final NetworkManager networkmanager = NetworkManager.func_181124_a(InetAddress.getByName(serveraddress.getIP()), serveraddress.getPort(), false);
+        final NetworkManager networkmanager = NetworkManager.createNetworkManagerAndConnect(InetAddress.getByName(serveraddress.getIP()), serveraddress.getPort(), false);
         this.pingDestinations.add(networkmanager);
         server.serverMOTD = "Pinging...";
         server.pingToServer = -1L;
@@ -198,7 +191,7 @@ public class OldServerPinger
                     ;
                 }
 
-                p_initChannel_1_.pipeline().addLast(new ChannelHandler[] {new SimpleChannelInboundHandler<ByteBuf>()
+                p_initChannel_1_.pipeline().addLast(new SimpleChannelInboundHandler<ByteBuf>()
                     {
                         public void channelActive(ChannelHandlerContext p_channelActive_1_) throws Exception
                         {
@@ -265,8 +258,7 @@ public class OldServerPinger
                         {
                             p_exceptionCaught_1_.close();
                         }
-                    }
-                });
+                    });
             }
         })).channel(NioSocketChannel.class)).connect(serveraddress.getIP(), serveraddress.getPort());
     }

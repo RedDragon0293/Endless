@@ -62,10 +62,6 @@ public class GameSettings {
     private static final String[] GUISCALES = new String[]{"options.guiScale.auto", "options.guiScale.small", "options.guiScale.normal", "options.guiScale.large"};
     private static final String[] PARTICLES = new String[]{"options.particles.all", "options.particles.decreased", "options.particles.minimal"};
     private static final String[] AMBIENT_OCCLUSIONS = new String[]{"options.ao.off", "options.ao.min", "options.ao.max"};
-    private static final String[] STREAM_COMPRESSIONS = new String[]{"options.stream.compression.low", "options.stream.compression.medium", "options.stream.compression.high"};
-    private static final String[] STREAM_CHAT_MODES = new String[]{"options.stream.chat.enabled.streaming", "options.stream.chat.enabled.always", "options.stream.chat.enabled.never"};
-    private static final String[] STREAM_CHAT_FILTER_MODES = new String[]{"options.stream.chat.userFilter.all", "options.stream.chat.userFilter.subs", "options.stream.chat.userFilter.mods"};
-    private static final String[] STREAM_MIC_MODES = new String[]{"options.stream.mic_toggle.mute", "options.stream.mic_toggle.talk"};
     private static final String[] field_181149_aW = new String[]{"options.off", "options.graphics.fast", "options.graphics.fancy"};
     public float mouseSensitivity = 0.5F;
     public boolean invertMouse;
@@ -121,17 +117,6 @@ public class GameSettings {
     public boolean showInventoryAchievementHint = true;
     public int mipmapLevels = 4;
     private final Map<SoundCategory, Float> mapSoundLevels = Maps.newEnumMap(SoundCategory.class);
-    public float streamBytesPerPixel = 0.5F;
-    public float streamMicVolume = 1.0F;
-    public float streamGameVolume = 1.0F;
-    public float streamKbps = 0.5412844F;
-    public float streamFps = 0.31690142F;
-    public int streamCompression = 1;
-    public boolean streamSendMetadata = true;
-    public String streamPreferredServer = "";
-    public int streamChatEnabled = 0;
-    public int streamChatUserFilter = 0;
-    public int streamMicToggleBehavior = 0;
     public boolean field_181150_U = true;
     public boolean field_181151_V = true;
     public boolean field_183509_X = true;
@@ -562,10 +547,6 @@ public class GameSettings {
             this.field_181151_V = !this.field_181151_V;
         }
 
-        if (option == GameSettings.Options.REALMS_NOTIFICATIONS) {
-            this.field_183509_X = !this.field_183509_X;
-        }
-
         this.saveOptions();
     }
 
@@ -623,9 +604,6 @@ public class GameSettings {
 
             case ENTITY_SHADOWS:
                 return this.field_181151_V;
-
-            case REALMS_NOTIFICATIONS:
-                return this.field_183509_X;
 
             default:
                 return false;
@@ -2613,7 +2591,6 @@ public class GameSettings {
         BLOCK_ALTERNATIVES("options.blockAlternatives", false, true),
         REDUCED_DEBUG_INFO("options.reducedDebugInfo", false, true),
         ENTITY_SHADOWS("options.entityShadows", false, true),
-        REALMS_NOTIFICATIONS("options.realmsNotifications", false, true),
         FOG_FANCY("of.options.FOG_FANCY", false, false),
         FOG_START("of.options.FOG_START", false, false),
         MIPMAP_TYPE("of.options.MIPMAP_TYPE", true, false, 0.0F, 3.0F, 1.0F),

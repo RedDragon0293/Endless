@@ -5,6 +5,9 @@ import cn.asone.endless.event.ReceivePacketEvent;
 import cn.asone.endless.event.SendPacketEvent;
 import com.google.common.collect.Queues;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
+import com.viaversion.viaversion.api.connection.UserConnection;
+import com.viaversion.viaversion.connection.UserConnectionImpl;
+import com.viaversion.viaversion.protocol.ProtocolPipelineImpl;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.epoll.Epoll;
@@ -21,6 +24,7 @@ import io.netty.handler.timeout.TimeoutException;
 import io.netty.util.AttributeKey;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
+import net.minecraft.client.main.Main;
 import net.minecraft.util.*;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.Validate;
@@ -28,6 +32,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
+import viamcp.ViaMCP;
+import viamcp.handler.CommonTransformer;
+import viamcp.handler.MCPDecodeHandler;
+import viamcp.handler.MCPEncodeHandler;
+import viamcp.utils.NettyUtil;
 
 import javax.crypto.SecretKey;
 import java.net.InetAddress;
@@ -278,7 +287,7 @@ public class NetworkManager extends SimpleChannelInboundHandler<Packet<?>> {
         return this.channel instanceof LocalChannel || this.channel instanceof LocalServerChannel;
     }
 
-    public static NetworkManager func_181124_a(InetAddress p_181124_0_, int p_181124_1_, boolean p_181124_2_) {
+    public static NetworkManager createNetworkManagerAndConnect(InetAddress p_181124_0_, int p_181124_1_, boolean p_181124_2_) {
         final NetworkManager networkmanager = new NetworkManager(EnumPacketDirection.CLIENTBOUND);
         Class<? extends SocketChannel> oclass;
         LazyLoadBase<? extends EventLoopGroup> lazyloadbase;
@@ -299,6 +308,11 @@ public class NetworkManager extends SimpleChannelInboundHandler<Packet<?>> {
                 }
 
                 p_initChannel_1_.pipeline().addLast("timeout", (new ReadTimeoutHandler(30))).addLast("splitter", (new MessageDeserializer2())).addLast("decoder", (new MessageDeserializer(EnumPacketDirection.CLIENTBOUND))).addLast("prepender", (new MessageSerializer2())).addLast("encoder", (new MessageSerializer(EnumPacketDirection.SERVERBOUND))).addLast("packet_handler", networkmanager);
+                if (p_initChannel_1_ instanceof SocketChannel && ViaMCP.getInstance().getVersion() != ViaMCP.PROTOCOL_VERSION && !Main.disableVia) {
+                    UserConnection user = new UserConnectionImpl(p_initChannel_1_, true);
+                    new ProtocolPipelineImpl(user);
+                    p_initChannel_1_.pipeline().addBefore("encoder", CommonTransformer.HANDLER_ENCODER_NAME, new MCPEncodeHandler(user)).addBefore("decoder", CommonTransformer.HANDLER_DECODER_NAME, new MCPDecodeHandler(user));
+                }
             }
         }).channel(oclass).connect(p_181124_0_, p_181124_1_).syncUninterruptibly();
         return networkmanager;
@@ -368,13 +382,21 @@ public class NetworkManager extends SimpleChannelInboundHandler<Packet<?>> {
             if (this.channel.pipeline().get("decompress") instanceof NettyCompressionDecoder) {
                 ((NettyCompressionDecoder) this.channel.pipeline().get("decompress")).setCompressionTreshold(treshold);
             } else {
-                this.channel.pipeline().addBefore("decoder", "decompress", new NettyCompressionDecoder(treshold));
+                if (Main.disableVia) {
+                    this.channel.pipeline().addBefore("decoder", "decompress", new NettyCompressionDecoder(treshold));
+                } else {
+                    NettyUtil.decodeEncodePlacement(channel.pipeline(), "decoder", "decompress", new NettyCompressionDecoder(treshold));
+                }
             }
 
             if (this.channel.pipeline().get("compress") instanceof NettyCompressionEncoder) {
                 ((NettyCompressionEncoder) this.channel.pipeline().get("decompress")).setCompressionTreshold(treshold);
             } else {
-                this.channel.pipeline().addBefore("encoder", "compress", new NettyCompressionEncoder(treshold));
+                if (Main.disableVia) {
+                    this.channel.pipeline().addBefore("encoder", "compress", new NettyCompressionEncoder(treshold));
+                } else {
+                    NettyUtil.decodeEncodePlacement(channel.pipeline(), "encoder", "compress", new NettyCompressionEncoder(treshold));
+                }
             }
         } else {
             if (this.channel.pipeline().get("decompress") instanceof NettyCompressionDecoder) {

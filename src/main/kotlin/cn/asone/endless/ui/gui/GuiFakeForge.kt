@@ -18,26 +18,26 @@ class GuiFakeForge(val parent: GuiScreen) : GuiScreen() {
             1,
             this.width / 2 - 100,
             this.height / 4 + 35,
-            "启用FakeForge: ${if (FakeForge.enabled.get()) "On" else "Off"}"
+            "启用FakeForge: ${I18n.format(if (FakeForge.enabled.get()) "on" else "off")}"
         )
         fmlButton = GuiButton(
             2,
             this.width / 2 - 100,
             this.height / 4 + 50 + 25,
-            "伪造C01Packet握手FML: ${if (FakeForge.fml.get()) "On" else "Off"}"
+            "伪造C01Packet握手FML: ${I18n.format(if (FakeForge.fml.get()) "on" else "off")}"
         )
         fmlProxyButton = GuiButton(
             3,
             this.width / 2 - 100,
             this.height / 4 + 50 + 25 * 2,
-            "伪造 FML 代理数据包(未实现支持!): ${if (FakeForge.fmlProxy.get()) "On" else "Off"}"
+            "伪造 FML 代理数据包(未实现支持!): ${I18n.format(if (FakeForge.fmlProxy.get()) "on" else "off")}"
         )
         fmlProxyButton.enabled = false
         payloadButton = GuiButton(
             4,
             this.width / 2 - 100,
             this.height / 4 + 50 + 25 * 3,
-            "伪造 Payload 数据包: ${if (FakeForge.payload.get()) "On" else "Off"}"
+            "伪造 Payload 数据包: ${I18n.format(if (FakeForge.payload.get()) "on" else "off")}"
         )
         this.buttonList.add(enableButton)
         this.buttonList.add(fmlButton)

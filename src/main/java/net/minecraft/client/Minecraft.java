@@ -12,10 +12,10 @@ import com.google.common.collect.Sets;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListenableFutureTask;
-import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.minecraft.MinecraftSessionService;
-import com.mojang.authlib.properties.PropertyMap;
-import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
+import com.mojangorigin.authlib.GameProfile;
+import com.mojangorigin.authlib.minecraft.MinecraftSessionService;
+import com.mojangorigin.authlib.properties.PropertyMap;
+import com.mojangorigin.authlib.yggdrasil.YggdrasilAuthenticationService;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.audio.MusicTicker;
@@ -126,7 +126,6 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
     public static byte[] memoryReserve = new byte[10485760];
     private static final List<DisplayMode> macDisplayModes = Lists.newArrayList(new DisplayMode(2560, 1600), new DisplayMode(2880, 1800));
     private final File fileResourcepacks;
-    private final PropertyMap twitchDetails;
     private final PropertyMap profileProperties;
     private ServerData currentServerData;
 
@@ -149,7 +148,6 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
     private CrashReport crashReporter;
     public int displayWidth;
     public int displayHeight;
-    private boolean connectedToRealms = false;
     public Timer timer = new Timer(20.0F);
 
     /**
@@ -334,14 +332,13 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
         this.fileAssets = gameConfig.folderInfo.assetsDir;
         this.fileResourcepacks = gameConfig.folderInfo.resourcePacksDir;
         this.launchedVersion = gameConfig.gameInfo.version;
-        this.twitchDetails = gameConfig.userInfo.userProperties;
         this.profileProperties = gameConfig.userInfo.profileProperties;
         this.mcDefaultResourcePack = new DefaultResourcePack((new ResourceIndex(gameConfig.folderInfo.assetsDir, gameConfig.folderInfo.assetIndex)).getResourceMap());
         this.proxy = gameConfig.userInfo.proxy == null ? Proxy.NO_PROXY : gameConfig.userInfo.proxy;
         this.sessionService = (new YggdrasilAuthenticationService(gameConfig.userInfo.proxy, UUID.randomUUID().toString())).createMinecraftSessionService();
         this.session = gameConfig.userInfo.session;
         logger.info("Setting user: " + this.session.getUsername());
-        logger.info("(Session ID is " + this.session.getSessionID() + ")");
+        logger.debug("(Session ID is " + this.session.getSessionID() + ")");
         this.isDemo = gameConfig.gameInfo.isDemo;
         this.displayWidth = gameConfig.displayInfo.width > 0 ? gameConfig.displayInfo.width : 1;
         this.displayHeight = gameConfig.displayInfo.height > 0 ? gameConfig.displayInfo.height : 1;
@@ -2429,10 +2426,6 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
         this.session = session;
     }
 
-    public PropertyMap getTwitchDetails() {
-        return this.twitchDetails;
-    }
-
     public PropertyMap func_181037_M() {
         if (this.profileProperties.isEmpty()) {
             GameProfile gameprofile = this.getSessionService().fillProfileProperties(this.session.getProfile(), false);
@@ -2573,13 +2566,5 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
         map.put("X-Minecraft-UUID", getMinecraft().getSession().getPlayerID());
         map.put("X-Minecraft-Version", "1.8.9");
         return map;
-    }
-
-    public boolean isConnectedToRealms() {
-        return this.connectedToRealms;
-    }
-
-    public void setConnectedToRealms(boolean p_181537_1_) {
-        this.connectedToRealms = p_181537_1_;
     }
 }

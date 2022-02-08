@@ -1,9 +1,10 @@
 package net.minecraft.nbt;
 
-import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.properties.Property;
-import java.util.UUID;
+import com.mojangorigin.authlib.GameProfile;
+import com.mojangorigin.authlib.properties.Property;
 import net.minecraft.util.StringUtils;
+
+import java.util.UUID;
 
 public final class NBTUtil
 {

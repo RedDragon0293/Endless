@@ -48,6 +48,7 @@ public class LoadWindow extends JFrame {
         } catch (ClassNotFoundException | UnsupportedLookAndFeelException | IllegalAccessException | InstantiationException e) {
             e.printStackTrace();
         }
+        //通过ttf字体文件创建字体对象
         BufferedImage bufferedImage = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
         Font font;
         try {

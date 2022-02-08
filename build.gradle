@@ -1,5 +1,5 @@
 buildscript {
-    ext.kotlin_version = '1.5.31'
+    ext.kotlin_version = '1.6.0'
 
     repositories {
         jcenter()
@@ -50,6 +50,7 @@ allprojects {
         mavenCentral()
         maven { url 'https://libraries.minecraft.net' }
         maven { url 'https://enaium.gitee.io/maven' }
+        maven { url 'https://repo.viaversion.com/everything' }
     }
 }
 
@@ -57,11 +58,18 @@ dependencies {
     api group: 'javax.vecmath', name: 'vecmath', version: '1.5.2'
     api ("net.minecraft:minecraft:1.8.9") {
         exclude group: 'tv.twitch'
-        exclude group: 'com.mojang', module: 'realms'
+        exclude group: 'com.mojang'
+        exclude group: 'org.apache.logging.log4j'
     }
     api group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib', version: kotlin_version
-    api 'com.thealtening.auth:auth:3.0.2'
-    compile fileTree(include: ['*.jar'], dir: 'libs')
+    //api 'com.thealtening.auth:auth:3.0.2'
+    api 'org.apache.logging.log4j:log4j-api:2.17.1'
+    api 'org.apache.logging.log4j:log4j-core:2.17.0'
+    //api 'us.myles:viaversion:4.2.0-SNAPSHOT'
+    //api 'nl.matsv:viabackwards:4.2.0-SNAPSHOT'
+    api 'org.yaml:snakeyaml:1.27'
+    //api 'de.gerrygames:viarewind-parent:1.5.4-SNAPSHOT'
+    api fileTree(include: ['*.jar'], dir: 'libs')
 }
 shadowJar {
     dependencies {

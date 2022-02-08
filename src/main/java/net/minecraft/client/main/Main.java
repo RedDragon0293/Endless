@@ -4,8 +4,8 @@ import cn.asone.endless.Endless;
 import cn.asone.endless.config.ConfigManager;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.mojang.authlib.properties.PropertyMap;
-import com.mojang.authlib.properties.PropertyMap.Serializer;
+import com.mojangorigin.authlib.properties.PropertyMap;
+import com.mojangorigin.authlib.properties.PropertyMap.Serializer;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import joptsimple.OptionSpec;
@@ -14,6 +14,7 @@ import net.minecraft.util.Session;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.swing.*;
 import java.io.File;
 import java.net.Authenticator;
 import java.net.InetSocketAddress;
@@ -26,9 +27,17 @@ public class Main {
     public static boolean safelyQuit = false;
     private final static Logger logger = LogManager.getLogger("Endless");
     public static final LoadWindow window = new LoadWindow();
+    public static boolean disableVia;
 
     public static void main(String[] args) {
         System.setProperty("java.net.preferIPv4Stack", "true");
+        StringBuilder builder = new StringBuilder();
+        for (String i : args) {
+            builder.append(i).append(" ");
+        }
+        JOptionPane.showMessageDialog(null, "本客户端内置ViaVersion. 如果你不想使用, 请在接下来的输入框中添加启动参数 \"--disableViaVersion\". 如果你已经在启动器中添加, 请忽略此提示.");
+        String argsString = JOptionPane.showInputDialog("请确认启动参数", builder.toString());
+        String[] userArgs = argsString.split(" ");
         window.init();
         window.setEnabled(true);
         window.setVisible(true);
@@ -37,6 +46,7 @@ public class Main {
         optionparser.accepts("demo");
         optionparser.accepts("fullscreen");
         optionparser.accepts("checkGlErrors");
+        optionparser.accepts("disableViaVersion");
         OptionSpec<String> server = optionparser.accepts("server").withRequiredArg();
         OptionSpec<Integer> port = optionparser.accepts("port").withRequiredArg().ofType(Integer.class).defaultsTo(25565);
         OptionSpec<File> gameDir = optionparser.accepts("gameDir").withRequiredArg().ofType(File.class).defaultsTo(new File("."));
@@ -57,7 +67,7 @@ public class Main {
         OptionSpec<String> assetIndex = optionparser.accepts("assetIndex").withRequiredArg();
         OptionSpec<String> userType = optionparser.accepts("userType").withRequiredArg().defaultsTo("legacy");
         OptionSpec<String> optionspec19 = optionparser.nonOptions();
-        OptionSet argsOptions = optionparser.parse(args);
+        OptionSet argsOptions = optionparser.parse(userArgs);
         List<String> list = argsOptions.valuesOf(optionspec19);
 
         if (!list.isEmpty()) {
@@ -90,6 +100,10 @@ public class Main {
         boolean fullScreen = argsOptions.has("fullscreen");
         boolean checkGLErrors = argsOptions.has("checkGlErrors");
         boolean demo = argsOptions.has("demo");
+        disableVia = argsOptions.has("disableViaVersion");
+        if (disableVia) {
+            logger.info("ViaVersion has been disabled!");
+        }
         String versionValue = argsOptions.valueOf(version);
         Gson gson = (new GsonBuilder()).registerTypeAdapter(PropertyMap.class, new Serializer()).create();
         PropertyMap userPropertyMap = gson.fromJson(argsOptions.valueOf(userProperties), PropertyMap.class);

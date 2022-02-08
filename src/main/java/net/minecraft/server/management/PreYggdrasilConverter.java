@@ -3,18 +3,19 @@ package net.minecraft.server.management;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
-import com.mojang.authlib.Agent;
-import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.ProfileLookupCallback;
-import java.io.File;
-import java.util.Collection;
-import java.util.List;
-import java.util.UUID;
+import com.mojangorigin.authlib.Agent;
+import com.mojangorigin.authlib.GameProfile;
+import com.mojangorigin.authlib.ProfileLookupCallback;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.io.File;
+import java.util.Collection;
+import java.util.List;
+import java.util.UUID;
 
 public class PreYggdrasilConverter
 {

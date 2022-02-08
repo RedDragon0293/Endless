@@ -2,16 +2,17 @@ package net.minecraft.network.play.server;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
-import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.properties.Property;
-import java.io.IOException;
-import java.util.List;
+import com.mojangorigin.authlib.GameProfile;
+import com.mojangorigin.authlib.properties.Property;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.Packet;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.INetHandlerPlayClient;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.world.WorldSettings;
+
+import java.io.IOException;
+import java.util.List;
 
 public class S38PacketPlayerListItem implements Packet<INetHandlerPlayClient>
 {

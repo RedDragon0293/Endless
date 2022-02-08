@@ -11,7 +11,6 @@ import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.realms.RealmsBridge;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
@@ -99,12 +98,7 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
     private int field_92019_w;
     private ResourceLocation backgroundTexture;
 
-    /**
-     * Minecraft Realms button.
-     */
-    private GuiButton realmsButton;
     private boolean field_183502_L;
-    private GuiScreen realmsScreen;
     private GuiButton modButton;
     private GuiScreen modUpdateNotification;
 
@@ -217,8 +211,6 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
             this.field_92020_v = this.field_92022_t + k;
             this.field_92019_w = this.field_92021_u + 24;
         }
-
-        this.mc.setConnectedToRealms(false);
     }
 
     /**
@@ -286,11 +278,6 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
                 mc.displayGuiScreen(guiyesno);
             }
         }
-    }
-
-    private void switchToRealms() {
-        RealmsBridge realmsbridge = new RealmsBridge();
-        realmsbridge.switchToRealms(this);
     }
 
     public void confirmClicked(boolean result, int id) {
@@ -570,15 +557,6 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
                 guiconfirmopenlink.disableSecurityWarning();
                 this.mc.displayGuiScreen(guiconfirmopenlink);
             }
-        }
-    }
-
-    /**
-     * Called when the screen is unloaded. Used to disable keyboard repeat events
-     */
-    public void onGuiClosed() {
-        if (this.realmsScreen != null) {
-            this.realmsScreen.onGuiClosed();
         }
     }
 }

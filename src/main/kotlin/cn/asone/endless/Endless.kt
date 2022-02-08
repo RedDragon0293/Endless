@@ -9,12 +9,14 @@ import cn.asone.endless.ui.gui.clickgui.GuiClickGUI
 import net.minecraft.client.main.Main
 import org.apache.logging.log4j.LogManager
 import org.lwjgl.opengl.Display
+import viamcp.ViaMCP
 
 object Endless {
     const val CLIENT_NAME = "Endless"
     const val CLIENT_VERSION = "Beta 0.1.0"
     const val MINECRAFT_VERSION = "1.8.9"
     lateinit var clickGUI: GuiClickGUI
+
     @JvmField
     var inited = false
 
@@ -22,7 +24,16 @@ object Endless {
 
     fun startClient() {
         logger.info("正在启动 $CLIENT_NAME $CLIENT_VERSION...")
-
+        if (!Main.disableVia) {
+            try {
+                logger.info("正在加载 ViaVersion...")
+                ViaMCP.getInstance().start()
+                ViaMCP.getInstance().initAsyncSlider(120, 8, 110, 20)
+            } catch (e: Exception) {
+                logger.error("无法加载 ViaVersion!")
+                e.printStackTrace()
+            }
+        }
         ConfigManager
         EventManager
         CommandManager

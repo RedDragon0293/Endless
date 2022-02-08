@@ -15,7 +15,10 @@ public class S42PacketCombatEvent implements Packet<INetHandlerPlayClient> {
     public int field_179772_d;
     public String deathMessage;
 
-    @SuppressWarnings("incomplete-switch")
+    @SuppressWarnings("unused")
+    public S42PacketCombatEvent() {
+    }
+
     public S42PacketCombatEvent(CombatTracker combatTrackerIn, S42PacketCombatEvent.Event combatEventType) {
         this.eventType = combatEventType;
         EntityLivingBase entitylivingbase = combatTrackerIn.func_94550_c();

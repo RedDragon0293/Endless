@@ -13,7 +13,6 @@ import net.minecraft.network.play.INetHandlerPlayClient;
 import net.minecraft.network.play.INetHandlerPlayServer;
 import net.minecraft.network.play.client.C17PacketCustomPayload;
 import net.minecraft.network.play.server.S3FPacketCustomPayload;
-import org.apache.logging.log4j.core.helpers.Integers;
 
 import java.io.IOException;
 import java.util.List;
@@ -23,7 +22,8 @@ public class FMLProxyPacket implements Packet<INetHandler> {
     private final PacketBuffer payload;
     private INetHandler netHandler;
     private static Multiset<String> badPackets = ConcurrentHashMultiset.create();
-    private static int packetCountWarning = Integers.parseInt(System.getProperty("fml.badPacketCounter", "100"), 100);
+    //private static int packetCountWarning = Integers.parseInt(System.getProperty("fml.badPacketCounter", "100"), 100);
+    private static int packetCountWarning = Integer.parseInt(System.getProperty("fml.badPacketCounter", "100"));
 
     public FMLProxyPacket(S3FPacketCustomPayload original) {
         this(original.getBufferData(), original.getChannelName());

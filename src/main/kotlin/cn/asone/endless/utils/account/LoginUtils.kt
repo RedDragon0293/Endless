@@ -4,10 +4,10 @@ import cn.asone.endless.ui.gui.accounts.GuiAccounts
 import cn.asone.endless.utils.ClientUtils
 import cn.asone.endless.utils.extensions.mc
 import com.google.gson.JsonParser
-import com.mojang.authlib.Agent
-import com.mojang.authlib.exceptions.AuthenticationException
-import com.mojang.authlib.exceptions.AuthenticationUnavailableException
-import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService
+import com.mojangorigin.authlib.Agent
+import com.mojangorigin.authlib.exceptions.AuthenticationException
+import com.mojangorigin.authlib.exceptions.AuthenticationUnavailableException
+import com.mojangorigin.authlib.yggdrasil.YggdrasilAuthenticationService
 import com.thealtening.auth.service.AlteningServiceType
 import net.minecraft.util.Session
 import java.net.Proxy

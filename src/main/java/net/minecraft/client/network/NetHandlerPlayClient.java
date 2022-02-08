@@ -4,7 +4,7 @@ import cn.asone.endless.utils.ClientUtils;
 import com.google.common.collect.Maps;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
-import com.mojang.authlib.GameProfile;
+import com.mojangorigin.authlib.GameProfile;
 import io.netty.buffer.Unpooled;
 import net.minecraft.block.Block;
 import net.minecraft.client.ClientBrandRetriever;
@@ -48,7 +48,6 @@ import net.minecraft.network.play.INetHandlerPlayClient;
 import net.minecraft.network.play.client.*;
 import net.minecraft.network.play.server.*;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.realms.DisconnectedRealmsScreen;
 import net.minecraft.scoreboard.*;
 import net.minecraft.stats.Achievement;
 import net.minecraft.stats.AchievementList;
@@ -550,11 +549,7 @@ public class NetHandlerPlayClient implements INetHandlerPlayClient {
         this.mc.loadWorld(null);
 
         if (this.guiScreenServer != null) {
-            if (this.guiScreenServer instanceof GuiScreenRealmsProxy) {
-                this.mc.displayGuiScreen((new DisconnectedRealmsScreen(((GuiScreenRealmsProxy) this.guiScreenServer).func_154321_a(), "disconnect.lost", reason)).getProxy());
-            } else {
-                this.mc.displayGuiScreen(new GuiDisconnected(this.guiScreenServer, "disconnect.lost", reason));
-            }
+            this.mc.displayGuiScreen(new GuiDisconnected(this.guiScreenServer, "disconnect.lost", reason));
         } else {
             this.mc.displayGuiScreen(new GuiDisconnected(new GuiMultiplayer(new GuiMainMenu()), "disconnect.lost", reason));
         }
