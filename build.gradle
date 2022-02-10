@@ -58,11 +58,11 @@ dependencies {
     api group: 'javax.vecmath', name: 'vecmath', version: '1.5.2'
     api ("net.minecraft:minecraft:1.8.9") {
         exclude group: 'tv.twitch'
-        exclude group: 'com.mojang'
+        exclude group: 'com.mojang', module: 'realms'
         exclude group: 'org.apache.logging.log4j'
     }
     api group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib', version: kotlin_version
-    //api 'com.thealtening.auth:auth:3.0.2'
+    api 'com.thealtening.auth:auth:3.0.2'
     api 'org.apache.logging.log4j:log4j-api:2.17.1'
     api 'org.apache.logging.log4j:log4j-core:2.17.0'
     //api 'us.myles:viaversion:4.2.0-SNAPSHOT'

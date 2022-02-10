@@ -1,6 +1,6 @@
 package net.minecraft.client.gui.spectator;
 
-import com.mojangorigin.authlib.GameProfile;
+import com.mojang.authlib.GameProfile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.gui.Gui;

@@ -1,8 +1,8 @@
 package net.minecraft.client.renderer.tileentity;
 
-import com.mojangorigin.authlib.GameProfile;
-import com.mojangorigin.authlib.minecraft.MinecraftProfileTexture;
-import com.mojangorigin.authlib.minecraft.MinecraftProfileTexture.Type;
+import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.minecraft.MinecraftProfileTexture;
+import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelHumanoidHead;

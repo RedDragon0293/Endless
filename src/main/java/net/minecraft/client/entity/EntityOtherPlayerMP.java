@@ -1,6 +1,6 @@
 package net.minecraft.client.entity;
 
-import com.mojangorigin.authlib.GameProfile;
+import com.mojang.authlib.GameProfile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockPos;

@@ -1,10 +1,10 @@
 package net.minecraft.client.network;
 
-import com.mojangorigin.authlib.GameProfile;
-import com.mojangorigin.authlib.exceptions.AuthenticationException;
-import com.mojangorigin.authlib.exceptions.AuthenticationUnavailableException;
-import com.mojangorigin.authlib.exceptions.InvalidCredentialsException;
-import com.mojangorigin.authlib.minecraft.MinecraftSessionService;
+import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.exceptions.AuthenticationException;
+import com.mojang.authlib.exceptions.AuthenticationUnavailableException;
+import com.mojang.authlib.exceptions.InvalidCredentialsException;
+import com.mojang.authlib.minecraft.MinecraftSessionService;
 import io.netty.util.concurrent.GenericFutureListener;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiDisconnected;

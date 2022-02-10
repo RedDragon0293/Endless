@@ -1,7 +1,7 @@
 package net.minecraft.server.management;
 
 import com.google.gson.JsonObject;
-import com.mojangorigin.authlib.GameProfile;
+import com.mojang.authlib.GameProfile;
 
 import java.util.UUID;
 

@@ -1,6 +1,6 @@
 package net.minecraft.client.main;
 
-import com.mojangorigin.authlib.properties.PropertyMap;
+import com.mojang.authlib.properties.PropertyMap;
 import net.minecraft.util.Session;
 
 import java.io.File;

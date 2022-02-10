@@ -1,6 +1,6 @@
 package net.minecraft.item;
 
-import com.mojangorigin.authlib.GameProfile;
+import com.mojang.authlib.GameProfile;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockSkull;
 import net.minecraft.block.state.IBlockState;

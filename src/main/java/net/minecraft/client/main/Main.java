@@ -4,8 +4,8 @@ import cn.asone.endless.Endless;
 import cn.asone.endless.config.ConfigManager;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.mojangorigin.authlib.properties.PropertyMap;
-import com.mojangorigin.authlib.properties.PropertyMap.Serializer;
+import com.mojang.authlib.properties.PropertyMap;
+import com.mojang.authlib.properties.PropertyMap.Serializer;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import joptsimple.OptionSpec;
@@ -14,7 +14,6 @@ import net.minecraft.util.Session;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.swing.*;
 import java.io.File;
 import java.net.Authenticator;
 import java.net.InetSocketAddress;
@@ -31,13 +30,6 @@ public class Main {
 
     public static void main(String[] args) {
         System.setProperty("java.net.preferIPv4Stack", "true");
-        StringBuilder builder = new StringBuilder();
-        for (String i : args) {
-            builder.append(i).append(" ");
-        }
-        JOptionPane.showMessageDialog(null, "本客户端内置ViaVersion. 如果你不想使用, 请在接下来的输入框中添加启动参数 \"--disableViaVersion\". 如果你已经在启动器中添加, 请忽略此提示.");
-        String argsString = JOptionPane.showInputDialog("请确认启动参数", builder.toString());
-        String[] userArgs = argsString.split(" ");
         window.init();
         window.setEnabled(true);
         window.setVisible(true);
@@ -67,7 +59,7 @@ public class Main {
         OptionSpec<String> assetIndex = optionparser.accepts("assetIndex").withRequiredArg();
         OptionSpec<String> userType = optionparser.accepts("userType").withRequiredArg().defaultsTo("legacy");
         OptionSpec<String> optionspec19 = optionparser.nonOptions();
-        OptionSet argsOptions = optionparser.parse(userArgs);
+        OptionSet argsOptions = optionparser.parse(args);
         List<String> list = argsOptions.valuesOf(optionspec19);
 
         if (!list.isEmpty()) {
@@ -142,7 +134,9 @@ public class Main {
                     Main.logger.info("[Debug] Shutting down server...");
                     Minecraft.stopIntegratedServer();
                     Main.logger.info("正在保存Minecraft配置文件...");
-                    Minecraft.getMinecraft().gameSettings.saveOptions();
+                    if (Minecraft.getMinecraft().gameSettings != null) {
+                        Minecraft.getMinecraft().gameSettings.saveOptions();
+                    }
                 }
             }
         });

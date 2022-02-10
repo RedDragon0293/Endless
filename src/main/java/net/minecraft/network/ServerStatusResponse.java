@@ -1,7 +1,7 @@
 package net.minecraft.network;
 
 import com.google.gson.*;
-import com.mojangorigin.authlib.GameProfile;
+import com.mojang.authlib.GameProfile;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.util.JsonUtils;
 

@@ -1,9 +1,9 @@
 package net.minecraft.client.network;
 
 import com.google.common.base.Objects;
-import com.mojangorigin.authlib.GameProfile;
-import com.mojangorigin.authlib.minecraft.MinecraftProfileTexture;
-import com.mojangorigin.authlib.minecraft.MinecraftProfileTexture.Type;
+import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.minecraft.MinecraftProfileTexture;
+import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.client.resources.SkinManager;

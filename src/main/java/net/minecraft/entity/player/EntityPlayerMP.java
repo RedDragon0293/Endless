@@ -2,7 +2,7 @@ package net.minecraft.entity.player;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.mojangorigin.authlib.GameProfile;
+import com.mojang.authlib.GameProfile;
 import io.netty.buffer.Unpooled;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFence;

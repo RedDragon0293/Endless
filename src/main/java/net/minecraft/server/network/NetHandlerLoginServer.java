@@ -1,8 +1,8 @@
 package net.minecraft.server.network;
 
 import com.google.common.base.Charsets;
-import com.mojangorigin.authlib.GameProfile;
-import com.mojangorigin.authlib.exceptions.AuthenticationUnavailableException;
+import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.exceptions.AuthenticationUnavailableException;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.util.concurrent.GenericFutureListener;

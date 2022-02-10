@@ -2,8 +2,8 @@ package net.minecraft.network.play.server;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
-import com.mojangorigin.authlib.GameProfile;
-import com.mojangorigin.authlib.properties.Property;
+import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.properties.Property;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.Packet;
 import net.minecraft.network.PacketBuffer;
