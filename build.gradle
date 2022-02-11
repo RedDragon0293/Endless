@@ -63,7 +63,7 @@ dependencies {
     }
     api group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib', version: kotlin_version
     api 'com.thealtening.auth:auth:3.0.2'
-    api 'org.apache.logging.log4j:log4j-api:2.17.1'
+    api 'org.apache.logging.log4j:log4j-api:2.17.0'
     api 'org.apache.logging.log4j:log4j-core:2.17.0'
     //api 'us.myles:viaversion:4.2.0-SNAPSHOT'
     //api 'nl.matsv:viabackwards:4.2.0-SNAPSHOT'

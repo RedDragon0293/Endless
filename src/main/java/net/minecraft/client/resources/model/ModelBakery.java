@@ -500,12 +500,10 @@ public class ModelBakery {
         final Set<ResourceLocation> set = this.getVariantsTextureLocations();
         set.addAll(this.getItemsTextureLocations());
         set.remove(TextureMap.LOCATION_MISSING_TEXTURE);
-        IIconCreator iiconcreator = new IIconCreator() {
-            public void registerSprites(TextureMap iconRegistry) {
-                for (ResourceLocation resourcelocation : set) {
-                    TextureAtlasSprite textureatlassprite = iconRegistry.registerSprite(resourcelocation);
-                    ModelBakery.this.sprites.put(resourcelocation, textureatlassprite);
-                }
+        IIconCreator iiconcreator = iconRegistry -> {
+            for (ResourceLocation resourcelocation : set) {
+                TextureAtlasSprite textureatlassprite = iconRegistry.registerSprite(resourcelocation);
+                ModelBakery.this.sprites.put(resourcelocation, textureatlassprite);
             }
         };
         this.textureMap.loadSprites(this.resourceManager, iiconcreator);

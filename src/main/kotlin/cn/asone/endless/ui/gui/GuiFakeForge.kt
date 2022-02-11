@@ -18,26 +18,26 @@ class GuiFakeForge(val parent: GuiScreen) : GuiScreen() {
             1,
             this.width / 2 - 100,
             this.height / 4 + 35,
-            "启用FakeForge: ${I18n.format(if (FakeForge.enabled.get()) "on" else "off")}"
+            "启用 FakeForge: ${I18n.format(if (FakeForge.enabled.get()) "options.on" else "options.off")}"
         )
         fmlButton = GuiButton(
             2,
             this.width / 2 - 100,
             this.height / 4 + 50 + 25,
-            "伪造C01Packet握手FML: ${I18n.format(if (FakeForge.fml.get()) "on" else "off")}"
+            "伪造 C00 握手数据包FML: ${I18n.format(if (FakeForge.fml.get()) "options.on" else "options.off")}"
         )
         fmlProxyButton = GuiButton(
             3,
             this.width / 2 - 100,
             this.height / 4 + 50 + 25 * 2,
-            "伪造 FML 代理数据包(未实现支持!): ${I18n.format(if (FakeForge.fmlProxy.get()) "on" else "off")}"
+            "伪造 FML 代理数据包(未实现支持!): ${I18n.format(if (FakeForge.fmlProxy.get()) "options.on" else "options.off")}"
         )
         fmlProxyButton.enabled = false
         payloadButton = GuiButton(
             4,
             this.width / 2 - 100,
             this.height / 4 + 50 + 25 * 3,
-            "伪造 Payload 数据包: ${I18n.format(if (FakeForge.payload.get()) "on" else "off")}"
+            "伪造 Payload 数据包: ${I18n.format(if (FakeForge.payload.get()) "options.on" else "options.off")}"
         )
         this.buttonList.add(enableButton)
         this.buttonList.add(fmlButton)
@@ -58,22 +58,26 @@ class GuiFakeForge(val parent: GuiScreen) : GuiScreen() {
         when (button.id) {
             1 -> {
                 FakeForge.enabled.set(!FakeForge.enabled.get())
-                enableButton.displayString = "启用FakeForge: ${if (FakeForge.enabled.get()) "On" else "Off"}"
+                enableButton.displayString =
+                    "启用 FakeForge: ${I18n.format(if (FakeForge.enabled.get()) "options.on" else "options.off")}"
             }
 
             2 -> {
                 FakeForge.fml.set(!FakeForge.fml.get())
-                fmlButton.displayString = "伪造C01Packet握手FML: ${if (FakeForge.fml.get()) "On" else "Off"}"
+                fmlButton.displayString =
+                    "伪造 C00 握手数据包FML: ${I18n.format(if (FakeForge.fml.get()) "options.on" else "options.off")}"
             }
 
             3 -> {
                 FakeForge.fmlProxy.set(!FakeForge.fmlProxy.get())
-                fmlProxyButton.displayString = "伪造 FML 代理数据包(未实现支持!): ${if (FakeForge.fmlProxy.get()) "On" else "Off"}"
+                fmlProxyButton.displayString =
+                    "伪造 FML 代理数据包(未实现支持!): ${I18n.format(if (FakeForge.fmlProxy.get()) "options.on" else "options.off")}"
             }
 
             4 -> {
                 FakeForge.payload.set(!FakeForge.payload.get())
-                payloadButton.displayString = "伪造 Payload 数据包: ${if (FakeForge.payload.get()) "On" else "Off"}"
+                payloadButton.displayString =
+                    "伪造 Payload 数据包: ${I18n.format(if (FakeForge.payload.get()) "options.on" else "options.off")}"
             }
 
             0 -> mc.displayGuiScreen(parent)
