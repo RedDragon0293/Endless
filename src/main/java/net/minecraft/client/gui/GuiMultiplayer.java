@@ -40,6 +40,8 @@ public class GuiMultiplayer extends GuiScreen implements GuiYesNoCallback {
     private LanServerDetector.LanServerList lanServerList;
     private LanServerDetector.ThreadLanServerFind lanServerDetector;
     private boolean initialized;
+    private static final GuiButton authButton = new GuiButton(20, 235, 8, 110, 20, "Mojang");
+    public static boolean authType = false;
 
     public GuiMultiplayer(GuiScreen parentScreen) {
         this.parentScreen = parentScreen;
@@ -95,6 +97,7 @@ public class GuiMultiplayer extends GuiScreen implements GuiYesNoCallback {
         if (!Main.disableVia) {
             this.buttonList.add(ViaMCP.getInstance().asyncSlider);
         }
+        this.buttonList.add(authButton);
         this.selectServer(this.serverListSelector.func_148193_k());
     }
 
@@ -161,6 +164,16 @@ public class GuiMultiplayer extends GuiScreen implements GuiYesNoCallback {
                 this.refreshServerList();
             } else if (button.id == 11) {
                 mc.displayGuiScreen(new GuiFakeForge(this));
+            } else if (button.id == 20) {
+                switch (button.displayString) {
+                    case "Mojang":
+                        button.displayString = "Netease";
+                        authType = true;
+                        break;
+                    case "Netease":
+                        button.displayString = "Mojang";
+                        authType = false;
+                }
             }
         }
     }

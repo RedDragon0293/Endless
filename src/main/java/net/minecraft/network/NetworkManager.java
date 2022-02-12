@@ -44,7 +44,7 @@ import java.net.SocketAddress;
 import java.util.Queue;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-public class NetworkManager extends SimpleChannelInboundHandler<Packet<?>> {
+public class NetworkManager extends SimpleChannelInboundHandler<Packet<INetHandler>> {
     private static final Logger logger = LogManager.getLogger();
     public static final Marker logMarkerNetwork = MarkerManager.getMarker("NETWORK");
     public static final Marker logMarkerPackets = MarkerManager.getMarker("NETWORK_PACKETS", logMarkerNetwork);
@@ -131,7 +131,7 @@ public class NetworkManager extends SimpleChannelInboundHandler<Packet<?>> {
         this.closeChannel(chatcomponenttranslation);
     }
 
-    protected void channelRead0(ChannelHandlerContext p_channelRead0_1_, Packet packet) {
+    protected void channelRead0(ChannelHandlerContext p_channelRead0_1_, Packet<INetHandler> packet) {
         final ReceivePacketEvent event = new ReceivePacketEvent(packet);
         EventManager.INSTANCE.callEvent(event);
         if (event.isCancelled())

@@ -120,8 +120,7 @@ public class ServerData
         this.serverIcon = icon;
     }
 
-    public boolean func_181041_d()
-    {
+    public boolean isOnLAN() {
         return this.field_181042_l;
     }
 

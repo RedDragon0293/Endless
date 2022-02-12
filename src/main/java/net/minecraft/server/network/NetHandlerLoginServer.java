@@ -3,7 +3,6 @@ package net.minecraft.server.network;
 import com.google.common.base.Charsets;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.exceptions.AuthenticationUnavailableException;
-import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.util.concurrent.GenericFutureListener;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -93,7 +92,7 @@ public class NetHandlerLoginServer implements INetHandlerLoginServer, ITickable 
         }
         catch (Exception exception)
         {
-            logger.error((String)"Error whilst disconnecting player", (Throwable)exception);
+            logger.error("Error whilst disconnecting player", exception);
         }
     }
 
@@ -116,13 +115,7 @@ public class NetHandlerLoginServer implements INetHandlerLoginServer, ITickable 
 
             if (this.server.getNetworkCompressionTreshold() >= 0 && !this.networkManager.isLocalChannel())
             {
-                this.networkManager.sendPacket(new S03PacketEnableCompression(this.server.getNetworkCompressionTreshold()), new ChannelFutureListener()
-                {
-                    public void operationComplete(ChannelFuture p_operationComplete_1_) throws Exception
-                    {
-                        NetHandlerLoginServer.this.networkManager.setCompressionTreshold(NetHandlerLoginServer.this.server.getNetworkCompressionTreshold());
-                    }
-                }, new GenericFutureListener[0]);
+                this.networkManager.sendPacket(new S03PacketEnableCompression(this.server.getNetworkCompressionTreshold()), (ChannelFutureListener) p_operationComplete_1_ -> NetHandlerLoginServer.this.networkManager.setCompressionTreshold(NetHandlerLoginServer.this.server.getNetworkCompressionTreshold()), new GenericFutureListener[0]);
             }
 
             this.networkManager.sendPacket(new S02PacketLoginSuccess(this.loginGameProfile));
@@ -192,7 +185,7 @@ public class NetHandlerLoginServer implements INetHandlerLoginServer, ITickable 
                     try
                     {
                         String s = (new BigInteger(CryptManager.getServerIdHash(NetHandlerLoginServer.this.serverId, NetHandlerLoginServer.this.server.getKeyPair().getPublic(), NetHandlerLoginServer.this.secretKey))).toString(16);
-                        NetHandlerLoginServer.this.loginGameProfile = NetHandlerLoginServer.this.server.getMinecraftSessionService().hasJoinedServer(new GameProfile(null, gameprofile.getName()), s);
+                        NetHandlerLoginServer.this.loginGameProfile = NetHandlerLoginServer.this.server.getMinecraftSessionService().hasJoinedServer(new GameProfile(null, gameprofile.getName()), s, null);
 
                         if (NetHandlerLoginServer.this.loginGameProfile != null)
                         {

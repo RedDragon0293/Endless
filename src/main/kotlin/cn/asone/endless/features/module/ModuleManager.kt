@@ -8,6 +8,7 @@ import cn.asone.endless.features.command.CommandManager
 import cn.asone.endless.features.module.modules.combat.ModuleAura
 import cn.asone.endless.features.module.modules.combat.ModuleVelocity
 import cn.asone.endless.features.module.modules.misc.ModuleAntiBot
+import cn.asone.endless.features.module.modules.misc.ModuleHYTParty
 import cn.asone.endless.features.module.modules.misc.ModuleTest
 import cn.asone.endless.features.module.modules.movement.ModuleSprint
 import cn.asone.endless.features.module.modules.render.ModuleClickGUI
@@ -30,7 +31,8 @@ object ModuleManager : ListenableClass() {
             ModuleVelocity,
             ModuleAntiBot,
             ModuleHUD,
-            ModuleTest
+            ModuleTest,
+            ModuleHYTParty
         ).forEach {
             registerModule(it)
             if (it.values.isNotEmpty())
