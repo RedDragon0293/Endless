@@ -1,6 +1,7 @@
 package cn.asone.endless.features.command
 
 import cn.asone.endless.features.command.commands.CommandBind
+import cn.asone.endless.features.command.commands.CommandDebug
 import cn.asone.endless.features.command.commands.CommandToggle
 import cn.asone.endless.features.module.AbstractModule
 import cn.asone.endless.utils.ClientUtils
@@ -12,8 +13,9 @@ object CommandManager {
 
     init {
         arrayOf(
-                CommandBind(),
-                CommandToggle()
+            CommandBind(),
+            CommandToggle(),
+            CommandDebug()
         ).forEach {
             commands.add(it)
         }
@@ -38,8 +40,7 @@ object CommandManager {
          * name = "bind"
          */
         val spaceIndex = args.indexOf(' ')
-        val name: String
-        name = if (spaceIndex != -1)
+        val name: String = if (spaceIndex != -1)
             args.substring(0, spaceIndex)
         else
             args
@@ -49,20 +50,20 @@ object CommandManager {
                  * onExecute("KillAura r")
                  */
                 command.onExecute(
-                        if (spaceIndex == -1)
-                            ""
-                        else
-                            args.substring(args.indexOf(' ') + 1, args.length)
+                    if (spaceIndex == -1)
+                        ""
+                    else
+                        args.substring(args.indexOf(' ') + 1, args.length)
                 )
                 return
             }
             for (alias in command.alias) {
                 if (alias.equals(name, true)) {
                     command.onExecute(
-                            if (spaceIndex == -1)
-                                ""
-                            else
-                                args.substring(args.indexOf(' ') + 1, args.length)
+                        if (spaceIndex == -1)
+                            ""
+                        else
+                            args.substring(args.indexOf(' ') + 1, args.length)
                     )
                     return
                 }
@@ -71,10 +72,10 @@ object CommandManager {
         for (command in moduleCommands) {
             if (command.name.equals(name, true)) {
                 command.onExecute(
-                        if (spaceIndex == -1)
-                            ""
-                        else
-                            args.substring(args.indexOf(' ') + 1, args.length)
+                    if (spaceIndex == -1)
+                        ""
+                    else
+                        args.substring(args.indexOf(' ') + 1, args.length)
                 )
                 return
             }

@@ -497,9 +497,6 @@ public final class ItemStack {
      * returns the display name of the itemstack
      */
     public String getDisplayName() {
-        if (this.getItem() == null) {
-            return "";
-        }
         String s = this.getItem().getItemStackDisplayName(this);
 
         if (this.stackTagCompound != null && this.stackTagCompound.hasKey("display", 10)) {

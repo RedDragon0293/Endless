@@ -81,7 +81,7 @@ object LoginUtils {
         runCatching {
             GuiAccounts.auth.updateService(AlteningServiceType.THEALTENING)
             result = loginMojang(token, "Endless")
-            GuiAccounts.auth.updateService(AlteningServiceType.MOJANG)
+            //GuiAccounts.auth.updateService(AlteningServiceType.MOJANG)
         }.onSuccess {
             return if (result === LoginResult.LOGGED)
                 "§aYour name is now §f§l${mc.session.username}§c."

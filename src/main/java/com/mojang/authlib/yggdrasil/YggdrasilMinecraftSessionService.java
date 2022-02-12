@@ -44,7 +44,8 @@ public class YggdrasilMinecraftSessionService extends HttpMinecraftSessionServic
             ".minecraft.net",
             ".mojang.com",
             "163.com",
-            "authserver.163.com"
+            "authserver.163.com",
+            ".thealtening.com"
     };
     private static final Logger LOGGER = LogManager.getLogger();
     private static final String BASE_URL = "https://sessionserver.mojang.com/session/minecraft/";
@@ -71,10 +72,15 @@ public class YggdrasilMinecraftSessionService extends HttpMinecraftSessionServic
             X509EncodedKeySpec spec = new X509EncodedKeySpec(IOUtils.toByteArray(Objects.requireNonNull(YggdrasilMinecraftSessionService.class.getResourceAsStream("/yggdrasil_session_pubkey.der"))));
             KeyFactory keyFactory = KeyFactory.getInstance("RSA");
             publicKeyMojang = keyFactory.generatePublic(spec);
-            spec = new X509EncodedKeySpec(IOUtils.toByteArray(Objects.requireNonNull(YggdrasilMinecraftSessionService.class.getResourceAsStream("/netease.der"))));
+        } catch (Exception e) {
+            throw new Error("Missing/invalid yggdrasil public key!");
+        }
+        try {
+            X509EncodedKeySpec spec = new X509EncodedKeySpec(IOUtils.toByteArray(Objects.requireNonNull(YggdrasilMinecraftSessionService.class.getResourceAsStream("/netease.der"))));
+            KeyFactory keyFactory = KeyFactory.getInstance("RSA");
             publicKeyNetease = keyFactory.generatePublic(spec);
         } catch (Exception e) {
-            throw new Error("Missing/invalid yggdrasil/netease public key!");
+            throw new Error("Missing/invalid netease public key!");
         }
     }
 
@@ -112,7 +118,7 @@ public class YggdrasilMinecraftSessionService extends HttpMinecraftSessionServic
 
     @Override
     public GameProfile hasJoinedServer(GameProfile user, String serverId, InetAddress address) throws AuthenticationUnavailableException {
-        Map<String, Object> arguments = new HashMap<String, Object>();
+        Map<String, Object> arguments = new HashMap<>();
 
         arguments.put("username", user.getName());
         arguments.put("serverId", serverId);
@@ -156,16 +162,9 @@ public class YggdrasilMinecraftSessionService extends HttpMinecraftSessionServic
                 throw new InsecureTextureException("Signature is missing from textures payload");
             }
 
-            if (GuiMultiplayer.authType) {
-                if (!textureProperty.isSignatureValid(publicKeyNetease)) {
-                    LOGGER.error("Textures payload has been tampered with (signature invalid)");
-                    throw new InsecureTextureException("Textures payload has been tampered with (signature invalid)");
-                }
-            } else {
-                if (!textureProperty.isSignatureValid(publicKeyMojang)) {
-                    LOGGER.error("Textures payload has been tampered with (signature invalid)");
-                    throw new InsecureTextureException("Textures payload has been tampered with (signature invalid)");
-                }
+            if (!textureProperty.isSignatureValid(publicKeyMojang) && !textureProperty.isSignatureValid(publicKeyNetease)) {
+                LOGGER.error("Textures payload has been tampered with (signature invalid)");
+                throw new InsecureTextureException("Textures payload has been tampered with (signature invalid)");
             }
         }
 
@@ -233,7 +232,7 @@ public class YggdrasilMinecraftSessionService extends HttpMinecraftSessionServic
     }
 
     private static boolean isWhitelistedDomain(String url) {
-        URI uri = null;
+        URI uri;
 
         try {
             uri = new URI(url);
