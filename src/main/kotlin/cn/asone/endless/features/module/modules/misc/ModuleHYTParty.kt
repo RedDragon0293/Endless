@@ -5,6 +5,8 @@ import cn.asone.endless.event.ReceivePacketEvent
 import cn.asone.endless.features.module.AbstractModule
 import cn.asone.endless.features.module.ModuleCategory
 import cn.asone.endless.utils.ClientUtils
+import com.google.gson.JsonElement
+import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import io.netty.buffer.Unpooled
 import net.minecraft.network.PacketBuffer
@@ -39,6 +41,9 @@ object ModuleHYTParty : AbstractModule(
         if (p is S3FPacketCustomPayload && p.channelName == "VexView") {
             val bytes = ByteArray(p.bufferData.readableBytes())
             p.bufferData.readBytes(bytes)
+            /**
+             * 获取Payload传输的字符串
+             */
             val packetString: String = try {
                 decode(bytes)
             } catch (e: Exception) {
@@ -46,19 +51,27 @@ object ModuleHYTParty : AbstractModule(
                 stream.write(bytes)
                 stream.toString("UTF-8")
             }
-            val jsonObject = jsonParser.parse(packetString).asJsonObject
-            ClientUtils.logger.info(packetString)
-            if (jsonObject.get("packet_type")?.asString == "hud") {
+            val packetReader = VexViewPacketReader(packetString)
+            if (packetReader.packetType == "hud") {
                 //ClientUtils.logger.info(packetString)
                 event.cancelEvent()
-                //return
+                return
             }
-            if (jsonObject.get("packet_type")?.asString == "gui") {
+            ClientUtils.logger.info(packetString)
+            if (packetReader.packetType == "ver") {
+                if (packetReader.packetSubType == "get") {
+                    ClientUtils.chatInfo("发送VexView版本数据包.")
+                    //sendDebugPacket(arrayListOf("post", "2.6.10", "ver"))
+                } else if (packetReader.packetSubType == "ok") {
+                    ClientUtils.chatSuccess("VexView版本效验成功!")
+                }
+                return
+            }
+            if (packetReader.packetType == "gui") {
                 ClientUtils.chatInfo("======VexView尝试打开一个GUI======")
                 val data = Unpooled.wrappedBuffer(encode(JsonOpenGUI))
                 mc.netHandler.addToSendQueue(C17PacketCustomPayload("VexView", PacketBuffer(data)))
-                val reader = VexViewDataReader(jsonObject.get("packet_data").asString)
-                for (i in reader.buttonList)
+                for (i in packetReader.buttonList)
                     ClientUtils.chatInfo("${i.key}: ${i.value}")
             }
         } else if (p is FMLProxyPacket) {
@@ -68,9 +81,13 @@ object ModuleHYTParty : AbstractModule(
         }
     }
 
-    fun sendDebugPacket(id: String) {
+    fun sendDebugPacket(params: List<String>) {
+        if (params.size < 3) {
+            ClientUtils.chatError("参数长度错误!")
+            return
+        }
         val data =
-            Unpooled.wrappedBuffer(encode("{\"packet_sub_type\":\"$id\",\"packet_data\":\"null\",\"packet_type\":\"button\"}"))
+            Unpooled.wrappedBuffer(encode("{\"packet_sub_type\":\"${params[0]}\",\"packet_data\":\"${params[1]}\",\"packet_type\":\"${params[2]}\"}"))
         //data = Unpooled.wrappedBuffer(encode(JsonCloseGUI))
         mc.netHandler.addToSendQueue(C17PacketCustomPayload("VexView", PacketBuffer(data)))
     }
@@ -100,19 +117,45 @@ object ModuleHYTParty : AbstractModule(
         return bout.toByteArray()
     }
 
-    class VexViewDataReader(val json: String) {
+    class VexViewPacketReader(val json: String) {
+        val packetSubType: String
+        val packetType: String
+        val packetData: JsonElement?
         val buttonList: HashMap<String, String> = hashMapOf()
 
         init {
-            val data = jsonParser.parse(json).asJsonObject.entrySet()
-            val elements = json.split("<#>")
-            var index = 0
-            while (index < elements.size) {
-                if (elements[index].contains("[but]")) {
-                    val sub = elements[index].split("<&>")
-                    buttonList[sub[0].drop(5)] = sub[6]
+            val jsonObject = jsonParser.parse(json).asJsonObject
+            packetSubType = jsonObject.get("packet_sub_type").asString
+            packetType = jsonObject.get("packet_type").asString
+            packetData = run {
+                val data = jsonObject.get("packet_data")
+                try {
+                    return@run jsonParser.parse(data.asString).asJsonObject
+                } catch (e: Exception) {
+                    return@run data
                 }
-                index++
+            }
+            if (packetData is JsonObject) {
+                ClientUtils.logger.info("Processing packet data...")
+                val data = packetData.entrySet()
+                for (it in data) {
+                    when (it.key) {
+                        "base" -> {
+                            val elements = it.value.asString.split("<#>")
+                            var index = 0
+                            while (index < elements.size) {
+                                if (elements[index].contains("[but]")) {
+                                    val sub = elements[index].split("<&>")
+                                    buttonList[sub[0].drop(5)] = sub[6]
+                                }
+                                index++
+                            }
+                        }
+                        "scrollinglist" -> {
+
+                        }
+                    }
+                }
             }
         }
     }

@@ -3,7 +3,7 @@ package net.minecraft.client.gui;
 import cn.asone.endless.event.EventManager;
 import cn.asone.endless.event.Render2DEvent;
 import cn.asone.endless.features.module.modules.render.ModuleHUD;
-import cn.asone.endless.utils.RenderUtils;
+import cn.asone.endless.utils.animation.SmoothHelper;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import net.minecraft.block.material.Material;
@@ -108,17 +108,7 @@ public class GuiIngame extends Gui {
      */
     private long healthUpdateCounter = 0L;
 
-    /**
-     * Used to implement hotbar smooth animation
-     */
-    private float hotbarOffset = 0;
-
-    private int hotbarDelta = 0;
-
-    /**
-     * Used to ensure when draw hotbar animation
-     */
-    private int lastHotbarIndex = -1;
+    private final SmoothHelper hotbarAnimationHelper;
 
     public GuiIngame(Minecraft mcIn) {
         this.mc = mcIn;
@@ -128,6 +118,8 @@ public class GuiIngame extends Gui {
         this.persistantChatGUI = new GuiNewChat(mcIn);
         this.overlayPlayerList = new GuiPlayerTabOverlay(mcIn, this);
         this.setDefaultTitlesTimes();
+        hotbarAnimationHelper = new SmoothHelper();
+        hotbarAnimationHelper.setWidth(20);
     }
 
     public void setDefaultTitlesTimes() {
@@ -347,19 +339,12 @@ public class GuiIngame extends Gui {
             EntityPlayer entityplayer = (EntityPlayer) this.mc.getRenderViewEntity();
             int middleX = sr.getScaledWidth() / 2;
             if (ModuleHUD.INSTANCE.getBlackHotbarValue().get()) {
+                hotbarAnimationHelper.setCurrentValue(entityplayer.inventory.currentItem);
                 if (ModuleHUD.INSTANCE.getSmoothHotbarValue().get()) {
-                    if (lastHotbarIndex != entityplayer.inventory.currentItem) {
-                        hotbarDelta = (lastHotbarIndex - entityplayer.inventory.currentItem) * 20 + hotbarDelta + (int) (-hotbarDelta * hotbarOffset);
-                        hotbarOffset = 0;
-                        lastHotbarIndex = entityplayer.inventory.currentItem;
-                    }
-                    if (hotbarOffset != 1F) {
-                        hotbarOffset += RenderUtils.deltaTime * 0.01F;
-                        if (hotbarOffset > 1F)
-                            hotbarOffset = 1F;
-                    }
-                } else
-                    hotbarOffset = 1F;
+                    hotbarAnimationHelper.tick();
+                } else {
+                    hotbarAnimationHelper.setOffset(1F);
+                }
 
                 GuiIngame.drawRect(
                         middleX - 91,
@@ -367,7 +352,7 @@ public class GuiIngame extends Gui {
                         middleX + 91,
                         sr.getScaledHeight(),
                         new Color(0, 0, 0, 172).getRGB());
-                int xStart = middleX - 91 + entityplayer.inventory.currentItem * 20 + hotbarDelta + (int) (-hotbarDelta * hotbarOffset);
+                int xStart = middleX - 91 + (int) hotbarAnimationHelper.get();
                 GuiIngame.drawRect(
                         xStart,
                         sr.getScaledHeight() - 22,

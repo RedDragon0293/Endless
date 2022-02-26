@@ -11,6 +11,7 @@ import cn.asone.endless.ui.gui.clickgui.elements.moduleslist.AbstractButton
 import cn.asone.endless.ui.gui.clickgui.elements.moduleslist.DisabledButton
 import cn.asone.endless.ui.gui.clickgui.elements.moduleslist.ModuleButton
 import cn.asone.endless.utils.RenderUtils
+import cn.asone.endless.utils.animation.SmoothHelper
 import cn.asone.endless.utils.extensions.playSound
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiButton
@@ -57,12 +58,17 @@ class GuiClickGUI : GuiScreen() {
         Pair(6, ArrayList()), //Targets
         Pair(7, ArrayList())  //Global
     )
-    private var listDiffY = 0F
-    private var infoDiffY = 0F
-    private var valueDiffY = 0F
+
+    //private var listDiffY = 0F
+    //private var infoDiffY = 0F
+    //private var valueDiffY = 0F
     private val moduleButtons: ArrayList<AbstractButton> = ArrayList()
     private val endlessLogo = ResourceLocation("endless/endless_Logo.png")
     private lateinit var closeButton: GuiButton
+    private val modulesScrollingAnimationHelper: SmoothHelper
+    private val infoScrollingAnimationHelper: SmoothHelper
+    private val listButtonScrollingAnimationHelper: SmoothHelper
+    private val categoryButtonAnimationHelper: SmoothHelper
 
     init {
         for (module in ModuleManager.modules)
@@ -78,6 +84,11 @@ class GuiClickGUI : GuiScreen() {
                 infoButtons.add(AbstractValueButton.valueToButton(Fonts.cacheFont, false))
             }
         })
+        modulesScrollingAnimationHelper = SmoothHelper()
+        infoScrollingAnimationHelper = SmoothHelper()
+        listButtonScrollingAnimationHelper = SmoothHelper()
+        categoryButtonAnimationHelper = SmoothHelper()
+        categoryButtonAnimationHelper.width = 22F
     }
 
     override fun initGui() {
@@ -155,9 +166,11 @@ class GuiClickGUI : GuiScreen() {
         /**
          * Current chosen category background
          */
+        categoryButtonAnimationHelper.currentValue = (categoryIndex - 1).toFloat()
+        categoryButtonAnimationHelper.tick()
         RenderUtils.drawRoundedRect(
             windowXStart + 2F,
-            windowYStart + 4 + 64 + 2F + 22 * (categoryIndex - 1),
+            windowYStart + 4 + 64 + 2F + categoryButtonAnimationHelper.get(),
             62F,
             18F,
             4F,
@@ -169,17 +182,18 @@ class GuiClickGUI : GuiScreen() {
         val wheel = Mouse.getDWheel() / 10F
         if (mouseX in (windowXStart + 68 + 4 - 2)..(windowXStart + 68 + 4 + 150 + 2)
             && mouseY in (windowYStart + 7)..(windowYStart + guiHeight - 7)
-            && keyBindModule == null && listButton != null
+            && keyBindModule == null && listButton == null
         ) {
             /**
              * modules list滚轮
              */
-            listDiffY += wheel
-            if (listDiffY < moduleButtons.size * -33 + guiHeight - 8)
-                listDiffY = moduleButtons.size * -33 - 8 + guiHeight.toFloat()
-            if (listDiffY > 0)
-                listDiffY = 0F
-            moduleButtons.forEach { it.offset = listDiffY }
+            modulesScrollingAnimationHelper.currentValue += wheel
+            if (modulesScrollingAnimationHelper.currentValue < moduleButtons.size * -33 + guiHeight - 8)
+                modulesScrollingAnimationHelper.currentValue = moduleButtons.size * -33 - 8 + guiHeight.toFloat()
+            if (modulesScrollingAnimationHelper.currentValue > 0)
+                modulesScrollingAnimationHelper.currentValue = 0F
+            modulesScrollingAnimationHelper.tick()
+            moduleButtons.forEach { it.offset = modulesScrollingAnimationHelper.get() }
         }
         /**
          * 渲染modules list
@@ -251,22 +265,23 @@ class GuiClickGUI : GuiScreen() {
         if (currentInfoButton != null) {
             if (currentInfoButton!!.infoButtons.isNotEmpty()) {
                 /**
-                 * Values list滚轮
+                 * Module的Values list滚轮
                  */
                 if (mouseX in (windowXStart + 231 + 2)..(windowXStart + guiWidth - 9)
                     && mouseY in (windowYStart + 44 + 2)..(windowYStart + guiHeight - 9)
                     && keyBindModule == null && listButton == null
                 ) {
-                    infoDiffY += wheel
+                    infoScrollingAnimationHelper.currentValue += wheel
                     var height = 0F
                     currentInfoButton!!.infoButtons.forEach {
                         height += it.boundingBoxHeight + 6
                     }
-                    if (infoDiffY < -height + guiHeight - 8 - 44)
-                        infoDiffY = -height + guiHeight - 8F - 44
-                    if (infoDiffY > 0)
-                        infoDiffY = 0F
-                    currentInfoButton!!.infoButtons.forEach { it.updateOffset(infoDiffY) }
+                    if (infoScrollingAnimationHelper.currentValue < -height + guiHeight - 8 - 44)
+                        infoScrollingAnimationHelper.currentValue = -height + guiHeight - 8F - 44
+                    if (infoScrollingAnimationHelper.currentValue > 0)
+                        infoScrollingAnimationHelper.currentValue = 0F
+                    infoScrollingAnimationHelper.tick()
+                    currentInfoButton!!.infoButtons.forEach { it.updateOffset(infoScrollingAnimationHelper.get()) }
                 }
                 /**
                  * Update values list y position
@@ -395,17 +410,19 @@ class GuiClickGUI : GuiScreen() {
                 /**
                  * ListValue 滚轮
                  */
-                valueDiffY += wheel
-                if (valueDiffY < listButton!!.value.values.size * -(Fonts.light30.FONT_HEIGHT + 4) - 8 + 210)
-                    valueDiffY = listButton!!.value.values.size * -(Fonts.light30.FONT_HEIGHT + 4) + 210 - 8F
-                if (valueDiffY > 0)
-                    valueDiffY = 0F
+                listButtonScrollingAnimationHelper.currentValue += wheel
+                if (listButtonScrollingAnimationHelper.currentValue < listButton!!.value.values.size * -(Fonts.light30.FONT_HEIGHT + 4) - 8 + 210)
+                    listButtonScrollingAnimationHelper.currentValue =
+                        listButton!!.value.values.size * -(Fonts.light30.FONT_HEIGHT + 4) + 210 - 8F
+                if (listButtonScrollingAnimationHelper.currentValue > 0)
+                    listButtonScrollingAnimationHelper.currentValue = 0F
+                listButtonScrollingAnimationHelper.tick()
                 /**
                  * calculate the index of the selection hovering currently
                  */
                 var i = 0
-                while (!(mouseY >= windowYStart + guiHeight / 2 - 80 + 2F + valueDiffY + i * (Fonts.light30.FONT_HEIGHT + 4)
-                            && mouseY <= windowYStart + guiHeight / 2 - 80 + 2F + valueDiffY + (i + 1) * (Fonts.light30.FONT_HEIGHT + 4))
+                while (!(mouseY >= windowYStart + guiHeight / 2 - 80 + 2F + listButtonScrollingAnimationHelper.get() + i * (Fonts.light30.FONT_HEIGHT + 4)
+                            && mouseY <= windowYStart + guiHeight / 2 - 80 + 2F + listButtonScrollingAnimationHelper.get() + (i + 1) * (Fonts.light30.FONT_HEIGHT + 4))
                 ) {
                     i++
                     if (i >= 100)
@@ -427,9 +444,9 @@ class GuiClickGUI : GuiScreen() {
                      */
                     RenderUtils.drawBorder(
                         windowXStart + guiWidth / 2 - Fonts.light30.getStringWidth(listButton!!.value.values[i]) / 2 - 2F,
-                        windowYStart + guiHeight / 2 - 80 + 2F + valueDiffY + i * (Fonts.light30.FONT_HEIGHT + 4),
+                        windowYStart + guiHeight / 2 - 80 + 2F + listButtonScrollingAnimationHelper.get() + i * (Fonts.light30.FONT_HEIGHT + 4),
                         windowXStart + guiWidth / 2 + Fonts.light30.getStringWidth(listButton!!.value.values[i]) / 2 + 2F,
-                        windowYStart + guiHeight / 2 - 80 + 2F + valueDiffY + (i + 1) * (Fonts.light30.FONT_HEIGHT + 4) - 2F,
+                        windowYStart + guiHeight / 2 - 80 + 2F + listButtonScrollingAnimationHelper.get() + (i + 1) * (Fonts.light30.FONT_HEIGHT + 4) - 2F,
                         1F,
                         Color(0, 111, 255).rgb
                     )
@@ -454,7 +471,7 @@ class GuiClickGUI : GuiScreen() {
                 windowXStart + guiWidth / 2 + 98,
                 windowYStart + guiHeight / 2 + 128
             )
-            var var0 = windowYStart + guiHeight / 2 - 80 + 4F + valueDiffY
+            var var0 = windowYStart + guiHeight / 2 - 80 + 4F + listButtonScrollingAnimationHelper.get()
             listButton!!.value.values.forEach {
                 Fonts.light30.drawCenteredString(it, windowXStart + guiWidth / 2F, var0, textColor)
                 var0 += Fonts.light30.FONT_HEIGHT + 4
@@ -468,7 +485,7 @@ class GuiClickGUI : GuiScreen() {
         when (button.id) {
             0 -> mc.displayGuiScreen(null)
             else -> {
-                listDiffY = 0F
+                modulesScrollingAnimationHelper.reset(0F)
                 moduleButtons.forEach { it.offset = 0F }
                 if (categoryIndex != button.id) {
                     categoryIndex = button.id
@@ -492,8 +509,8 @@ class GuiClickGUI : GuiScreen() {
                 && mouseY in (windowYStart + guiHeight / 2 - 80)..(windowYStart + guiHeight / 2 + 130)
             ) {
                 var i = 0
-                while (!(mouseY >= windowYStart + guiHeight / 2 - 80 + 2F + valueDiffY + i * (Fonts.light30.FONT_HEIGHT + 4)
-                            && mouseY <= windowYStart + guiHeight / 2 - 80 + 2F + valueDiffY + (i + 1) * (Fonts.light30.FONT_HEIGHT + 4))
+                while (!(mouseY >= windowYStart + guiHeight / 2 - 80 + 2F + listButtonScrollingAnimationHelper.get() + i * (Fonts.light30.FONT_HEIGHT + 4)
+                            && mouseY <= windowYStart + guiHeight / 2 - 80 + 2F + listButtonScrollingAnimationHelper.get() + (i + 1) * (Fonts.light30.FONT_HEIGHT + 4))
                 ) {
                     i++
                     if (i >= 100)
@@ -505,8 +522,10 @@ class GuiClickGUI : GuiScreen() {
                     mc.soundHandler.playSound("gui.button.press", 1F)
                     listButton = null
                 }
-            } else
+            } else {
                 listButton = null
+                listButtonScrollingAnimationHelper.reset(0F)
+            }
             return
         }
 

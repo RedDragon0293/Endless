@@ -5,6 +5,6 @@ import cn.asone.endless.features.module.modules.misc.ModuleHYTParty
 
 class CommandDebug : AbstractCommand("debug") {
     override fun onExecute(command: String) {
-        ModuleHYTParty.sendDebugPacket(command)
+        ModuleHYTParty.sendDebugPacket(command.split(' '))
     }
 }
