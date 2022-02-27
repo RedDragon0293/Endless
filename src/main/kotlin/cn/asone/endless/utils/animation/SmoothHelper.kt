@@ -26,7 +26,7 @@ class SmoothHelper(
             若更改currentValue后极短时间内继续更改至第二位置, 则此表达式表示当前元素位置距离第一位置的距离
             在delta的计算中加上此表达式以实现中断动画衔接
              */
-            delta = (lastValue - currentValue) * width + (delta * (1 - offset)).toInt()
+            delta = (lastValue - currentValue) * width + (delta * (1 - offset))
             offset = 0F
             lastValue = currentValue
         }
@@ -44,5 +44,5 @@ class SmoothHelper(
         offset = 1F
     }
 
-    fun get(): Float = ((currentValue * width) + (delta * (1 - offset)).toInt())
+    fun get(): Float = ((currentValue * width) + (delta * (1 - offset)))
 }

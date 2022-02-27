@@ -2,6 +2,7 @@ package cn.asone.endless.ui.gui.accounts
 
 import cn.asone.endless.ui.font.Fonts
 import cn.asone.endless.ui.gui.GuiPasswordField
+import cn.asone.endless.utils.ColorUtils
 import cn.asone.endless.utils.account.LoginUtils
 import cn.asone.endless.utils.account.MinecraftAccount
 import com.thealtening.auth.TheAlteningAuthentication
@@ -43,7 +44,7 @@ class GuiAccounts(val parent: GuiScreen) : GuiScreen() {
 
     override fun drawScreen(mouseX: Int, mouseY: Int, partialTicks: Float) {
         drawDefaultBackground()
-        Fonts.medium44.drawCenteredString("Accounts", (width / 2).toFloat(), 34F, Color(0, 111, 255).rgb)
+        Fonts.medium44.drawCenteredString("Accounts", (width / 2).toFloat(), 34F, ColorUtils.getColorInt(0, 111, 255))
         Fonts.regular24.drawCenteredString(
             "Status: $status",
             (width / 2).toFloat(),

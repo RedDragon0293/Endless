@@ -2,9 +2,9 @@ package cn.asone.endless.ui.gui.clickgui.elements.moduleinfo
 
 import cn.asone.endless.ui.font.Fonts
 import cn.asone.endless.ui.gui.clickgui.GuiClickGUI
+import cn.asone.endless.utils.ColorUtils
 import cn.asone.endless.utils.RenderUtils
 import cn.asone.endless.value.FloatValue
-import java.awt.Color
 
 class FloatButton(override val value: FloatValue, isSub: Boolean) : AbstractValueButton(value, isSub) {
     private val valueString
@@ -32,7 +32,7 @@ class FloatButton(override val value: FloatValue, isSub: Boolean) : AbstractValu
                 100F,
                 4F,
                 2F,
-                Color(140, 140, 140).rgb
+                ColorUtils.getColorInt(140, 140, 140)
             )
             /**
              * Value percent
@@ -43,13 +43,13 @@ class FloatButton(override val value: FloatValue, isSub: Boolean) : AbstractValu
                 (value.get() / value.range.endInclusive) * 100,
                 4F,
                 2F,
-                Color(0, 111, 255).rgb
+                ColorUtils.getColorInt(0, 111, 255)
             )
             RenderUtils.drawAntiAliasingCircle(
                 x + (if (isSub) 212 else 232) - 5 - (1 - (value.get() / value.range.endInclusive)) * 100 - 4,
                 y + 10,
                 4F,
-                Color(0, 111, 255).rgb
+                ColorUtils.getColorInt(0, 111, 255)
             )
         }
     }

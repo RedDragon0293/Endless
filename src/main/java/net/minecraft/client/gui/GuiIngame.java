@@ -3,6 +3,7 @@ package net.minecraft.client.gui;
 import cn.asone.endless.event.EventManager;
 import cn.asone.endless.event.Render2DEvent;
 import cn.asone.endless.features.module.modules.render.ModuleHUD;
+import cn.asone.endless.utils.ColorUtils;
 import cn.asone.endless.utils.animation.SmoothHelper;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -37,7 +38,6 @@ import net.minecraft.util.*;
 import net.minecraft.world.border.WorldBorder;
 import net.optifine.CustomColors;
 
-import java.awt.*;
 import java.util.Collection;
 import java.util.List;
 import java.util.Random;
@@ -351,20 +351,20 @@ public class GuiIngame extends Gui {
                         sr.getScaledHeight() - 22,
                         middleX + 91,
                         sr.getScaledHeight(),
-                        new Color(0, 0, 0, 172).getRGB());
+                        ColorUtils.getColorInt(0, 0, 0, 172));
                 int xStart = middleX - 91 + (int) hotbarAnimationHelper.get();
                 GuiIngame.drawRect(
                         xStart,
                         sr.getScaledHeight() - 22,
                         xStart + 22,
                         sr.getScaledHeight(),
-                        new Color(0, 111, 255, 172).getRGB());
+                        ColorUtils.getColorInt(0, 111, 255, 172));
                 GuiIngame.drawRect(
                         xStart,
                         sr.getScaledHeight() - 23,
                         xStart + 22,
                         sr.getScaledHeight() - 22,
-                        new Color(0, 255, 111).getRGB());
+                        ColorUtils.getColorInt(0, 255, 111, 255));
             } else {
                 this.mc.getTextureManager().bindTexture(widgetsTexPath);
                 float f = this.zLevel;

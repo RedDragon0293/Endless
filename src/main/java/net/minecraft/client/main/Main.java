@@ -30,15 +30,13 @@ public class Main {
 
     public static void main(String[] args) {
         System.setProperty("java.net.preferIPv4Stack", "true");
-        window.init();
-        window.setEnabled(true);
-        window.setVisible(true);
         OptionParser optionparser = new OptionParser();
         optionparser.allowsUnrecognizedOptions();
         optionparser.accepts("demo");
         optionparser.accepts("fullscreen");
         optionparser.accepts("checkGlErrors");
         optionparser.accepts("disableViaVersion");
+        optionparser.accepts("disableLoadingWindow");
         OptionSpec<String> server = optionparser.accepts("server").withRequiredArg();
         OptionSpec<Integer> port = optionparser.accepts("port").withRequiredArg().ofType(Integer.class).defaultsTo(25565);
         OptionSpec<File> gameDir = optionparser.accepts("gameDir").withRequiredArg().ofType(File.class).defaultsTo(new File("."));
@@ -64,6 +62,12 @@ public class Main {
 
         if (!list.isEmpty()) {
             System.out.println("Completely ignored arguments: " + list);
+        }
+
+        if (!argsOptions.has("disableLoadingWindow")) {
+            window.init();
+            window.setEnabled(true);
+            window.setVisible(true);
         }
 
         String s = argsOptions.valueOf(proxyHost);

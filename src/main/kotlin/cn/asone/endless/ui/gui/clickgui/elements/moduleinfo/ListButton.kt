@@ -2,11 +2,11 @@ package cn.asone.endless.ui.gui.clickgui.elements.moduleinfo
 
 import cn.asone.endless.ui.font.Fonts
 import cn.asone.endless.ui.gui.clickgui.GuiClickGUI
+import cn.asone.endless.utils.ColorUtils
 import cn.asone.endless.utils.RenderUtils
 import cn.asone.endless.utils.extensions.mc
 import cn.asone.endless.utils.extensions.playSound
 import cn.asone.endless.value.ListValue
-import java.awt.Color
 
 class ListButton(override val value: ListValue, isSub: Boolean) : AbstractValueButton(value, isSub) {
     private val subButtons: MutableMap<String, ArrayList<AbstractValueButton>> = mutableMapOf()
@@ -67,7 +67,7 @@ class ListButton(override val value: ListValue, isSub: Boolean) : AbstractValueB
                 x + (if (isSub) 212 else 232) - 5 + 2,
                 y + 7 + Fonts.condensedLight18.FONT_HEIGHT + 2,
                 1F,
-                Color(140, 140, 140).rgb
+                ColorUtils.getColorInt(140, 140, 140)
             )
         if (subButtons[this.value.get()]!!.isNotEmpty()) {
             RenderUtils.drawLine(
@@ -76,7 +76,7 @@ class ListButton(override val value: ListValue, isSub: Boolean) : AbstractValueB
                 x + 15,
                 y + 20 + subButtons[this.value.get()]!!.size * 24,
                 6F,
-                Color(0, 111, 255).rgb
+                ColorUtils.getColorInt(0, 111, 255)
             )
             subButtons[this.value.get()]!!.forEach { it.drawBox(mouseX, mouseY) }
         }

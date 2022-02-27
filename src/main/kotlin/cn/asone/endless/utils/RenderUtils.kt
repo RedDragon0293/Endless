@@ -465,6 +465,11 @@ object RenderUtils {
     }
 
     @JvmStatic
+    fun quickGLColor(red: Int, green: Int, blue: Int, alpha: Int = 255) {
+        GlStateManager.color(red / 255F, green / 255F, blue / 255F, alpha / 255F)
+    }
+
+    @JvmStatic
     fun drawPath(vec: Vec3) {
         val renderManager = mc.renderManager
         val x: Double = vec.xCoord - renderManager.renderPosX

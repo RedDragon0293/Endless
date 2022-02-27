@@ -2,10 +2,10 @@ package cn.asone.endless.ui.gui
 
 import cn.asone.endless.features.special.FakeForge
 import cn.asone.endless.ui.font.Fonts
+import cn.asone.endless.utils.ColorUtils
 import net.minecraft.client.gui.GuiButton
 import net.minecraft.client.gui.GuiScreen
 import net.minecraft.client.resources.I18n
-import java.awt.Color
 
 class GuiFakeForge(val parent: GuiScreen) : GuiScreen() {
     private lateinit var enableButton: GuiButton
@@ -90,7 +90,7 @@ class GuiFakeForge(val parent: GuiScreen) : GuiScreen() {
             "FakeForge",
             this.width / 2F,
             this.height / 8 + 10F,
-            Color(71, 81, 192).rgb,
+            ColorUtils.getColorInt(71, 81, 192),
             false
         )
         super.drawScreen(mouseX, mouseY, partialTicks)

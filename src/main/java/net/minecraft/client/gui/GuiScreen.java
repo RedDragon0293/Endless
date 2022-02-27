@@ -1,6 +1,7 @@
 package net.minecraft.client.gui;
 
 import cn.asone.endless.features.command.CommandManager;
+import cn.asone.endless.utils.ColorUtils;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -532,7 +533,7 @@ public abstract class GuiScreen extends Gui implements GuiYesNoCallback {
 
     public void drawWorldBackground(int tint) {
         if (this.mc.theWorld != null) {
-            this.drawGradientRect(0, 0, this.width, this.height, new Color(16, 16, 16, 192).getRGB(), new Color(16, 16, 16, 208).getRGB());
+            this.drawGradientRect(0, 0, this.width, this.height, ColorUtils.getColorInt(16, 16, 16, 192), ColorUtils.getColorInt(16, 16, 16, 208));
         } else {
             this.drawBackground(tint);
         }

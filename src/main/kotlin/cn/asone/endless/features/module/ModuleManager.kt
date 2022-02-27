@@ -10,7 +10,7 @@ import cn.asone.endless.features.module.modules.combat.ModuleVelocity
 import cn.asone.endless.features.module.modules.misc.ModuleAntiBot
 import cn.asone.endless.features.module.modules.misc.ModuleHYTParty
 import cn.asone.endless.features.module.modules.misc.ModuleTest
-import cn.asone.endless.features.module.modules.movement.ModuleSprint
+import cn.asone.endless.features.module.modules.movement.*
 import cn.asone.endless.features.module.modules.render.ModuleClickGUI
 import cn.asone.endless.features.module.modules.render.ModuleHUD
 import cn.asone.endless.features.module.modules.render.ModuleSimpleArrayList
@@ -32,7 +32,21 @@ object ModuleManager : ListenableClass() {
             ModuleAntiBot,
             ModuleHUD,
             ModuleTest,
-            ModuleHYTParty
+            ModuleHYTParty,
+            ModuleFastClimb,
+            ModuleFly,
+            ModuleLiquidWalk,
+            ModuleLongJump,
+            ModuleNoJumpDelay,
+            ModuleNoSlow,
+            ModuleNoWeb,
+            ModuleSneak,
+            ModuleSpeed,
+            ModuleStep,
+            ModuleInventoryMove,
+            ModuleAntiFall,
+            ModuleWallClimb,
+            ModulePerfectHorseJump
         ).forEach {
             registerModule(it)
             if (it.values.isNotEmpty())

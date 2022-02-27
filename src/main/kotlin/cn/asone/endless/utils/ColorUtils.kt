@@ -1,6 +1,6 @@
 package cn.asone.endless.utils
 
-object ColorHelper {
+object ColorUtils {
     @JvmStatic
     fun getRed(color: Int) = color shr 16 and 0xFF
 
@@ -14,7 +14,7 @@ object ColorHelper {
     fun getAlpha(color: Int) = color ushr 24
 
     @JvmStatic
-    fun getColorInt(red: Int, green: Int, blue: Int, alpha: Int): Int {
+    fun getColorInt(red: Int, green: Int, blue: Int, alpha: Int = 255): Int {
         return alpha shl 24 or (red shl 16) or (green shl 8) or blue
     }
 

@@ -2,6 +2,7 @@
   <configuration default="false" name="Start" type="Application" factoryName="Application" nameIsGenerated="true">
     <option name="MAIN_CLASS_NAME" value="Start" />
     <module name="Endless.test" />
+    <option name="PROGRAM_PARAMETERS" value="-username Endless -disableLoadingWindow" />
     <option name="VM_PARAMETERS" value="-Djava.library.path=natives -Dlog4j.skipJansi=false" />
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/run" />
     <method v="2">
