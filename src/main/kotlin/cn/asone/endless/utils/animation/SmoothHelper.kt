@@ -2,11 +2,24 @@ package cn.asone.endless.utils.animation
 
 import cn.asone.endless.utils.RenderUtils
 
+/**
+ * 一个简单的速度恒定的缓动动画助手，支持中断
+ *
+ * 用法：
+ *
+ * 1：初始化时使用[reset]设置初始值
+ *
+ * 2：在渲染方法中调用[tick]
+ *
+ * 3：在目标值改变时更改[currentValue]
+ *
+ * 4：调用[get]获取动画预期的值
+ */
 class SmoothHelper(
     var currentValue: Float = 0F,
-    var lastValue: Float = 0F,
-    var delta: Float = 0F,
-    var offset: Float = 0F,
+    private var lastValue: Float = 0F,
+    private var delta: Float = 0F,
+    private var offset: Float = 0F,
     var speed: Float = 0.01F,
     var width: Float = 1F
 ) {
@@ -38,6 +51,9 @@ class SmoothHelper(
         }
     }
 
+    /**
+     * 使用此方法可直接改变值而不计算缓动
+     */
     fun reset(value: Float) {
         currentValue = value
         lastValue = value
