@@ -24,12 +24,12 @@ open class BoolValue(name: String, value: Boolean) : AbstractValue<Boolean>(name
     override fun fromJson(element: JsonElement) {
         //没有subValue或丢失subValue数据
         if (element.isJsonPrimitive)
-            value = element.asBoolean || element.asString.equals("true", ignoreCase = true)
+            set(element.asBoolean || element.asString.equals("true", ignoreCase = true))
         else if (element is JsonObject) { //有SubValue
             val jsonValue: JsonElement? = element["value"]
             if (jsonValue != null) { //有没有保存父value的值
                 if (jsonValue.isJsonPrimitive) {
-                    value = jsonValue.asBoolean || jsonValue.asString.equals("true", ignoreCase = true)
+                    set(jsonValue.asBoolean || jsonValue.asString.equals("true", ignoreCase = true))
                 } else
                     super.fromJson(jsonValue)
             }

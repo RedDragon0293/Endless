@@ -86,7 +86,7 @@ public class YggdrasilMinecraftSessionService extends HttpMinecraftSessionServic
 
     @Override
     public void joinServer(GameProfile profile, String authenticationToken, String serverId) throws AuthenticationException {
-        if (GuiMultiplayer.authType) {
+        if (GuiMultiplayer.authType.get()) {
             ClientUtils.logger.info("ServerID: " + serverId);
             try {
                 Socket sock = new Socket("127.0.0.1", 55996);

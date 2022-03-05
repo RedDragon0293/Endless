@@ -20,11 +20,14 @@ object Endless {
     @JvmField
     var inited = false
 
+    @JvmField
+    var disableVia = false
+
     val logger = LogManager.getLogger(CLIENT_NAME)!!
 
     fun startClient() {
         logger.info("正在启动 $CLIENT_NAME $CLIENT_VERSION...")
-        if (!Main.disableVia) {
+        if (!disableVia) {
             try {
                 logger.info("正在加载 ViaVersion...")
                 ViaMCP.getInstance().start()

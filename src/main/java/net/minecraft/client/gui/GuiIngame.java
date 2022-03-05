@@ -119,7 +119,6 @@ public class GuiIngame extends Gui {
         this.overlayPlayerList = new GuiPlayerTabOverlay(mcIn, this);
         this.setDefaultTitlesTimes();
         hotbarAnimationHelper = new SmoothHelper();
-        hotbarAnimationHelper.setWidth(20);
     }
 
     public void setDefaultTitlesTimes() {
@@ -339,11 +338,11 @@ public class GuiIngame extends Gui {
             EntityPlayer entityplayer = (EntityPlayer) this.mc.getRenderViewEntity();
             int middleX = sr.getScaledWidth() / 2;
             if (ModuleHUD.INSTANCE.getBlackHotbarValue().get()) {
-                hotbarAnimationHelper.setCurrentValue(entityplayer.inventory.currentItem);
                 if (ModuleHUD.INSTANCE.getSmoothHotbarValue().get()) {
+                    hotbarAnimationHelper.setCurrentValue(entityplayer.inventory.currentItem);
                     hotbarAnimationHelper.tick();
                 } else {
-                    hotbarAnimationHelper.setOffset(1F);
+                    hotbarAnimationHelper.reset(entityplayer.inventory.currentItem);
                 }
 
                 GuiIngame.drawRect(
@@ -352,7 +351,7 @@ public class GuiIngame extends Gui {
                         middleX + 91,
                         sr.getScaledHeight(),
                         ColorUtils.getColorInt(0, 0, 0, 172));
-                int xStart = middleX - 91 + (int) hotbarAnimationHelper.get();
+                int xStart = middleX - 91 + (int) (hotbarAnimationHelper.get() * 20);
                 GuiIngame.drawRect(
                         xStart,
                         sr.getScaledHeight() - 22,

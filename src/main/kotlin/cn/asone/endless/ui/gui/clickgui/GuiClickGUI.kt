@@ -88,7 +88,6 @@ class GuiClickGUI : GuiScreen() {
         infoScrollingAnimationHelper = SmoothHelper()
         listButtonScrollingAnimationHelper = SmoothHelper()
         categoryButtonAnimationHelper = SmoothHelper()
-        categoryButtonAnimationHelper.width = 22F
         categoryButtonAnimationHelper.speed = 0.015F
     }
 
@@ -157,7 +156,7 @@ class GuiClickGUI : GuiScreen() {
         categoryButtonAnimationHelper.currentValue = (categoryIndex - 1).toFloat()
         categoryButtonAnimationHelper.tick()
         RenderUtils.drawRoundedRect(
-            windowXStart + 2F, windowYStart + 4 + 64 + 2F + categoryButtonAnimationHelper.get(), 62F, 18F, 4F,
+            windowXStart + 2F, windowYStart + 4 + 64 + 2F + (categoryButtonAnimationHelper.get() * 22F), 62F, 18F, 4F,
             //Color(0, 111, 255).rgb
             ColorUtils.getColorInt(0, 111, 255)
         )
@@ -170,9 +169,11 @@ class GuiClickGUI : GuiScreen() {
              * modules list滚轮
              */
             modulesScrollingAnimationHelper.currentValue += wheel
-            if (modulesScrollingAnimationHelper.currentValue < moduleButtons.size * -33 + guiHeight - 8) modulesScrollingAnimationHelper.currentValue =
-                moduleButtons.size * -33 - 8 + guiHeight.toFloat()
-            if (modulesScrollingAnimationHelper.currentValue > 0) modulesScrollingAnimationHelper.currentValue = 0F
+            if (modulesScrollingAnimationHelper.currentValue < moduleButtons.size * -33 + guiHeight - 8)
+                modulesScrollingAnimationHelper.currentValue =
+                    moduleButtons.size * -33 - 8 + guiHeight.toFloat()
+            if (modulesScrollingAnimationHelper.currentValue > 0)
+                modulesScrollingAnimationHelper.currentValue = 0F
             modulesScrollingAnimationHelper.tick()
             moduleButtons.forEach { it.offset = modulesScrollingAnimationHelper.get() }
         }

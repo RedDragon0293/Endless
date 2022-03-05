@@ -44,10 +44,6 @@ abstract class AbstractButton(open val name: String) {
     protected val colorGreenHelper = SmoothHelper()
     protected val colorBlueHelper = SmoothHelper()
 
-    init {
-        buttonAnimationHelper.width = 5F
-    }
-
     fun updateX(x: Float) {
         this.x = x
     }
@@ -77,7 +73,7 @@ abstract class AbstractButton(open val name: String) {
             )
         )
         RenderUtils.drawAntiAliasingCircle(
-            x + 150 - 14 + buttonAnimationHelper.get(), y + 11.5F, 4.5F, buttonColor
+            x + 150 - 14 + (buttonAnimationHelper.get() * 5F), y + 11.5F, 4.5F, buttonColor
         )
     }
 

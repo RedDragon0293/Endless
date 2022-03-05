@@ -544,10 +544,12 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
         Display.setTitle("Minecraft 1.8.9");
 
         try {
-            Main.window.exitConfirm = false;
             Display.create((new PixelFormat()).withDepthBits(24));
-            Main.window.setVisible(false);
-            Main.window.setEnabled(false);
+            if (Main.window != null) {
+                Main.window.exitConfirm = false;
+                Main.window.setVisible(false);
+                Main.window.setEnabled(false);
+            }
         } catch (LWJGLException lwjglexception) {
             logger.error("Couldn't set pixel format", lwjglexception);
 

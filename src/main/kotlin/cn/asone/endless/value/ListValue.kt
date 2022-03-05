@@ -6,11 +6,15 @@ import com.google.gson.JsonObject
 import com.google.gson.JsonPrimitive
 import java.util.*
 
+/**
+ * @param values 可选值
+ * @param value 初始值
+ */
 open class ListValue(name: String, val values: Array<String>, value: String) : AbstractValue<String>(name, value) {
     var subValue: MutableMap<String, ArrayList<AbstractValue<*>>> = mutableMapOf()
 
     init {
-        this.value = value
+        set(value)
         for (currentValue in values)
             subValue[currentValue] = arrayListOf()
     }
@@ -22,7 +26,7 @@ open class ListValue(name: String, val values: Array<String>, value: String) : A
     override fun changeValue(newValue: String) {
         for (element in values) {
             if (element.equals(newValue, ignoreCase = true)) {
-                this.value = element
+                super.changeValue(element)
                 return
             }
         }

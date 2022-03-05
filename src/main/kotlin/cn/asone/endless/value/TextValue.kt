@@ -9,7 +9,7 @@ open class TextValue(name: String, value: String) : AbstractValue<String>(name, 
 
     override fun fromJson(element: JsonElement) {
         if (element.isJsonPrimitive)
-            value = element.asString
+            set(element.asString)
         else
             super.fromJson(element)
     }

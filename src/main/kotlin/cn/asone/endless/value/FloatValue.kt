@@ -14,7 +14,7 @@ open class FloatValue(name: String, value: Float, val range: ClosedRange<Float> 
 
     override fun fromJson(element: JsonElement) {
         if (element.isJsonPrimitive)
-            value = element.asFloat
+            set(element.asFloat)
         else
             super.fromJson(element)
     }

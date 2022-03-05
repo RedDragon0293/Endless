@@ -3,8 +3,15 @@ package cn.asone.endless.value
 import cn.asone.endless.utils.ClientUtils
 import com.google.gson.JsonElement
 
-abstract class AbstractValue<T>(val name: String, protected var value: T) {
-    open fun set(newValue: T) {
+abstract class AbstractValue<T>(val name: String, value: T) {
+    protected var value: T
+        private set
+
+    init {
+        this.value = value
+    }
+
+    fun set(newValue: T) {
         if (newValue == value)
             return
         changeValue(newValue)

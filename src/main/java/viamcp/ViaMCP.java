@@ -1,7 +1,6 @@
 package viamcp;
 
 import cn.asone.endless.value.AbstractValue;
-import cn.asone.endless.value.SingleValueRegisterClass;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
@@ -27,7 +26,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.logging.Logger;
 
-public class ViaMCP extends SingleValueRegisterClass {
+public class ViaMCP {
     public final static int PROTOCOL_VERSION = 47;
     private static final ViaMCP instance = new ViaMCP();
 
@@ -43,7 +42,7 @@ public class ViaMCP extends SingleValueRegisterClass {
 
     private File file;
     //private int version = 47;
-    public AbstractValue<Integer> versionValue = new AbstractValue<Integer>("ClientVersion", 47) {
+    public final AbstractValue<Integer> versionValue = new AbstractValue<Integer>("ViaClientVersion", 47) {
         @NotNull
         @Override
         public JsonElement toJson() {
@@ -52,9 +51,10 @@ public class ViaMCP extends SingleValueRegisterClass {
 
         @Override
         public void fromJson(@NotNull JsonElement element) {
-            if (element.isJsonPrimitive())
-                setValue(element.getAsInt());
-            else
+            if (element.isJsonPrimitive()) {
+                set(element.getAsInt());
+                asyncSlider.setVersion(element.getAsInt());
+            } else
                 super.fromJson(element);
         }
     };
@@ -136,11 +136,5 @@ public class ViaMCP extends SingleValueRegisterClass {
 
     public void setLastServer(String lastServer) {
         this.lastServer = lastServer;
-    }
-
-    @NotNull
-    @Override
-    public AbstractValue<?> getSingleValue() {
-        return versionValue;
     }
 }

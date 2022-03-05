@@ -25,8 +25,7 @@ import java.util.List;
 public class Main {
     public static boolean safelyQuit = false;
     private final static Logger logger = LogManager.getLogger("Endless");
-    public static final LoadWindow window = new LoadWindow();
-    public static boolean disableVia;
+    public static LoadWindow window = null;
 
     public static void main(String[] args) {
         System.setProperty("java.net.preferIPv4Stack", "true");
@@ -65,6 +64,7 @@ public class Main {
         }
 
         if (!argsOptions.has("disableLoadingWindow")) {
+            window = new LoadWindow();
             window.init();
             window.setEnabled(true);
             window.setVisible(true);
@@ -96,8 +96,8 @@ public class Main {
         boolean fullScreen = argsOptions.has("fullscreen");
         boolean checkGLErrors = argsOptions.has("checkGlErrors");
         boolean demo = argsOptions.has("demo");
-        disableVia = argsOptions.has("disableViaVersion");
-        if (disableVia) {
+        Endless.disableVia = argsOptions.has("disableViaVersion");
+        if (Endless.disableVia) {
             logger.info("ViaVersion has been disabled!");
         }
         String versionValue = argsOptions.valueOf(version);

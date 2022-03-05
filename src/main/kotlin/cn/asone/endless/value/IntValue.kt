@@ -14,7 +14,7 @@ open class IntValue(name: String, value: Int, val range: IntRange = 0..Int.MAX_V
 
     override fun fromJson(element: JsonElement) {
         if (element.isJsonPrimitive)
-            value = element.asInt
+            set(element.asInt)
         else
             super.fromJson(element)
     }

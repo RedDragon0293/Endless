@@ -1,9 +1,10 @@
 package net.minecraft.client.gui;
 
+import cn.asone.endless.Endless;
 import cn.asone.endless.ui.gui.GuiFakeForge;
+import cn.asone.endless.value.BoolValue;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
-import net.minecraft.client.main.Main;
 import net.minecraft.client.multiplayer.GuiConnecting;
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.client.multiplayer.ServerList;
@@ -21,7 +22,7 @@ import java.util.List;
 public class GuiMultiplayer extends GuiScreen implements GuiYesNoCallback {
     private static final Logger logger = LogManager.getLogger();
     private final OldServerPinger oldServerPinger = new OldServerPinger();
-    private GuiScreen parentScreen;
+    private final GuiScreen parentScreen;
     private ServerSelectionList serverListSelector;
     private ServerList savedServerList;
     private GuiButton btnEditServer;
@@ -41,7 +42,20 @@ public class GuiMultiplayer extends GuiScreen implements GuiYesNoCallback {
     private LanServerDetector.ThreadLanServerFind lanServerDetector;
     private boolean initialized;
     private static final GuiButton authButton = new GuiButton(20, 235, 8, 110, 20, "Mojang");
-    public static boolean authType = false;
+    /**
+     * True为Netease, false为Mojang
+     */
+    public static final BoolValue authType = new BoolValue("AuthType", false) {
+        @Override
+        protected void changeValue(Boolean newValue) {
+            super.changeValue(newValue);
+            if (newValue) {
+                authButton.displayString = "Netease";
+            } else {
+                authButton.displayString = "Mojang";
+            }
+        }
+    };
 
     public GuiMultiplayer(GuiScreen parentScreen) {
         this.parentScreen = parentScreen;
@@ -94,7 +108,7 @@ public class GuiMultiplayer extends GuiScreen implements GuiYesNoCallback {
         this.buttonList.add(new GuiButton(8, this.width / 2 + 4, this.height - 28, 70, 20, I18n.format("selectServer.refresh")));
         this.buttonList.add(new GuiButton(0, this.width / 2 + 4 + 76, this.height - 28, 75, 20, I18n.format("gui.cancel")));
         this.buttonList.add((new GuiButton(11, 5, 8, 110, 20, "FakeForge")));
-        if (!Main.disableVia) {
+        if (!Endless.disableVia) {
             this.buttonList.add(ViaMCP.getInstance().asyncSlider);
         }
         this.buttonList.add(authButton);
@@ -165,15 +179,7 @@ public class GuiMultiplayer extends GuiScreen implements GuiYesNoCallback {
             } else if (button.id == 11) {
                 mc.displayGuiScreen(new GuiFakeForge(this));
             } else if (button.id == 20) {
-                switch (button.displayString) {
-                    case "Mojang":
-                        button.displayString = "Netease";
-                        authType = true;
-                        break;
-                    case "Netease":
-                        button.displayString = "Mojang";
-                        authType = false;
-                }
+                authType.set(!authType.get());
             }
         }
     }
