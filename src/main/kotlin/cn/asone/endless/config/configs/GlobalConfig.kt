@@ -36,7 +36,7 @@ class GlobalConfig : AbstractConfig(File(ConfigManager.rootDir, "global.json")) 
             for (value in staticRegister) {
                 if (value.name == entry.key) {
                     value.fromJson(entry.value)
-                    break
+                    return
                 }
             }
             ClientUtils.logger.error("找不到 ${entry.key}. 跳过此类的解析.")

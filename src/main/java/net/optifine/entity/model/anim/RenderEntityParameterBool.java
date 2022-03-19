@@ -94,7 +94,7 @@ public enum RenderEntityParameterBool implements IExpressionBool
                         return entitylivingbase.isSneaking();
 
                     case IS_SPRINTING:
-                        return entitylivingbase.isSprinting();
+                        return entitylivingbase.getSprinting();
 
                     case IS_WET:
                         return entitylivingbase.isWet();

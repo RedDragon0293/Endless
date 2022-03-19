@@ -82,13 +82,20 @@ public class RedFontRenderer {
 
     public int getStringWidth(String text) {
         int width = 0;
-        for (char ch : text.toCharArray())
-            width += getFontChar(ch).getTex().width;
+        for (char ch : text.toCharArray()) {
+            FontChar c = getFontChar(ch);
+            if (c != null) {
+                width += c.getTex().width;
+            }
+        }
         return (int) (width * scale);
     }
 
     public int getCharWidth(char charAt) {
-        return (int) (getFontChar(charAt).getTex().width * scale);
+        FontChar c = getFontChar(charAt);
+        if (c == null)
+            return 0;
+        return (int) (c.getTex().width * scale);
     }
 
     /**
@@ -96,6 +103,9 @@ public class RedFontRenderer {
      */
     private int drawCharImage(int charAt, int offset) {
         FontChar fontChar = getFontChar(charAt);
+        if (fontChar == null) {
+            return 0;
+        }
         GlStateManager.bindTexture(fontChar.getTex().getGlTextureId());
         Gui.drawModalRectWithCustomSizedTexture(
                 offset,
@@ -225,11 +235,28 @@ public class RedFontRenderer {
     }
 
     private FontChar getFontChar(int charAt) {
+        Minecraft mc = Minecraft.getMinecraft();
+        if (chars[charAt] == null) {
+            if (mc.isCallingFromMinecraftThread()) {
+                chars[charAt] = new FontChar((char) charAt, generateCharImage(charAt));
+            } else {
+                mc.addScheduledTask(() -> {
+                    chars[charAt] = new FontChar((char) charAt, generateCharImage(charAt));
+                });
+            }
+        }
+        return chars[charAt];
+    }
+
+/*
+
+    private FontChar getFontChar(int charAt) {
         if (chars[charAt] == null) {
             chars[charAt] = new FontChar((char) charAt, generateCharImage(charAt));
         }
         return chars[charAt];
     }
+*/
 
     public void refresh() {
         for (int i = 0; i < 32; i++)

@@ -4,6 +4,7 @@ import cn.asone.endless.config.ConfigManager
 import cn.asone.endless.event.EventManager
 import cn.asone.endless.features.command.CommandManager
 import cn.asone.endless.features.module.ModuleManager
+import cn.asone.endless.script.ScriptManager
 import cn.asone.endless.ui.font.Fonts
 import cn.asone.endless.ui.gui.clickgui.GuiClickGUI
 import net.minecraft.client.main.Main
@@ -36,12 +37,15 @@ object Endless {
                 logger.error("无法加载 ViaVersion!")
                 e.printStackTrace()
             }
+        } else {
+            ViaMCP.getInstance().initAsyncSlider(120, 8, 110, 20)
         }
         ConfigManager
         EventManager
         CommandManager
         ModuleManager
         EventManager.sort()
+        ScriptManager.loadAllScripts()
         ConfigManager.loadAllConfigs()
         Fonts.downloadFonts()
         Fonts.loadFonts()

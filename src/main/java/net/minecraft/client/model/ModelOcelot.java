@@ -193,7 +193,7 @@ public class ModelOcelot extends ModelBase {
             this.ocelotTail.rotateAngleX = ((float) Math.PI / 2F);
             this.ocelotTail2.rotateAngleX = ((float) Math.PI / 2F);
             this.field_78163_i = 0;
-        } else if (entityocelot.isSprinting()) {
+        } else if (entityocelot.getSprinting()) {
             this.ocelotTail2.rotationPointY = this.ocelotTail.rotationPointY;
             this.ocelotTail2.rotationPointZ += 2.0F;
             this.ocelotTail.rotateAngleX = ((float) Math.PI / 2F);

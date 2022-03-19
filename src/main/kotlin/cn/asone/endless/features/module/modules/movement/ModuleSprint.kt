@@ -36,17 +36,17 @@ object ModuleSprint : AbstractModule(
 
     override fun onUpdate() {
         if (allDirectionsValue.get()) {
-            mc.thePlayer.isSprinting = true
+            mc.thePlayer.sprinting = true
             return
         }
         if (!MovementUtils.isMoving() || mc.thePlayer.isSneaking
             || (blindnessValue.get() && mc.thePlayer.isPotionActive(Potion.blindness))
             || (foodValue.get() && !(mc.thePlayer.foodStats.foodLevel > 6.0F || mc.thePlayer.capabilities.allowFlying))
         ) {
-            mc.thePlayer.isSprinting = false
+            mc.thePlayer.sprinting = false
             return
         }
 
-        if (mc.thePlayer.movementInput.moveForward >= 0.8F) mc.thePlayer.isSprinting = true
+        if (mc.thePlayer.movementInput.moveForward >= 0.8F) mc.thePlayer.sprinting = true
     }
 }

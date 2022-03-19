@@ -55,7 +55,7 @@ object ModuleManager : ListenableClass() {
         ClientUtils.logger.info("成功初始化 ${modules.size} 个功能.")
     }
 
-    private fun registerModule(module: AbstractModule) {
+    fun registerModule(module: AbstractModule) {
         modules.add(module)
         EventManager.registerListener(module)
     }

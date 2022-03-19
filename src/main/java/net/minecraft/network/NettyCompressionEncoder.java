@@ -3,6 +3,8 @@ package net.minecraft.network;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.zip.Deflater;
 
 public class NettyCompressionEncoder extends MessageToByteEncoder<ByteBuf>
@@ -17,17 +19,14 @@ public class NettyCompressionEncoder extends MessageToByteEncoder<ByteBuf>
         this.deflater = new Deflater();
     }
 
-    protected void encode(ChannelHandlerContext p_encode_1_, ByteBuf p_encode_2_, ByteBuf p_encode_3_) throws Exception
-    {
+    protected void encode(ChannelHandlerContext p_encode_1_, @NotNull ByteBuf p_encode_2_, ByteBuf p_encode_3_) throws Exception {
         int i = p_encode_2_.readableBytes();
         PacketBuffer packetbuffer = new PacketBuffer(p_encode_3_);
 
-        if (i < this.treshold)
-        {
+        if (i < this.treshold) {
             packetbuffer.writeVarIntToBuffer(0);
             packetbuffer.writeBytes(p_encode_2_);
-        }
-        else
+        } else
         {
             byte[] abyte = new byte[i];
             p_encode_2_.readBytes(abyte);

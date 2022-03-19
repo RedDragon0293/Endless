@@ -8,10 +8,15 @@ import cn.asone.endless.value.ValueRegister
 import org.lwjgl.input.Keyboard
 
 abstract class AbstractModule(
+    @JvmField
     val name: String,
+    @JvmField
     val description: String,
+    @JvmField
     val category: Int,
+    @JvmField
     var keyBind: Int = Keyboard.KEY_NONE,
+    @JvmField
     var canEnable: Boolean = true
 ) : ListenableClass(), ValueRegister {
     var state = false

@@ -553,23 +553,20 @@ public class EntityRenderer implements IResourceManagerReloadListener {
                 }
             }
 
-            boolean flag = false;
+            boolean zoom = false;
 
             if (this.mc.currentScreen == null) {
-                GameSettings gamesettings = this.mc.gameSettings;
-                flag = GameSettings.isKeyDown(this.mc.gameSettings.ofKeyBindZoom);
+                zoom = GameSettings.isKeyDown(this.mc.gameSettings.ofKeyBindZoom);
             }
 
-            if (flag) {
+            if (zoom) {
                 if (!Config.zoomMode) {
                     Config.zoomMode = true;
                     this.mc.gameSettings.smoothCamera = true;
                     this.mc.renderGlobal.displayListEntitiesDirty = true;
                 }
 
-                if (Config.zoomMode) {
-                    f /= 4.0F;
-                }
+                f /= 4.0F;
             } else if (Config.zoomMode) {
                 Config.zoomMode = false;
                 this.mc.gameSettings.smoothCamera = false;

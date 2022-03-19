@@ -1142,8 +1142,7 @@ public abstract class Entity implements ICommandSender
      */
     public void spawnRunningParticles()
     {
-        if (this.isSprinting() && !this.isInWater())
-        {
+        if (this.getSprinting() && !this.isInWater()) {
             this.createRunningParticles();
         }
     }
@@ -2132,8 +2131,7 @@ public abstract class Entity implements ICommandSender
     /**
      * Get if the Entity is sprinting.
      */
-    public boolean isSprinting()
-    {
+    public boolean getSprinting() {
         return this.getFlag(3);
     }
 

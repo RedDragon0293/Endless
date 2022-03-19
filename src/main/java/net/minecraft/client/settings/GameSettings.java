@@ -117,9 +117,8 @@ public class GameSettings {
     public boolean showInventoryAchievementHint = true;
     public int mipmapLevels = 4;
     private final Map<SoundCategory, Float> mapSoundLevels = Maps.newEnumMap(SoundCategory.class);
-    public boolean field_181150_U = true;
+    public boolean useNativeTransport = true;
     public boolean field_181151_V = true;
-    public boolean field_183509_X = true;
     public KeyBinding keyBindForward = new KeyBinding("key.forward", 17, "key.categories.movement");
     public KeyBinding keyBindLeft = new KeyBinding("key.left", 30, "key.categories.movement");
     public KeyBinding keyBindBack = new KeyBinding("key.back", 31, "key.categories.movement");
@@ -908,15 +907,11 @@ public class GameSettings {
                             }
 
                             if (astring[0].equals("useNativeTransport")) {
-                                this.field_181150_U = astring[1].equals("true");
+                                this.useNativeTransport = astring[1].equals("true");
                             }
 
                             if (astring[0].equals("entityShadows")) {
                                 this.field_181151_V = astring[1].equals("true");
-                            }
-
-                            if (astring[0].equals("realmsNotifications")) {
-                                this.field_183509_X = astring[1].equals("true");
                             }
 
                             for (KeyBinding keybinding : this.keyBindings) {
@@ -1029,9 +1024,8 @@ public class GameSettings {
             printwriter.println("forceUnicodeFont:" + this.forceUnicodeFont);
             printwriter.println("allowBlockAlternatives:" + this.allowBlockAlternatives);
             printwriter.println("reducedDebugInfo:" + this.reducedDebugInfo);
-            printwriter.println("useNativeTransport:" + this.field_181150_U);
+            printwriter.println("useNativeTransport:" + this.useNativeTransport);
             printwriter.println("entityShadows:" + this.field_181151_V);
-            printwriter.println("realmsNotifications:" + this.field_183509_X);
 
             for (KeyBinding keybinding : this.keyBindings) {
                 printwriter.println("key_" + keybinding.getKeyDescription() + ":" + keybinding.getKeyCode());
@@ -1106,8 +1100,8 @@ public class GameSettings {
         return this.renderDistanceChunks >= 4 ? this.clouds : 0;
     }
 
-    public boolean func_181148_f() {
-        return this.field_181150_U;
+    public boolean isUsingNativeTransport() {
+        return this.useNativeTransport;
     }
 
     private void setOptionFloatValueOF(GameSettings.Options p_setOptionFloatValueOF_1_, float p_setOptionFloatValueOF_2_) {

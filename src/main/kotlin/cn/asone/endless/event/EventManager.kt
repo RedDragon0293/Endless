@@ -2,6 +2,7 @@ package cn.asone.endless.event
 
 import cn.asone.endless.features.module.AbstractModule
 import cn.asone.endless.utils.ClientUtils
+import java.util.*
 
 object EventManager {
     private val availableEvents = arrayListOf(
@@ -25,6 +26,16 @@ object EventManager {
     fun registerListener(listener: Listenable) {
         for (eventHook in listener.handledEvents) {
             registry[eventHook.event]!!.add(EventTarget(listener, eventHook.priority))
+        }
+    }
+
+    fun removeListener(listener: Listenable) {
+        for (eventHook in listener.handledEvents) {
+            for (it in registry[eventHook.event]!!.indices) {
+                if (Objects.equals(registry[eventHook.event]!![it].targetClass, listener)) {
+                    registry[eventHook.event]!!.removeAt(it)
+                }
+            }
         }
     }
 

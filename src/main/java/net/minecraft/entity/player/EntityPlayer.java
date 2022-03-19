@@ -598,9 +598,8 @@ public abstract class EntityPlayer extends EntityLivingBase
 
         this.jumpMovementFactor = this.speedInAir;
 
-        if (this.isSprinting())
-        {
-            this.jumpMovementFactor = (float)((double)this.jumpMovementFactor + (double)this.speedInAir * 0.3D);
+        if (this.getSprinting()) {
+            this.jumpMovementFactor = (float) ((double) this.jumpMovementFactor + (double) this.speedInAir * 0.3D);
         }
 
         this.setAIMoveSpeed((float)iattributeinstance.getAttributeValue());
@@ -1295,8 +1294,7 @@ public abstract class EntityPlayer extends EntityLivingBase
 
                 i = i + EnchantmentHelper.getKnockbackModifier(this);
 
-                if (this.isSprinting())
-                {
+                if (this.getSprinting()) {
                     ++i;
                 }
 
@@ -1746,12 +1744,9 @@ public abstract class EntityPlayer extends EntityLivingBase
         super.jump();
         this.triggerAchievement(StatList.jumpStat);
 
-        if (this.isSprinting())
-        {
+        if (this.getSprinting()) {
             this.addExhaustion(0.8F);
-        }
-        else
-        {
+        } else {
             this.addExhaustion(0.2F);
         }
     }
@@ -1769,7 +1764,7 @@ public abstract class EntityPlayer extends EntityLivingBase
         {
             double d3 = this.motionY;
             float f = this.jumpMovementFactor;
-            this.jumpMovementFactor = this.capabilities.getFlySpeed() * (float)(this.isSprinting() ? 2 : 1);
+            this.jumpMovementFactor = this.capabilities.getFlySpeed() * (float) (this.getSprinting() ? 2 : 1);
             super.moveEntityWithHeading(strafe, forward);
             this.motionY = d3 * 0.6D;
             this.jumpMovementFactor = f;
@@ -1832,15 +1827,11 @@ public abstract class EntityPlayer extends EntityLivingBase
                 {
                     this.addStat(StatList.distanceWalkedStat, k);
 
-                    if (this.isSprinting())
-                    {
+                    if (this.getSprinting()) {
                         this.addStat(StatList.distanceSprintedStat, k);
-                        this.addExhaustion(0.099999994F * (float)k * 0.01F);
-                    }
-                    else
-                    {
-                        if (this.isSneaking())
-                        {
+                        this.addExhaustion(0.099999994F * (float) k * 0.01F);
+                    } else {
+                        if (this.isSneaking()) {
                             this.addStat(StatList.distanceCrouchedStat, k);
                         }
 

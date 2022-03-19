@@ -24,16 +24,13 @@ public class MessageDeserializer extends ByteToMessageDecoder {
         this.direction = direction;
     }
 
-    protected void decode(ChannelHandlerContext p_decode_1_, ByteBuf p_decode_2_, List<Object> p_decode_3_) throws IOException, InstantiationException, IllegalAccessException, Exception
-    {
-        if (p_decode_2_.readableBytes() != 0)
-        {
+    protected void decode(ChannelHandlerContext p_decode_1_, ByteBuf p_decode_2_, List<Object> p_decode_3_) throws IOException, InstantiationException, IllegalAccessException {
+        if (p_decode_2_.readableBytes() != 0) {
             PacketBuffer packetbuffer = new PacketBuffer(p_decode_2_);
             int i = packetbuffer.readVarIntFromBuffer();
             Packet packet = p_decode_1_.channel().attr(NetworkManager.attrKeyConnectionState).get().getPacket(this.direction, i);
 
-            if (packet == null)
-            {
+            if (packet == null) {
                 throw new IOException("Bad packet id " + i);
             }
             else

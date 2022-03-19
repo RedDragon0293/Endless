@@ -32,6 +32,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
+import org.jetbrains.annotations.NotNull;
 import viamcp.ViaMCP;
 import viamcp.handler.CommonTransformer;
 import viamcp.handler.MCPDecodeHandler;
@@ -48,13 +49,13 @@ public class NetworkManager extends SimpleChannelInboundHandler<Packet<INetHandl
     private static final Logger logger = LogManager.getLogger();
     public static final Marker logMarkerNetwork = MarkerManager.getMarker("NETWORK");
     public static final Marker logMarkerPackets = MarkerManager.getMarker("NETWORK_PACKETS", logMarkerNetwork);
-    public static final AttributeKey<EnumConnectionState> attrKeyConnectionState = AttributeKey.<EnumConnectionState>valueOf("protocol");
+    public static final AttributeKey<EnumConnectionState> attrKeyConnectionState = AttributeKey.valueOf("protocol");
     public static final LazyLoadBase<NioEventLoopGroup> CLIENT_NIO_EVENTLOOP = new LazyLoadBase<NioEventLoopGroup>() {
         protected NioEventLoopGroup load() {
             return new NioEventLoopGroup(0, (new ThreadFactoryBuilder()).setNameFormat("Netty Client IO #%d").setDaemon(true).build());
         }
     };
-    public static final LazyLoadBase<EpollEventLoopGroup> field_181125_e = new LazyLoadBase<EpollEventLoopGroup>() {
+    public static final LazyLoadBase<EpollEventLoopGroup> CLIENT_EPOLL_EVENTLOOP = new LazyLoadBase<EpollEventLoopGroup>() {
         protected EpollEventLoopGroup load() {
             return new EpollEventLoopGroup(0, (new ThreadFactoryBuilder()).setNameFormat("Netty Epoll Client IO #%d").setDaemon(true).build());
         }
@@ -240,8 +241,8 @@ public class NetworkManager extends SimpleChannelInboundHandler<Packet<INetHandl
 
             try {
                 while (!this.outboundPacketsQueue.isEmpty()) {
-                    NetworkManager.InboundHandlerTuplePacketListener networkmanager$inboundhandlertuplepacketlistener = this.outboundPacketsQueue.poll();
-                    this.dispatchPacket(networkmanager$inboundhandlertuplepacketlistener.packet, networkmanager$inboundhandlertuplepacketlistener.futureListeners);
+                    NetworkManager.InboundHandlerTuplePacketListener listener = this.outboundPacketsQueue.poll();
+                    this.dispatchPacket(listener.packet, listener.futureListeners);
                 }
             } finally {
                 this.readWriteLock.readLock().unlock();
@@ -287,34 +288,41 @@ public class NetworkManager extends SimpleChannelInboundHandler<Packet<INetHandl
         return this.channel instanceof LocalChannel || this.channel instanceof LocalServerChannel;
     }
 
-    public static NetworkManager createNetworkManagerAndConnect(InetAddress p_181124_0_, int p_181124_1_, boolean p_181124_2_) {
+    @NotNull
+    public static NetworkManager createNetworkManagerAndConnect(InetAddress ip, int port, boolean useNativeTransport) {
         final NetworkManager networkmanager = new NetworkManager(EnumPacketDirection.CLIENTBOUND);
         Class<? extends SocketChannel> oclass;
         LazyLoadBase<? extends EventLoopGroup> lazyloadbase;
 
-        if (Epoll.isAvailable() && p_181124_2_) {
+        if (Epoll.isAvailable() && useNativeTransport) {
             oclass = EpollSocketChannel.class;
-            lazyloadbase = field_181125_e;
+            lazyloadbase = CLIENT_EPOLL_EVENTLOOP;
         } else {
             oclass = NioSocketChannel.class;
             lazyloadbase = CLIENT_NIO_EVENTLOOP;
         }
 
         (new Bootstrap()).group(lazyloadbase.getValue()).handler(new ChannelInitializer<Channel>() {
-            protected void initChannel(Channel p_initChannel_1_) {
+            protected void initChannel(Channel channel) {
                 try {
-                    p_initChannel_1_.config().setOption(ChannelOption.TCP_NODELAY, true);
+                    channel.config().setOption(ChannelOption.TCP_NODELAY, true);
                 } catch (ChannelException ignored) {
                 }
 
-                p_initChannel_1_.pipeline().addLast("timeout", (new ReadTimeoutHandler(30))).addLast("splitter", (new MessageDeserializer2())).addLast("decoder", (new MessageDeserializer(EnumPacketDirection.CLIENTBOUND))).addLast("prepender", (new MessageSerializer2())).addLast("encoder", (new MessageSerializer(EnumPacketDirection.SERVERBOUND))).addLast("packet_handler", networkmanager);
-                if (p_initChannel_1_ instanceof SocketChannel && ViaMCP.getInstance().getVersion() != ViaMCP.PROTOCOL_VERSION && !Endless.disableVia) {
-                    UserConnection user = new UserConnectionImpl(p_initChannel_1_, true);
+                channel.pipeline().addLast("timeout", (new ReadTimeoutHandler(30)))
+                        .addLast("splitter", (new MessageDeserializer2()))
+                        .addLast("decoder", (new MessageDeserializer(EnumPacketDirection.CLIENTBOUND)))
+                        .addLast("prepender", (new MessageSerializer2()))
+                        .addLast("encoder", (new MessageSerializer(EnumPacketDirection.SERVERBOUND)))
+                        .addLast("packet_handler", networkmanager);
+                if (channel instanceof SocketChannel && ViaMCP.getInstance().getVersion() != ViaMCP.PROTOCOL_VERSION && !Endless.disableVia) {
+                    UserConnection user = new UserConnectionImpl(channel, true);
                     new ProtocolPipelineImpl(user);
-                    p_initChannel_1_.pipeline().addBefore("encoder", CommonTransformer.HANDLER_ENCODER_NAME, new MCPEncodeHandler(user)).addBefore("decoder", CommonTransformer.HANDLER_DECODER_NAME, new MCPDecodeHandler(user));
+                    channel.pipeline().addBefore("encoder", CommonTransformer.HANDLER_ENCODER_NAME, new MCPEncodeHandler(user))
+                            .addBefore("decoder", CommonTransformer.HANDLER_DECODER_NAME, new MCPDecodeHandler(user));
                 }
             }
-        }).channel(oclass).connect(p_181124_0_, p_181124_1_).syncUninterruptibly();
+        }).channel(oclass).connect(ip, port).syncUninterruptibly();
         return networkmanager;
     }
 

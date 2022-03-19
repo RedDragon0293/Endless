@@ -11,6 +11,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 
@@ -25,23 +26,20 @@ public class MessageSerializer extends MessageToByteEncoder<Packet>
         this.direction = direction;
     }
 
-    protected void encode(ChannelHandlerContext p_encode_1_, Packet p_encode_2_, ByteBuf p_encode_3_) throws IOException, Exception
-    {
+    protected void encode(@NotNull ChannelHandlerContext p_encode_1_, Packet p_encode_2_, ByteBuf p_encode_3_) throws IOException, Exception {
         Integer integer = p_encode_1_.channel().attr(NetworkManager.attrKeyConnectionState).get().getPacketId(this.direction, p_encode_2_);
 
-        if (logger.isDebugEnabled())
-        {
-            logger.debug(RECEIVED_PACKET_MARKER, "OUT: [{}:{}] {}", new Object[] {p_encode_1_.channel().attr(NetworkManager.attrKeyConnectionState).get(), integer, p_encode_2_.getClass().getName()});
+        if (logger.isDebugEnabled()) {
+            logger.debug(RECEIVED_PACKET_MARKER, "OUT: [{}:{}] {}", new Object[]{p_encode_1_.channel().attr(NetworkManager.attrKeyConnectionState).get(), integer, p_encode_2_.getClass().getName()});
         }
 
-        if (integer == null)
-        {
+        if (integer == null) {
             throw new IOException("Can\'t serialize unregistered packet");
         }
         else
         {
             PacketBuffer packetbuffer = new PacketBuffer(p_encode_3_);
-            packetbuffer.writeVarIntToBuffer(integer.intValue());
+            packetbuffer.writeVarIntToBuffer(integer);
 
             try
             {

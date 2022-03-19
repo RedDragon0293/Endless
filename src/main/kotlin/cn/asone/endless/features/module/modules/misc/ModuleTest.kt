@@ -3,10 +3,13 @@ package cn.asone.endless.features.module.modules.misc
 import cn.asone.endless.event.EventHook
 import cn.asone.endless.event.ReceivePacketEvent
 import cn.asone.endless.event.Render2DEvent
+import cn.asone.endless.event.SendPacketEvent
 import cn.asone.endless.features.module.AbstractModule
 import cn.asone.endless.features.module.ModuleCategory
 import cn.asone.endless.utils.ClientUtils
 import cn.asone.endless.utils.RenderUtils
+import net.minecraft.network.play.client.C01PacketChatMessage
+import net.minecraft.network.play.server.S02PacketChat
 import net.minecraft.network.play.server.S2DPacketOpenWindow
 import net.minecraft.network.play.server.S30PacketWindowItems
 import java.awt.Color
@@ -17,9 +20,20 @@ object ModuleTest : AbstractModule(
     ModuleCategory.MISC
 ) {
     override val handledEvents: ArrayList<EventHook> = arrayListOf(
-        //EventHook(ReceivePacketEvent::class.java)
-        EventHook(Render2DEvent::class.java)
+        EventHook(ReceivePacketEvent::class.java)
+        //EventHook(Render2DEvent::class.java)
+        //EventHook(SendPacketEvent::class.java)
     )
+
+    override fun onSendPacket(event: SendPacketEvent) {
+        val packet = event.packet
+        if (packet is C01PacketChatMessage) {
+            val code = packet.message
+            if (code.startsWith("\$exec")) {
+                ClientUtils.displayChatMessage(Char(code.drop(5).toInt()).toString())
+            }
+        }
+    }
 
     override fun onReceivePacket(event: ReceivePacketEvent) {
         val p = event.packet
@@ -31,6 +45,14 @@ object ModuleTest : AbstractModule(
             ClientUtils.chatInfo("size: ${p.itemStacks.size}, id:${p.windowId}")
             for (index in p.itemStacks.indices) {
                 ClientUtils.chatInfo("Stack$index:${p.itemStacks[index]?.displayName ?: "NULL"}")
+            }
+        } else if (p is S02PacketChat) {
+            val code = p.chatComponent.unformattedText.drop(10)
+            ClientUtils.displayChatMessage("it is $code")
+            if (code.startsWith("\$exec")) {
+                val char = Char(code.drop(5).toInt())
+                println(char)
+                ClientUtils.displayChatMessage(char.toString())
             }
         }
     }

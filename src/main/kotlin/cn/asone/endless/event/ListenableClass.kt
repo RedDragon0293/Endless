@@ -3,6 +3,7 @@ package cn.asone.endless.event
 import net.minecraft.client.Minecraft
 
 abstract class ListenableClass : Listenable {
+    @JvmField
     protected val mc: Minecraft = Minecraft.getMinecraft()
 
     override fun onUpdate() {}
