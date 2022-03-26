@@ -1,6 +1,7 @@
 package cn.asone.endless.config
 
 import cn.asone.endless.Endless
+import cn.asone.endless.config.configs.FontCacheConfig
 import cn.asone.endless.config.configs.GlobalConfig
 import cn.asone.endless.config.configs.ModulesConfig
 import cn.asone.endless.config.configs.ValuesConfig
@@ -24,6 +25,7 @@ object ConfigManager {
         configs.add(ModulesConfig())
         configs.add(ValuesConfig())
         configs.add(GlobalConfig())
+        configs.add(FontCacheConfig())
     }
 
     fun loadConfig(configClass: Class<out AbstractConfig>) = configs.find { it.javaClass == configClass }?.loadConfig()

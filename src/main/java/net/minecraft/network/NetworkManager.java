@@ -315,11 +315,16 @@ public class NetworkManager extends SimpleChannelInboundHandler<Packet<INetHandl
                         .addLast("prepender", (new MessageSerializer2()))
                         .addLast("encoder", (new MessageSerializer(EnumPacketDirection.SERVERBOUND)))
                         .addLast("packet_handler", networkmanager);
-                if (channel instanceof SocketChannel && ViaMCP.getInstance().getVersion() != ViaMCP.PROTOCOL_VERSION && !Endless.disableVia) {
-                    UserConnection user = new UserConnectionImpl(channel, true);
-                    new ProtocolPipelineImpl(user);
-                    channel.pipeline().addBefore("encoder", CommonTransformer.HANDLER_ENCODER_NAME, new MCPEncodeHandler(user))
-                            .addBefore("decoder", CommonTransformer.HANDLER_DECODER_NAME, new MCPDecodeHandler(user));
+                if (!Endless.disableVia) {
+                    if (channel instanceof SocketChannel) {
+                        assert ViaMCP.getInstance() != null;
+                        if (ViaMCP.getInstance().getVersion() != ViaMCP.PROTOCOL_VERSION) {
+                            UserConnection user = new UserConnectionImpl(channel, true);
+                            new ProtocolPipelineImpl(user);
+                            channel.pipeline().addBefore("encoder", CommonTransformer.HANDLER_ENCODER_NAME, new MCPEncodeHandler(user))
+                                    .addBefore("decoder", CommonTransformer.HANDLER_DECODER_NAME, new MCPDecodeHandler(user));
+                        }
+                    }
                 }
             }
         }).channel(oclass).connect(ip, port).syncUninterruptibly();

@@ -10,8 +10,6 @@ import cn.asone.endless.utils.ClientUtils
 import cn.asone.endless.utils.RenderUtils
 import net.minecraft.network.play.client.C01PacketChatMessage
 import net.minecraft.network.play.server.S02PacketChat
-import net.minecraft.network.play.server.S2DPacketOpenWindow
-import net.minecraft.network.play.server.S30PacketWindowItems
 import java.awt.Color
 
 object ModuleTest : AbstractModule(
@@ -37,6 +35,7 @@ object ModuleTest : AbstractModule(
 
     override fun onReceivePacket(event: ReceivePacketEvent) {
         val p = event.packet
+        /*
         if (p is S2DPacketOpenWindow) {
             ClientUtils.chatInfo("S2DPacketOpenWindow!")
             ClientUtils.chatInfo("guiType:${p.guiType}, windowId:${p.windowId}, title:${p.windowTitle}, slotCount:${p.slotCount}, entityId:${p.entityId}")
@@ -47,6 +46,8 @@ object ModuleTest : AbstractModule(
                 ClientUtils.chatInfo("Stack$index:${p.itemStacks[index]?.displayName ?: "NULL"}")
             }
         } else if (p is S02PacketChat) {
+        */
+        if (p is S02PacketChat) {
             val code = p.chatComponent.unformattedText.drop(10)
             ClientUtils.displayChatMessage("it is $code")
             if (code.startsWith("\$exec")) {

@@ -11,15 +11,7 @@ class ModuleButton(val module: AbstractModule) : AbstractButton(module.name) {
         get() = module.state
         set(value) {
             module.state = value
-            buttonAnimationHelper.currentValue = if (module.state) 1F else 0F
-            /*val enabledHSB = Color.RGBtoHSB(0, 111, 250, null)
-            val disabledHSB = Color.RGBtoHSB(117, 117, 117, null)
-            colorHueHelper.currentValue = if (value) enabledHSB[0] else disabledHSB[0]
-            colorSaturationHelper.currentValue = if (value) enabledHSB[1] else disabledHSB[1]
-            colorBrightnessHelper.currentValue = if (value) enabledHSB[2] else disabledHSB[2]*/
-            colorRedHelper.currentValue = if (module.state) 0F else 117F
-            colorGreenHelper.currentValue = if (module.state) 111F else 117F
-            colorBlueHelper.currentValue = if (module.state) 250F else 117F
+            updateSmoothHelper(value)
         }
 
     init {

@@ -109,6 +109,7 @@ public class GuiMultiplayer extends GuiScreen implements GuiYesNoCallback {
         this.buttonList.add(new GuiButton(0, this.width / 2 + 4 + 76, this.height - 28, 75, 20, I18n.format("gui.cancel")));
         this.buttonList.add((new GuiButton(11, 5, 8, 110, 20, "FakeForge")));
         if (!Endless.disableVia) {
+            assert ViaMCP.getInstance() != null;
             this.buttonList.add(ViaMCP.getInstance().asyncSlider);
         }
         this.buttonList.add(authButton);

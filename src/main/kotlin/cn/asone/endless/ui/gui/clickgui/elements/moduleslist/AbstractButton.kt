@@ -22,20 +22,20 @@ abstract class AbstractButton(open val name: String) {
     protected var x = 0F
     protected var y = 0F
         get() = field + offset
+
+    /**
+     * 存放滚轮滚动 (Scrolling) 时y坐标的偏移
+     */
     var offset = 0F
     open var state = false
         set(value) {
             field = value
-            buttonAnimationHelper.currentValue = if (value) 1F else 0F
-            /*val enabledHSB = Color.RGBtoHSB(0, 111, 250, null)
-            val disabledHSB = Color.RGBtoHSB(117, 117, 117, null)
-            colorHueHelper.currentValue = if (value) enabledHSB[0] else disabledHSB[0]
-            colorSaturationHelper.currentValue = if (value) enabledHSB[1] else disabledHSB[1]
-            colorBrightnessHelper.currentValue = if (value) enabledHSB[2] else disabledHSB[2]*/
-            colorRedHelper.currentValue = if (value) 0F else 117F
-            colorGreenHelper.currentValue = if (value) 111F else 117F
-            colorBlueHelper.currentValue = if (value) 250F else 117F
+            updateSmoothHelper(value)
         }
+
+    /**
+     * 当前AbstractButton 保存的 ValueButtons
+     */
     open val infoButtons: ArrayList<AbstractValueButton> = arrayListOf()
     val visible: Boolean
         get() = y < GuiClickGUI.windowYStart + GuiClickGUI.guiHeight - 7 && y + 23 > GuiClickGUI.windowYStart + 7
@@ -50,6 +50,13 @@ abstract class AbstractButton(open val name: String) {
 
     fun updateY(y: Float) {
         this.y = y
+    }
+
+    fun updateSmoothHelper(value: Boolean) {
+        buttonAnimationHelper.currentValue = if (value) 1F else 0F
+        colorRedHelper.currentValue = if (value) 0F else 117F
+        colorGreenHelper.currentValue = if (value) 111F else 117F
+        colorBlueHelper.currentValue = if (value) 250F else 117F
     }
 
     open fun drawBox(mouseX: Int, mouseY: Int) {

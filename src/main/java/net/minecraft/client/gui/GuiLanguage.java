@@ -97,6 +97,7 @@ public class GuiLanguage extends GuiScreen {
                     }
 
                     break;
+                //ClearCache
                 case 666:
                     Fonts.INSTANCE.onResourceManagerReload(null);
                     break;

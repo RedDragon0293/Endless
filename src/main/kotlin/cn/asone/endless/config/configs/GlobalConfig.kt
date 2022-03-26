@@ -19,7 +19,7 @@ class GlobalConfig : AbstractConfig(File(ConfigManager.rootDir, "global.json")) 
         Pair("CustomFont", Fonts)
     )
     private val staticRegister: ArrayList<AbstractValue<*>> = arrayListOf(
-        ViaMCP.getInstance().versionValue,
+        ViaMCP.versionValue,
         GuiMultiplayer.authType
     )
 

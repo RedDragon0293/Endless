@@ -35,20 +35,38 @@ class GuiClickGUI : GuiScreen() {
 
         var categoryIndex = 1
             private set
+
+        /**
+         * 右键ModuleButton时要绑定的功能
+         */
         var keyBindModule: AbstractModule? = null
+
+        /**
+         * 当前用于渲染所有 AbstractValueButton的 AbstractButton
+         */
         var currentInfoButton: AbstractButton? = null
+
+        /**
+         * 右键ListButton实现更改值
+         */
         var listButton: ListButton? = null
 
         var backgroundColor: Int = Color(236, 236, 236).rgb
         var elementColor: Int = Color.white.rgb
         var textColor: Int = Color.black.rgb
 
+        /**
+         * 绑定快捷键时显示的返回按钮
+         */
         private lateinit var backButton: GuiButton
         fun settingKeyBind() {
             backButton.visible = true
         }
     }
 
+    /**
+     * Category 与 AbstractButton 的表
+     */
     private val buttonsMap: Map<Int, ArrayList<AbstractButton>> = mapOf(
         Pair(0, ArrayList()), //Combat
         Pair(1, ArrayList()), //Player
@@ -63,6 +81,9 @@ class GuiClickGUI : GuiScreen() {
     //private var listDiffY = 0F
     //private var infoDiffY = 0F
     //private var valueDiffY = 0F
+    /**
+     * 当前用于渲染的 AbstractButtons 集合
+     */
     private val moduleButtons: ArrayList<AbstractButton> = ArrayList()
     private val endlessLogo = ResourceLocation("endless/endless_Logo.png")
     private lateinit var closeButton: GuiButton
@@ -73,12 +94,12 @@ class GuiClickGUI : GuiScreen() {
 
     init {
         for (module in ModuleManager.modules) buttonsMap[module.category]?.add(ModuleButton(module))
-        buttonsMap[7]?.add(object : DisabledButton("FakeForge") {
+        buttonsMap[7]!!.add(object : DisabledButton("FakeForge") {
             init {
                 infoButtons.add(AbstractValueButton.valueToButton(FakeForge.enabled, false))
             }
         })
-        buttonsMap[7]?.add(object : DisabledButton("Font") {
+        buttonsMap[7]!!.add(object : DisabledButton("Font") {
             init {
                 infoButtons.add(AbstractValueButton.valueToButton(Fonts.forceCustomFont, false))
                 infoButtons.add(AbstractValueButton.valueToButton(Fonts.cacheFont, false))
@@ -109,6 +130,7 @@ class GuiClickGUI : GuiScreen() {
         }
         moduleButtons.clear()
         buttonsMap[categoryIndex - 1]?.let { moduleButtons.addAll(it) }
+
     }
 
     override fun drawScreen(mouseX: Int, mouseY: Int, partialTicks: Float) {

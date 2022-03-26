@@ -8,8 +8,6 @@ import net.minecraft.src.Config;
 import net.minecraft.util.ResourceLocation;
 import net.optifine.Mipmaps;
 import org.apache.commons.io.IOUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 import org.lwjgl.opengl.GL14;
@@ -21,7 +19,6 @@ import java.io.InputStream;
 import java.nio.IntBuffer;
 
 public class TextureUtil {
-    private static final Logger logger = LogManager.getLogger();
     private static final IntBuffer dataBuffer = GLAllocation.createDirectIntBuffer(4194304);
     public static final DynamicTexture missingTexture = new DynamicTexture(16, 16);
     public static final int[] missingTextureData = missingTexture.getTextureData();

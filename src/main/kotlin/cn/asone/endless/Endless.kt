@@ -11,6 +11,7 @@ import net.minecraft.client.main.Main
 import org.apache.logging.log4j.LogManager
 import org.lwjgl.opengl.Display
 import viamcp.ViaMCP
+import kotlin.concurrent.thread
 
 object Endless {
     const val CLIENT_NAME = "Endless"
@@ -31,14 +32,12 @@ object Endless {
         if (!disableVia) {
             try {
                 logger.info("正在加载 ViaVersion...")
-                ViaMCP.getInstance().start()
-                ViaMCP.getInstance().initAsyncSlider(120, 8, 110, 20)
+                ViaMCP.getInstance()!!.start()
+                ViaMCP.getInstance()!!.initAsyncSlider(120, 8, 110, 20)
             } catch (e: Exception) {
                 logger.error("无法加载 ViaVersion!")
                 e.printStackTrace()
             }
-        } else {
-            ViaMCP.getInstance().initAsyncSlider(120, 8, 110, 20)
         }
         ConfigManager
         EventManager
@@ -49,7 +48,9 @@ object Endless {
         ConfigManager.loadAllConfigs()
         Fonts.downloadFonts()
         Fonts.loadFonts()
-        clickGUI = GuiClickGUI()
+        thread {
+            clickGUI = GuiClickGUI()
+        }
 
         Display.setTitle("$CLIENT_NAME $CLIENT_VERSION | 1.8.9 - Cracked by AsOne & RedDragon0293")
         logger.info("成功加载 $CLIENT_NAME!")

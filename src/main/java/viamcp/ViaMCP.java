@@ -1,5 +1,6 @@
 package viamcp;
 
+import cn.asone.endless.Endless;
 import cn.asone.endless.value.AbstractValue;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.google.gson.JsonElement;
@@ -11,6 +12,7 @@ import io.netty.channel.EventLoop;
 import io.netty.channel.local.LocalEventLoopGroup;
 import org.apache.logging.log4j.LogManager;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import viamcp.gui.AsyncVersionSlider;
 import viamcp.loader.MCPBackwardsLoader;
 import viamcp.loader.MCPRewindLoader;
@@ -30,8 +32,13 @@ public class ViaMCP {
     public final static int PROTOCOL_VERSION = 47;
     private static final ViaMCP instance = new ViaMCP();
 
+    @Nullable
     public static ViaMCP getInstance() {
-        return instance;
+        if (Endless.disableVia) {
+            return null;
+        } else {
+            return instance;
+        }
     }
 
     private final Logger jLogger = new JLoggerToLog4j(LogManager.getLogger("ViaMCP"));
@@ -42,7 +49,7 @@ public class ViaMCP {
 
     private File file;
     //private int version = 47;
-    public final AbstractValue<Integer> versionValue = new AbstractValue<Integer>("ViaClientVersion", 47) {
+    public static final AbstractValue<Integer> versionValue = new AbstractValue<Integer>("ViaClientVersion", 47) {
         @NotNull
         @Override
         public JsonElement toJson() {
@@ -53,7 +60,10 @@ public class ViaMCP {
         public void fromJson(@NotNull JsonElement element) {
             if (element.isJsonPrimitive()) {
                 set(element.getAsInt());
-                asyncSlider.setVersion(element.getAsInt());
+                if (!Endless.disableVia) {
+                    instance.setVersion(element.getAsInt());
+                }
+
             } else
                 super.fromJson(element);
         }

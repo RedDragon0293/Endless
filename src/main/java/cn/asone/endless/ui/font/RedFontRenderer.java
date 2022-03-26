@@ -7,6 +7,7 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.util.ResourceLocation;
+import org.jetbrains.annotations.Nullable;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
@@ -19,9 +20,10 @@ public class RedFontRenderer {
     /**
      * 储存字符图片及相应信息的数组. <p>
      * 数组的大小为 65535, char所储存的字符对应 ascii 码最大值也为 65535. <p>
-     * 由于字符数量庞大, 在初始化的时候就加载所有字符图片是不必要的, 因此在调用时要先进行非空检查.
-     * </p>
-     * </p>
+     * 由于字符数量庞大, 在初始化的时候就加载所有字符图片是不必要的, 因此在调用时要先进行非空检查.<p>
+     * 需要注意的是, 如果在其他线程调用此类中含有OpenGL相关的方法时, chars并不会立即更新<p>
+     *
+     * @see #getFontChar(int)
      */
     private final FontChar[] chars = new FontChar[65535];
     private final FontMetrics fontMetrics;
@@ -51,6 +53,12 @@ public class RedFontRenderer {
         //从空格至波浪号预加载字符图片
         for (int charCode = 32; charCode <= 126; charCode++) {
             chars[charCode] = new FontChar((char) charCode, generateCharImage(charCode));
+        }
+        //读取缓存
+        for (int i = 0; i < Fonts.caches.length; i++) {
+            if (Fonts.caches[i]) {
+                chars[i] = new FontChar((char) i, generateCharImage(i));
+            }
         }
         fontHeight = (int) (fontImageHeight * scale);
     }
@@ -127,7 +135,7 @@ public class RedFontRenderer {
      * @return 字符图片
      */
     private BufferedImage generateCharImage(int charAt) {
-        //+2:在字符图片右留出1px的空隙
+        //+1:在字符图片右留出1px的空隙
         int charWidth = fontMetrics.charWidth(charAt) + 1;
         if (charWidth <= 0)
             charWidth = 1;
@@ -234,6 +242,7 @@ public class RedFontRenderer {
         }
     }
 
+    @Nullable
     private FontChar getFontChar(int charAt) {
         Minecraft mc = Minecraft.getMinecraft();
         if (chars[charAt] == null) {
@@ -244,19 +253,10 @@ public class RedFontRenderer {
                     chars[charAt] = new FontChar((char) charAt, generateCharImage(charAt));
                 });
             }
+            Fonts.caches[charAt] = true;
         }
         return chars[charAt];
     }
-
-/*
-
-    private FontChar getFontChar(int charAt) {
-        if (chars[charAt] == null) {
-            chars[charAt] = new FontChar((char) charAt, generateCharImage(charAt));
-        }
-        return chars[charAt];
-    }
-*/
 
     public void refresh() {
         for (int i = 0; i < 32; i++)

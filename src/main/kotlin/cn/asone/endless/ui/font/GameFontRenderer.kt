@@ -62,7 +62,7 @@ class GameFontRenderer(font: Font, companionStyle: Boolean = false) : FontRender
     private fun drawTextInternal(rawText: String?, x: Float, y: Float, color: Int, ignoreColor: Boolean): Int {
         if (rawText == null)
             return 0
-        if (rawText.isNullOrEmpty())
+        if (rawText.isEmpty())
             return x.toInt()
 
         //GlStateManager.translate(x - 1.5, y + 0.5, 0.0)

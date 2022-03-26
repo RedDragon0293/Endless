@@ -18,6 +18,8 @@ import java.io.File
 import java.io.FileInputStream
 
 object Fonts : ValueRegister, IResourceManagerReloadListener {
+    @JvmField
+    val caches: BooleanArray = BooleanArray(65535)
     private val fontsDir: File = File(ConfigManager.rootDir, "fonts").apply {
         if (!exists())
             if (!mkdir())
@@ -85,9 +87,9 @@ object Fonts : ValueRegister, IResourceManagerReloadListener {
                         "https://reddragon0293.coding.net/p/endless/d/EndlessCloud/git/raw/main/HarmonyOS_Sans.zip?download=true",
                         zipFile
                     )
+                    ClientUtils.logger.info("正在解压字体文件...")
+                    FileUtils.extractZip(zipFile)
                 }
-                ClientUtils.logger.info("正在解压字体文件...")
-                FileUtils.extractZip(zipFile)
             } else {
                 ClientUtils.logger.info("正在下载字体文件...")
                 HttpUtils.download(
@@ -176,6 +178,9 @@ object Fonts : ValueRegister, IResourceManagerReloadListener {
         light30.refresh()
         regular38.refresh()
         medium44.refresh()
+        for (i in caches.indices) {
+            caches[i] = false
+        }
     }
 
     override val values: ArrayList<AbstractValue<*>> = arrayListOf(
