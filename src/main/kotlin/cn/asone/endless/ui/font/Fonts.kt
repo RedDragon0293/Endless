@@ -81,7 +81,7 @@ object Fonts : ValueRegister, IResourceManagerReloadListener {
                 val digest = DigestUtils.getSha1Digest()
                 digest.update(zipFile.readBytes())
                 val result = SecurityUtils.toHashValue(digest.digest())
-                if (!result.equals("5e078001b9d855872f2d6034a32d8f37e62b7f2f", true)) {
+                if (!result.equals("18921e857dcd29e4da730d20c6b1de0c6b98761f", true)) {
                     ClientUtils.logger.warn("字体文件已经损坏. 重新下载字体文件.")
                     HttpUtils.download(
                         "https://reddragon0293.coding.net/p/endless/d/EndlessCloud/git/raw/main/HarmonyOS_Sans.zip?download=true",
