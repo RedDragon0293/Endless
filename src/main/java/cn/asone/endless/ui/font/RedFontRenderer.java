@@ -244,8 +244,8 @@ public class RedFontRenderer {
 
     @Nullable
     private FontChar getFontChar(int charAt) {
-        Minecraft mc = Minecraft.getMinecraft();
         if (chars[charAt] == null) {
+            Minecraft mc = Minecraft.getMinecraft();
             if (mc.isCallingFromMinecraftThread()) {
                 chars[charAt] = new FontChar((char) charAt, generateCharImage(charAt));
             } else {

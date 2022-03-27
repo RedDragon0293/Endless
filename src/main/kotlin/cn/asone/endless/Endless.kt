@@ -55,6 +55,7 @@ object Endless {
         Display.setTitle("$CLIENT_NAME $CLIENT_VERSION | 1.8.9 - Cracked by AsOne & RedDragon0293")
         logger.info("成功加载 $CLIENT_NAME!")
         inited = true
+        System.gc()
     }
 
     fun stopClient() {
