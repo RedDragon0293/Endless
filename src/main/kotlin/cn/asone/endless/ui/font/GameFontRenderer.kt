@@ -136,11 +136,11 @@ class GameFontRenderer(font: Font, companionStyle: Boolean = false) : FontRender
                 i++
             } else {
                 if (obfuscated) {
-                    val currentWidth = getCharWidth(char)
-                    var randomChar: Char
                     val index = StringUtils.asciiCharacters.indexOf(char)
-                    var total = 0
                     if (index != -1) {
+                        val currentWidth = getCharWidth(char)
+                        var randomChar: Char
+                        var total = 0
                         do {
                             randomChar = StringUtils.asciiCharacters.random()
                             total++
@@ -229,13 +229,20 @@ class GameFontRenderer(font: Font, companionStyle: Boolean = false) : FontRender
                 i++
             } else {
                 if (obfuscated) {
-                    val currentWidth = super.getCharWidth(char)
-                    var randomChar: Char
                     val index = StringUtils.asciiCharacters.indexOf(char)
                     if (index != -1) {
+                        val currentWidth = super.getCharWidth(char)
+                        var randomChar: Char
+                        var total = 0
                         do {
                             randomChar = StringUtils.asciiCharacters.random()
-                        } while (currentWidth != super.getCharWidth(randomChar))
+                            total++
+                        } while (currentWidth != super.getCharWidth(randomChar)
+                            /**
+                             * 若多次尝试后仍无法匹配则放弃混淆防止死循环
+                             */
+                            && total <= StringUtils.asciiCharacters.length * 2
+                        )
                         char = randomChar
                     }
                 }
