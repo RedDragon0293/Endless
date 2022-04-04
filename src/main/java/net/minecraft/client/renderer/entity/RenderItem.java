@@ -24,7 +24,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.*;
-import net.minecraft.src.Config;
+import net.optifine.config.Config;
 import net.minecraft.util.*;
 import net.optifine.CustomColors;
 import net.optifine.CustomItems;

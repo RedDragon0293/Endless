@@ -1,7 +1,7 @@
 package net.optifine.entity.model.anim;
 
 import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.src.Config;
+import net.optifine.config.Config;
 
 public enum ModelVariableType
 {

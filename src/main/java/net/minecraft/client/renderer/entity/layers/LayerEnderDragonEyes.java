@@ -4,8 +4,8 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.entity.RenderDragon;
 import net.minecraft.entity.boss.EntityDragon;
-import net.minecraft.src.Config;
 import net.minecraft.util.ResourceLocation;
+import net.optifine.config.Config;
 import net.optifine.shaders.Shaders;
 
 public class LayerEnderDragonEyes implements LayerRenderer<EntityDragon>

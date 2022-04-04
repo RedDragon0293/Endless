@@ -1,7 +1,7 @@
 package net.optifine;
 
 import java.util.BitSet;
-import net.minecraft.src.Config;
+import net.optifine.config.Config;
 import net.optifine.shaders.Shaders;
 
 public class SmartAnimations

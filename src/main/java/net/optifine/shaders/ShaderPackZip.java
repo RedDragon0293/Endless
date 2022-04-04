@@ -11,7 +11,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-import net.minecraft.src.Config;
+import net.optifine.config.Config;
 import net.optifine.util.StrUtils;
 
 public class ShaderPackZip implements IShaderPack

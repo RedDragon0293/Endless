@@ -4,8 +4,8 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.Iterables;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.resources.IResourcePack;
-import net.minecraft.src.Config;
 import net.minecraft.util.ResourceLocation;
+import net.optifine.config.Config;
 import org.apache.commons.io.Charsets;
 import org.apache.commons.io.IOUtils;
 

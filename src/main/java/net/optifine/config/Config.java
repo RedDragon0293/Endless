@@ -1,4 +1,4 @@
-package net.minecraft.src;
+package net.optifine.config;
 
 import net.minecraft.client.LoadingScreenRenderer;
 import net.minecraft.client.Minecraft;
@@ -18,7 +18,6 @@ import net.minecraft.util.*;
 import net.optifine.DynamicLights;
 import net.optifine.GlErrors;
 import net.optifine.VersionCheckThread;
-import net.optifine.config.GlVersion;
 import net.optifine.gui.GuiMessage;
 import net.optifine.shaders.Shaders;
 import net.optifine.util.DisplayModeComparator;
@@ -47,11 +46,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Config {
-    public static final String OF_NAME = "OptiFine";
-    public static final String MC_VERSION = "1.8.9";
-    public static final String OF_EDITION = "HD_U";
-    public static final String OF_RELEASE = "L5";
-    public static final String VERSION = "OptiFine_1.8.9_HD_U_L5";
     private static String build = null;
     private static String newRelease = null;
     private static boolean notify64BitJava = false;

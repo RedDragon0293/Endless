@@ -1,14 +1,15 @@
 package net.optifine.player;
 
-import java.util.Map;
-import java.util.Set;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.src.Config;
+import net.optifine.config.Config;
+
+import java.util.Map;
+import java.util.Set;
 
 public class PlayerItemsLayer implements LayerRenderer
 {

@@ -3,7 +3,7 @@ package net.minecraft.client.renderer;
 import java.nio.IntBuffer;
 import net.minecraft.client.renderer.chunk.ListedRenderChunk;
 import net.minecraft.client.renderer.chunk.RenderChunk;
-import net.minecraft.src.Config;
+import net.optifine.config.Config;
 import net.minecraft.util.EnumWorldBlockLayer;
 import org.lwjgl.opengl.GL11;
 

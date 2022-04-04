@@ -14,7 +14,7 @@ import java.util.Properties;
 import javax.imageio.ImageIO;
 import net.minecraft.client.resources.IResourcePack;
 import net.minecraft.client.settings.GameSettings;
-import net.minecraft.src.Config;
+import net.optifine.config.Config;
 import net.minecraft.util.ResourceLocation;
 import net.optifine.util.PropertiesOrdered;
 import net.optifine.util.ResUtils;

@@ -1,6 +1,6 @@
 package net.optifine.shaders.config;
 
-import net.minecraft.src.Config;
+import net.optifine.config.Config;
 import net.optifine.util.StrUtils;
 import org.lwjgl.util.vector.Vector4f;
 

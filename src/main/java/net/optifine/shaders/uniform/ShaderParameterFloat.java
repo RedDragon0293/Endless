@@ -1,6 +1,6 @@
 package net.optifine.shaders.uniform;
 
-import net.minecraft.src.Config;
+import net.optifine.config.Config;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.optifine.shaders.Shaders;

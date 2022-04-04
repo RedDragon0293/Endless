@@ -1,7 +1,5 @@
 package net.optifine.player;
 
-import java.awt.Dimension;
-import java.awt.image.BufferedImage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.model.ModelBiped;
@@ -9,8 +7,11 @@ import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.src.Config;
 import net.minecraft.util.ResourceLocation;
+import net.optifine.config.Config;
+
+import java.awt.*;
+import java.awt.image.BufferedImage;
 
 public class PlayerItemModel
 {

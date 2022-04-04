@@ -1,5 +1,20 @@
 package net.optifine;
 
+import net.minecraft.block.Block;
+import net.minecraft.block.state.BlockStateBase;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.renderer.texture.TextureUtil;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.MathHelper;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.biome.BiomeGenBase;
+import net.optifine.config.Config;
+import net.optifine.config.ConnectedParser;
+import net.optifine.config.MatchBlock;
+import net.optifine.config.Matches;
+import net.optifine.util.TextureUtils;
+
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,20 +23,6 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import net.minecraft.block.Block;
-import net.minecraft.block.state.BlockStateBase;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.texture.TextureUtil;
-import net.minecraft.src.Config;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.MathHelper;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.IBlockAccess;
-import net.minecraft.world.biome.BiomeGenBase;
-import net.optifine.config.ConnectedParser;
-import net.optifine.config.MatchBlock;
-import net.optifine.config.Matches;
-import net.optifine.util.TextureUtils;
 
 public class CustomColormap implements CustomColors.IColorizer
 {

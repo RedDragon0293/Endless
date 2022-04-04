@@ -8,7 +8,7 @@ import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.tileentity.RenderEnderCrystal;
 import net.minecraft.entity.item.EntityEnderCrystal;
-import net.minecraft.src.Config;
+import net.optifine.config.Config;
 
 public class ModelAdapterEnderCrystal extends ModelAdapter {
     public ModelAdapterEnderCrystal() {

@@ -5,8 +5,8 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.src.Config;
 import net.optifine.Lang;
+import net.optifine.config.Config;
 
 import java.math.BigInteger;
 import java.net.URI;

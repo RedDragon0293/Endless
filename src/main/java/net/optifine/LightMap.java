@@ -1,7 +1,7 @@
 package net.optifine;
 
-import net.minecraft.src.Config;
 import net.minecraft.world.World;
+import net.optifine.config.Config;
 
 public class LightMap
 {

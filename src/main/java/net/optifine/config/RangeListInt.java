@@ -1,7 +1,5 @@
 package net.optifine.config;
 
-import net.minecraft.src.Config;
-
 public class RangeListInt
 {
     private RangeInt[] ranges = new RangeInt[0];

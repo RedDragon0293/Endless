@@ -1,11 +1,12 @@
 package net.optifine.entity.model;
 
+import net.minecraft.client.model.ModelBase;
+import net.minecraft.client.model.ModelRenderer;
+import net.optifine.config.Config;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.src.Config;
 
 public class CustomModelRegistry
 {

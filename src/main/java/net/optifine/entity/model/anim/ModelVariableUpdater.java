@@ -1,6 +1,6 @@
 package net.optifine.entity.model.anim;
 
-import net.minecraft.src.Config;
+import net.optifine.config.Config;
 import net.optifine.expr.ExpressionParser;
 import net.optifine.expr.IExpressionFloat;
 import net.optifine.expr.ParseException;

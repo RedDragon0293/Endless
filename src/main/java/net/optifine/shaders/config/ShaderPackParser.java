@@ -22,7 +22,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import net.minecraft.src.Config;
+import net.optifine.config.Config;
 import net.optifine.expr.ExpressionFloatArrayCached;
 import net.optifine.expr.ExpressionFloatCached;
 import net.optifine.expr.ExpressionParser;

@@ -12,6 +12,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 
+/**
+ * 出站数据包第一层序列器
+ */
 public class MessageSerializer extends MessageToByteEncoder<Packet<? extends INetHandler>> {
     private static final Logger logger = LogManager.getLogger();
     private static final Marker RECEIVED_PACKET_MARKER = MarkerManager.getMarker("PACKET_SENT", NetworkManager.logMarkerPackets);
@@ -21,6 +24,10 @@ public class MessageSerializer extends MessageToByteEncoder<Packet<? extends INe
         this.direction = direction;
     }
 
+    /**
+     * 序列化后的数据格式：
+     * packetId + packetData
+     */
     @Override
     protected void encode(@NotNull ChannelHandlerContext ctx, Packet msg, ByteBuf out) throws Exception {
         Integer packetId = ctx.channel().attr(NetworkManager.attrKeyConnectionState).get().getPacketId(this.direction, msg);

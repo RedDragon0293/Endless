@@ -15,9 +15,9 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.crash.CrashReport;
 import net.minecraft.crash.CrashReportCategory;
 import net.minecraft.entity.Entity;
-import net.minecraft.src.Config;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
+import net.optifine.config.Config;
 
 import java.util.Iterator;
 import java.util.List;

@@ -2,7 +2,7 @@ package net.minecraft.client.renderer;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.GameSettings;
-import net.minecraft.src.Config;
+import net.optifine.config.Config;
 import org.lwjgl.opengl.*;
 import oshi.SystemInfo;
 import oshi.hardware.Processor;

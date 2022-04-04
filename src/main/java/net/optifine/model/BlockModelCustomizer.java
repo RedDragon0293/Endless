@@ -1,11 +1,9 @@
 package net.optifine.model;
 
 import com.google.common.collect.ImmutableList;
-import java.util.List;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.resources.model.IBakedModel;
-import net.minecraft.src.Config;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumWorldBlockLayer;
@@ -14,7 +12,10 @@ import net.optifine.BetterGrass;
 import net.optifine.ConnectedTextures;
 import net.optifine.NaturalTextures;
 import net.optifine.SmartLeaves;
+import net.optifine.config.Config;
 import net.optifine.render.RenderEnv;
+
+import java.util.List;
 
 public class BlockModelCustomizer
 {

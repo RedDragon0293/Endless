@@ -9,9 +9,9 @@ import net.minecraft.client.renderer.entity.RenderMooshroom;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.passive.EntityMooshroom;
 import net.minecraft.init.Blocks;
-import net.minecraft.src.Config;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
+import net.optifine.config.Config;
 
 public class LayerMooshroomMushroom implements LayerRenderer<EntityMooshroom>
 {

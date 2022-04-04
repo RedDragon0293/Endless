@@ -2,10 +2,10 @@ package net.minecraft.client.renderer.block.model;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.src.Config;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.client.model.pipeline.IVertexConsumer;
 import net.minecraftforge.client.model.pipeline.IVertexProducer;
+import net.optifine.config.Config;
 import net.optifine.model.QuadBounds;
 
 public class BakedQuad implements IVertexProducer

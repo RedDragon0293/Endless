@@ -3,8 +3,8 @@ package net.minecraft.network;
 import net.minecraft.network.play.server.S01PacketJoinGame;
 import net.minecraft.network.play.server.S07PacketRespawn;
 import net.minecraft.network.play.server.S08PacketPlayerPosLook;
-import net.minecraft.src.Config;
 import net.minecraft.util.IThreadListener;
+import net.optifine.config.Config;
 
 public class PacketThreadUtil {
     public static int lastDimensionId = Integer.MIN_VALUE;

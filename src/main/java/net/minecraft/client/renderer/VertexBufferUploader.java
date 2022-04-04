@@ -1,7 +1,7 @@
 package net.minecraft.client.renderer;
 
 import net.minecraft.client.renderer.vertex.VertexBuffer;
-import net.minecraft.src.Config;
+import net.optifine.config.Config;
 
 public class VertexBufferUploader extends WorldVertexBufferUploader
 {

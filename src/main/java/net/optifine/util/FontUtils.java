@@ -1,7 +1,7 @@
 package net.optifine.util;
 
-import net.minecraft.src.Config;
 import net.minecraft.util.ResourceLocation;
+import net.optifine.config.Config;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;

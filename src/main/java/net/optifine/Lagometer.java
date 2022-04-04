@@ -9,7 +9,7 @@ import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.profiler.Profiler;
-import net.minecraft.src.Config;
+import net.optifine.config.Config;
 import org.lwjgl.opengl.GL11;
 
 public class Lagometer

@@ -1,7 +1,7 @@
 package net.minecraft.client.renderer;
 
-import net.minecraft.src.Config;
 import net.optifine.SmartAnimations;
+import net.optifine.config.Config;
 import net.optifine.render.GlAlphaState;
 import net.optifine.render.GlBlendState;
 import net.optifine.shaders.Shaders;

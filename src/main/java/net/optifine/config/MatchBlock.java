@@ -1,7 +1,6 @@
 package net.optifine.config;
 
 import net.minecraft.block.state.BlockStateBase;
-import net.minecraft.src.Config;
 
 public class MatchBlock
 {

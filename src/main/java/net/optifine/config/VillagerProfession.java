@@ -1,7 +1,5 @@
 package net.optifine.config;
 
-import net.minecraft.src.Config;
-
 public class VillagerProfession
 {
     private int profession;

@@ -2,7 +2,7 @@ package net.optifine.player;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
-import net.minecraft.src.Config;
+import net.optifine.config.Config;
 import net.optifine.http.IFileDownloadListener;
 
 public class PlayerConfigurationReceiver implements IFileDownloadListener
