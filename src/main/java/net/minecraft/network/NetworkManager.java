@@ -4,6 +4,7 @@ import cn.asone.endless.Endless;
 import cn.asone.endless.event.EventManager;
 import cn.asone.endless.event.ReceivePacketEvent;
 import cn.asone.endless.event.SendPacketEvent;
+import cn.asone.endless.utils.io.ByteCounter;
 import com.google.common.collect.Queues;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.viaversion.viaversion.api.connection.UserConnection;
@@ -47,7 +48,6 @@ import java.util.Queue;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class NetworkManager extends SimpleChannelInboundHandler<Packet<INetHandler>> {
-    private static final Logger logger = LogManager.getLogger();
     public static final Marker logMarkerNetwork = MarkerManager.getMarker("NETWORK");
     public static final Marker logMarkerPackets = MarkerManager.getMarker("NETWORK_PACKETS", logMarkerNetwork);
     public static final AttributeKey<EnumConnectionState> attrKeyConnectionState = AttributeKey.valueOf("protocol");
@@ -72,6 +72,7 @@ public class NetworkManager extends SimpleChannelInboundHandler<Packet<INetHandl
             return new LocalEventLoopGroup(0, (new ThreadFactoryBuilder()).setNameFormat("Netty Local Client IO #%d").setDaemon(true).build());
         }
     };
+    private static final Logger logger = LogManager.getLogger();
     private final Queue<NetworkManager.InboundHandlerTuplePacketListener> outboundPacketsQueue = Queues.newConcurrentLinkedQueue();
     private final ReentrantReadWriteLock readWriteLock = new ReentrantReadWriteLock();
 
@@ -98,6 +99,65 @@ public class NetworkManager extends SimpleChannelInboundHandler<Packet<INetHandl
     private boolean disconnected;
 
     public NetworkManager() {
+    }
+
+    @NotNull
+    public static NetworkManager createNetworkManagerAndConnect(InetAddress ip, int port, boolean useNativeTransport) {
+        final NetworkManager networkmanager = new NetworkManager();
+        Class<? extends SocketChannel> oclass;
+        LazyLoadBase<? extends EventLoopGroup> lazyloadbase;
+
+        if (Epoll.isAvailable() && useNativeTransport) {
+            oclass = EpollSocketChannel.class;
+            lazyloadbase = CLIENT_EPOLL_EVENTLOOP;
+        } else {
+            oclass = NioSocketChannel.class;
+            lazyloadbase = CLIENT_NIO_EVENTLOOP;
+        }
+
+        (new Bootstrap()).group(lazyloadbase.getValue()).handler(new ChannelInitializer<Channel>() {
+            protected void initChannel(Channel channel) {
+                try {
+                    channel.config().setOption(ChannelOption.TCP_NODELAY, true);
+                } catch (ChannelException ignored) {
+                }
+
+                channel.pipeline().addLast("timeout", (new ReadTimeoutHandler(30))) //Inbound
+                        .addLast("splitter", (new MessageDeserializer2())) //Inbound
+                        .addLast("decoder", (new MessageDeserializer(EnumPacketDirection.CLIENTBOUND))) //Inbound
+                        .addLast("packet_handler", networkmanager) //Inbound
+                        .addFirst("byte_counter", new ByteCounter())
+                        .addLast("prepender", (new MessageSerializer2())) //Outbound
+                        .addLast("encoder", (new MessageSerializer(EnumPacketDirection.SERVERBOUND))); //Outbound
+                if (!Endless.disableVia) {
+                    if (channel instanceof SocketChannel) {
+                        assert ViaMCP.getInstance() != null;
+                        if (ViaMCP.getInstance().getVersion() != ViaMCP.PROTOCOL_VERSION) {
+                            UserConnection user = new UserConnectionImpl(channel, true);
+                            new ProtocolPipelineImpl(user);
+                            channel.pipeline().addBefore("encoder", CommonTransformer.HANDLER_ENCODER_NAME, new MCPEncodeHandler(user))
+                                    .addBefore("decoder", CommonTransformer.HANDLER_DECODER_NAME, new MCPDecodeHandler(user));
+                        }
+                    }
+                }
+            }
+        }).channel(oclass).connect(ip, port).syncUninterruptibly();
+        return networkmanager;
+    }
+
+    /**
+     * Prepares a clientside NetworkManager: establishes a connection to the socket supplied and configures the channel
+     * pipeline. Returns the newly created instance.
+     */
+    @NotNull
+    public static NetworkManager provideLocalClient(SocketAddress address) {
+        final NetworkManager networkmanager = new NetworkManager();
+        (new Bootstrap()).group(CLIENT_LOCAL_EVENTLOOP.getValue()).handler(new ChannelInitializer<Channel>() {
+            protected void initChannel(Channel channel) {
+                channel.pipeline().addLast("packet_handler", networkmanager);
+            }
+        }).channel(LocalChannel.class).connect(address).syncUninterruptibly();
+        return networkmanager;
     }
 
     @Override
@@ -153,16 +213,6 @@ public class NetworkManager extends SimpleChannelInboundHandler<Packet<INetHandl
             } catch (ThreadQuickExitException ignored) {
             }
         }
-    }
-
-    /**
-     * Sets the NetHandler for this NetworkManager, no checks are made if this handler is suitable for the particular
-     * connection state (protocol)
-     */
-    public void setNetHandler(INetHandler handler) {
-        Validate.notNull(handler, "packetListener");
-        logger.debug("Set listener of {} to {}", this, handler);
-        this.packetListener = handler;
     }
 
     public void sendPacket(Packet<?> packetIn) {
@@ -298,63 +348,6 @@ public class NetworkManager extends SimpleChannelInboundHandler<Packet<INetHandl
         return this.channel instanceof LocalChannel || this.channel instanceof LocalServerChannel;
     }
 
-    @NotNull
-    public static NetworkManager createNetworkManagerAndConnect(InetAddress ip, int port, boolean useNativeTransport) {
-        final NetworkManager networkmanager = new NetworkManager();
-        Class<? extends SocketChannel> oclass;
-        LazyLoadBase<? extends EventLoopGroup> lazyloadbase;
-
-        if (Epoll.isAvailable() && useNativeTransport) {
-            oclass = EpollSocketChannel.class;
-            lazyloadbase = CLIENT_EPOLL_EVENTLOOP;
-        } else {
-            oclass = NioSocketChannel.class;
-            lazyloadbase = CLIENT_NIO_EVENTLOOP;
-        }
-
-        (new Bootstrap()).group(lazyloadbase.getValue()).handler(new ChannelInitializer<Channel>() {
-            protected void initChannel(Channel channel) {
-                try {
-                    channel.config().setOption(ChannelOption.TCP_NODELAY, true);
-                } catch (ChannelException ignored) {
-                }
-
-                channel.pipeline().addLast("timeout", (new ReadTimeoutHandler(30))) //Inbound
-                        .addLast("splitter", (new MessageDeserializer2())) //Inbound
-                        .addLast("decoder", (new MessageDeserializer(EnumPacketDirection.CLIENTBOUND))) //Inbound
-                        .addLast("prepender", (new MessageSerializer2())) //Outbound
-                        .addLast("encoder", (new MessageSerializer(EnumPacketDirection.SERVERBOUND))) //Outbound
-                        .addLast("packet_handler", networkmanager); //Inbound
-                if (!Endless.disableVia) {
-                    if (channel instanceof SocketChannel) {
-                        assert ViaMCP.getInstance() != null;
-                        if (ViaMCP.getInstance().getVersion() != ViaMCP.PROTOCOL_VERSION) {
-                            UserConnection user = new UserConnectionImpl(channel, true);
-                            new ProtocolPipelineImpl(user);
-                            channel.pipeline().addBefore("encoder", CommonTransformer.HANDLER_ENCODER_NAME, new MCPEncodeHandler(user))
-                                    .addBefore("decoder", CommonTransformer.HANDLER_DECODER_NAME, new MCPDecodeHandler(user));
-                        }
-                    }
-                }
-            }
-        }).channel(oclass).connect(ip, port).syncUninterruptibly();
-        return networkmanager;
-    }
-
-    /**
-     * Prepares a clientside NetworkManager: establishes a connection to the socket supplied and configures the channel
-     * pipeline. Returns the newly created instance.
-     */
-    public static NetworkManager provideLocalClient(SocketAddress address) {
-        final NetworkManager networkmanager = new NetworkManager();
-        (new Bootstrap()).group(CLIENT_LOCAL_EVENTLOOP.getValue()).handler(new ChannelInitializer<Channel>() {
-            protected void initChannel(Channel channel) {
-                channel.pipeline().addLast("packet_handler", networkmanager);
-            }
-        }).channel(LocalChannel.class).connect(address).syncUninterruptibly();
-        return networkmanager;
-    }
-
     /**
      * Adds an encoder+decoder to the channel pipeline. The parameter is the secret key used for encrypted communication
      */
@@ -384,6 +377,16 @@ public class NetworkManager extends SimpleChannelInboundHandler<Packet<INetHandl
      */
     public INetHandler getNetHandler() {
         return this.packetListener;
+    }
+
+    /**
+     * Sets the NetHandler for this NetworkManager, no checks are made if this handler is suitable for the particular
+     * connection state (protocol)
+     */
+    public void setNetHandler(INetHandler handler) {
+        Validate.notNull(handler, "packetListener");
+        logger.debug("Set listener of {} to {}", this, handler);
+        this.packetListener = handler;
     }
 
     /**

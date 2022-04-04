@@ -1006,15 +1006,20 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
 
         while (getSystemTime() >= this.debugUpdateTime + 1000L) {
             debugFPS = this.fpsCounter;
+            Endless.lastInbound = Endless.inboundBytes;
+            Endless.lastOutbound = Endless.outboundBytes;
             this.debug = String.format("%d fps (%d chunk update%s) T: %s%s%s%s%s", debugFPS, RenderChunk.renderChunksUpdated, RenderChunk.renderChunksUpdated != 1 ? "s" : "", (float) this.gameSettings.limitFramerate == GameSettings.Options.FRAMERATE_LIMIT.getValueMax() ? "inf" : Integer.valueOf(this.gameSettings.limitFramerate), this.gameSettings.enableVsync ? " vsync" : "", this.gameSettings.fancyGraphics ? "" : " fast", this.gameSettings.clouds == 0 ? "" : (this.gameSettings.clouds == 1 ? " fast-clouds" : " fancy-clouds"), OpenGlHelper.useVbo() ? " vbo" : "");
             RenderChunk.renderChunksUpdated = 0;
-            this.debugUpdateTime += 1000L;
             this.fpsCounter = 0;
+            Endless.inboundBytes = 0;
+            Endless.outboundBytes = 0;
             this.usageSnooper.addMemoryStatsToSnooper();
 
             if (!this.usageSnooper.isSnooperRunning()) {
                 this.usageSnooper.startSnooper();
             }
+
+            this.debugUpdateTime += 1000L;
         }
 
         if (this.isFramerateLimitBelowMax()) {

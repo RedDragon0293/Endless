@@ -26,53 +26,63 @@ public class GuiNewChat extends Gui {
         this.mc = mcIn;
     }
 
-    public void drawChat(int p_146230_1_) {
+    public void drawChat(int updateCounter) {
         if (this.mc.gameSettings.chatVisibility != EntityPlayer.EnumChatVisibility.HIDDEN) {
             int lineCount = this.getLineCount();
             boolean chatOpen = false;
-            int j = 0;
-            int k = this.drawnChatLines.size();
-            float f = this.mc.gameSettings.chatOpacity * 0.9F + 0.1F;
+            /*
+            已经渲染了的ChatLine总数
+             */
+            int drawnChatLineCount = 0;
+            int drawnChatLines = this.drawnChatLines.size();
+            float opacity = this.mc.gameSettings.chatOpacity * 0.9F + 0.1F;
 
-            if (k > 0) {
+            if (drawnChatLines > 0) {
+                int chatLineHeight = this.mc.fontRendererObj.FONT_HEIGHT + 2;
                 if (this.getChatOpen()) {
                     chatOpen = true;
                 }
 
-                float f1 = this.getChatScale();
-                int l = MathHelper.ceiling_float_int((float) this.getChatWidth() / f1);
+                float chatScale = this.getChatScale();
+                int rectWidth = MathHelper.ceiling_float_int((float) this.getChatWidth() / chatScale);
                 GlStateManager.pushMatrix();
                 GlStateManager.translate(2.0F, 20.0F, 0.0F);
-                GlStateManager.scale(f1, f1, 1.0F);
+                GlStateManager.scale(chatScale, chatScale, 1.0F);
 
-                for (int i1 = 0; i1 + this.scrollPos < this.drawnChatLines.size() && i1 < lineCount; ++i1) {
-                    ChatLine chatline = this.drawnChatLines.get(i1 + this.scrollPos);
+                for (int index = 0; index + this.scrollPos < this.drawnChatLines.size() && index < lineCount; ++index) {
+                    ChatLine chatline = this.drawnChatLines.get(index + this.scrollPos);
 
                     if (chatline != null) {
-                        int j1 = p_146230_1_ - chatline.getUpdatedCounter();
+                        int counter = updateCounter - chatline.getUpdatedCounter();
 
-                        if (j1 < 200 || chatOpen) {
-                            double d0 = (double) j1 / 200.0D;
-                            d0 = 1.0D - d0;
-                            d0 = d0 * 10.0D;
-                            d0 = MathHelper.clamp_double(d0, 0.0D, 1.0D);
-                            d0 = d0 * d0;
-                            int l1 = (int) (255.0D * d0);
+                        /*
+                        渲染焦点外的ChatLine
+                         */
+                        if (counter < 200 || chatOpen) {
+                            /*
+                            用于计算ChatLine淡出
+                             */
+                            double percent = (double) counter / 200.0D;
+                            percent = 1.0D - percent;
+                            percent = percent * 10.0D;
+                            percent = MathHelper.clamp_double(percent, 0.0D, 1.0D);
+                            percent = percent * percent;
+                            int alpha = (int) (255.0D * percent);
 
                             if (chatOpen) {
-                                l1 = 255;
+                                alpha = 255;
                             }
 
-                            l1 = (int) ((float) l1 * f);
-                            ++j;
+                            alpha = (int) ((float) alpha * opacity);
+                            ++drawnChatLineCount;
 
-                            if (l1 > 3) {
-                                int i2 = 0;
-                                int j2 = -i1 * 9;
-                                drawRect(i2, j2 - 9, i2 + l + 4, j2, l1 / 2 << 24);
+                            if (alpha > 3) {
+                                int startX = 0;
+                                int bottomY = -index * chatLineHeight;
+                                drawRect(startX, bottomY - chatLineHeight, startX + rectWidth + 4, bottomY, alpha / 2 << 24);
                                 String s = chatline.getChatComponent().getFormattedText();
                                 GlStateManager.enableBlend();
-                                this.mc.fontRendererObj.drawStringWithShadow(s, (float) i2, (float) (j2 - 8), 16777215 + (l1 << 24));
+                                this.mc.fontRendererObj.drawStringWithShadow(s, (float) startX, (float) (bottomY - chatLineHeight + 1), 16777215 + (alpha << 24));
                                 GlStateManager.disableAlpha();
                                 GlStateManager.disableBlend();
                             }
@@ -81,11 +91,10 @@ public class GuiNewChat extends Gui {
                 }
 
                 if (chatOpen) {
-                    int k2 = this.mc.fontRendererObj.FONT_HEIGHT;
                     GlStateManager.translate(-3.0F, 0.0F, 0.0F);
-                    int l2 = k * k2 + k;
-                    int i3 = j * k2 + j;
-                    int j3 = this.scrollPos * i3 / k;
+                    int l2 = drawnChatLines * chatLineHeight + drawnChatLines;
+                    int i3 = drawnChatLineCount * chatLineHeight + drawnChatLineCount;
+                    int j3 = this.scrollPos * i3 / drawnChatLines;
                     int k1 = i3 * i3 / l2;
 
                     if (l2 != i3) {
@@ -117,18 +126,18 @@ public class GuiNewChat extends Gui {
     /**
      * prints the ChatComponent to Chat. If the ID is not 0, deletes an existing Chat Line of that ID from the GUI
      */
-    public void printChatMessageWithOptionalDeletion(IChatComponent component, int p_146234_2_) {
-        this.setChatLine(component, p_146234_2_, this.mc.ingameGUI.getUpdateCounter(), false);
+    public void printChatMessageWithOptionalDeletion(IChatComponent component, int id) {
+        this.setChatLine(component, id, this.mc.ingameGUI.getUpdateCounter(), false);
         logger.info(component.getUnformattedText());
     }
 
-    private void setChatLine(IChatComponent component, int p_146237_2_, int p_146237_3_, boolean p_146237_4_) {
-        if (p_146237_2_ != 0) {
-            this.deleteChatLine(p_146237_2_);
+    private void setChatLine(IChatComponent component, int id, int updateCounter, boolean p_146237_4_) {
+        if (id != 0) {
+            this.deleteChatLine(id);
         }
 
         int i = MathHelper.floor_float((float) this.getChatWidth() / this.getChatScale());
-        List<IChatComponent> list = GuiUtilRenderComponents.func_178908_a(component, i, this.mc.fontRendererObj, false, false);
+        List<IChatComponent> list = GuiUtilRenderComponents.splitText(component, i, this.mc.fontRendererObj, false, false);
         boolean flag = this.getChatOpen();
 
         for (IChatComponent ichatcomponent : list) {
@@ -137,7 +146,7 @@ public class GuiNewChat extends Gui {
                 this.scroll(1);
             }
 
-            this.drawnChatLines.add(0, new ChatLine(p_146237_3_, ichatcomponent, p_146237_2_));
+            this.drawnChatLines.add(0, new ChatLine(updateCounter, ichatcomponent, id));
         }
 
         while (this.drawnChatLines.size() > 100) {
@@ -145,7 +154,7 @@ public class GuiNewChat extends Gui {
         }
 
         if (!p_146237_4_) {
-            this.chatLines.add(0, new ChatLine(p_146237_3_, component, p_146237_2_));
+            this.chatLines.add(0, new ChatLine(updateCounter, component, id));
 
             while (this.chatLines.size() > 100) {
                 this.chatLines.remove(this.chatLines.size() - 1);
@@ -205,9 +214,7 @@ public class GuiNewChat extends Gui {
      * Gets the chat component under the mouse
      */
     public IChatComponent getChatComponent(int p_146236_1_, int p_146236_2_) {
-        if (!this.getChatOpen()) {
-            return null;
-        } else {
+        if (this.getChatOpen()) {
             ScaledResolution scaledresolution = new ScaledResolution(this.mc);
             int i = scaledresolution.getScaleFactor();
             float f = this.getChatScale();
@@ -237,14 +244,10 @@ public class GuiNewChat extends Gui {
                         }
                     }
 
-                    return null;
-                } else {
-                    return null;
                 }
-            } else {
-                return null;
             }
         }
+        return null;
     }
 
     /**
@@ -308,6 +311,6 @@ public class GuiNewChat extends Gui {
     }
 
     public int getLineCount() {
-        return this.getChatHeight() / 9;
+        return this.getChatHeight() / this.mc.fontRendererObj.FONT_HEIGHT;
     }
 }

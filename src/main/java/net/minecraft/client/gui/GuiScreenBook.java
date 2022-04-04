@@ -473,7 +473,7 @@ public class GuiScreenBook extends GuiScreen
                     try
                     {
                         IChatComponent ichatcomponent = IChatComponent.Serializer.jsonToComponent(s5);
-                        this.field_175386_A = ichatcomponent != null ? GuiUtilRenderComponents.func_178908_a(ichatcomponent, 116, mc.fontRendererObj, true, true) : null;
+                        this.field_175386_A = ichatcomponent != null ? GuiUtilRenderComponents.splitText(ichatcomponent, 116, mc.fontRendererObj, true, true) : null;
                     }
                     catch (JsonParseException var13)
                     {

@@ -20,6 +20,18 @@ object Endless {
     lateinit var clickGUI: GuiClickGUI
 
     @JvmField
+    var inboundBytes = 0
+
+    @JvmField
+    var outboundBytes = 0
+
+    @JvmField
+    var lastInbound = 0
+
+    @JvmField
+    var lastOutbound = 0
+
+    @JvmField
     var inited = false
 
     @JvmField

@@ -13,11 +13,10 @@ public class ChatLine
      */
     private final int chatLineID;
 
-    public ChatLine(int p_i45000_1_, IChatComponent p_i45000_2_, int p_i45000_3_)
-    {
-        this.lineString = p_i45000_2_;
+    public ChatLine(int p_i45000_1_, IChatComponent chatComponent, int id) {
+        this.lineString = chatComponent;
         this.updateCounterCreated = p_i45000_1_;
-        this.chatLineID = p_i45000_3_;
+        this.chatLineID = id;
     }
 
     public IChatComponent getChatComponent()

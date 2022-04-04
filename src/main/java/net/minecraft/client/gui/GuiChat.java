@@ -87,7 +87,7 @@ public class GuiChat extends GuiScreen {
     protected void keyTyped(char typedChar, int keyCode) throws IOException {
         this.waitingOnAutocomplete = false;
 
-        if (keyCode == 15) {
+        if (keyCode == /*15*/Keyboard.KEY_TAB) {
             this.autocompletePlayerNames();
         } else {
             this.playerNamesFound = false;
