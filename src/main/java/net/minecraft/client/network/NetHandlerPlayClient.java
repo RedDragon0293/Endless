@@ -157,7 +157,7 @@ public class NetHandlerPlayClient implements INetHandlerPlayClient {
         Entity entity = null;
 
         if (packetIn.getType() == 10) {
-            entity = EntityMinecart.func_180458_a(this.clientWorldController, d0, d1, d2, EntityMinecart.EnumMinecartType.byNetworkID(packetIn.func_149009_m()));
+            entity = EntityMinecart.getMinecart(this.clientWorldController, d0, d1, d2, EntityMinecart.EnumMinecartType.byNetworkID(packetIn.func_149009_m()));
         } else if (packetIn.getType() == 90) {
             Entity entity1 = this.clientWorldController.getEntityByID(packetIn.func_149009_m());
 
@@ -726,7 +726,7 @@ public class NetHandlerPlayClient implements INetHandlerPlayClient {
      * (spawn particles), Zombie (villager transformation), Animal (breeding mode particles), Horse (breeding/smoke
      * particles), Sheep (...), Tameable (...), Villager (particles for breeding mode, angry and happy), Wolf (...)
      */
-    public void handleEntityStatus(S19PacketEntityStatus packetIn) {
+    public void handleEntityStatus(S1APacketEntityStatus packetIn) {
         PacketThreadUtil.checkThreadAndEnqueue(packetIn, this, this.mc);
         Entity entity = packetIn.getEntity(this.clientWorldController);
 

@@ -254,7 +254,7 @@ public class IntegratedServer extends MinecraftServer {
         return false;
     }
 
-    public boolean func_181035_ah() {
+    public boolean shouldUseNativeTransport() {
         return false;
     }
 

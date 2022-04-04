@@ -5,41 +5,37 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
 import io.netty.handler.codec.DecoderException;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
-import java.util.zip.DataFormatException;
 import java.util.zip.Inflater;
 
-public class NettyCompressionDecoder extends ByteToMessageDecoder
-{
+public class NettyCompressionDecoder extends ByteToMessageDecoder {
     private final Inflater inflater;
-    private int treshold;
+    private int threshold;
 
-    public NettyCompressionDecoder(int treshold)
-    {
-        this.treshold = treshold;
+    public NettyCompressionDecoder(int threshold) {
+        this.threshold = threshold;
         this.inflater = new Inflater();
     }
 
-    protected void decode(ChannelHandlerContext p_decode_1_, ByteBuf p_decode_2_, List<Object> p_decode_3_) throws DataFormatException, Exception
-    {
-        if (p_decode_2_.readableBytes() != 0)
-        {
-            PacketBuffer packetbuffer = new PacketBuffer(p_decode_2_);
+    @Override
+    protected void decode(ChannelHandlerContext ctx, @NotNull ByteBuf in, List<Object> out) throws Exception {
+        if (in.readableBytes() != 0) {
+            PacketBuffer packetbuffer = new PacketBuffer(in);
+            /*
+             解压后的数据大小
+             */
             int i = packetbuffer.readVarIntFromBuffer();
 
-            if (i == 0)
-            {
-                p_decode_3_.add(packetbuffer.readBytes(packetbuffer.readableBytes()));
-            }
-            else
-            {
-                if (i < this.treshold)
-                {
-                    throw new DecoderException("Badly compressed packet - size of " + i + " is below server threshold of " + this.treshold);
+            if (i == 0) {
+                out.add(packetbuffer.readBytes(packetbuffer.readableBytes()));
+            } else {
+                if (i < this.threshold) {
+                    throw new DecoderException("Badly compressed packet - size of " + i + " is below server threshold of " + this.threshold);
                 }
 
-                if (i > 2097152)
-                {
+                if (i > 2097152) {
                     throw new DecoderException("Badly compressed packet - size of " + i + " is larger than protocol maximum of " + 2097152);
                 }
 
@@ -48,14 +44,13 @@ public class NettyCompressionDecoder extends ByteToMessageDecoder
                 this.inflater.setInput(abyte);
                 byte[] abyte1 = new byte[i];
                 this.inflater.inflate(abyte1);
-                p_decode_3_.add(Unpooled.wrappedBuffer(abyte1));
+                out.add(Unpooled.wrappedBuffer(abyte1));
                 this.inflater.reset();
             }
         }
     }
 
-    public void setCompressionTreshold(int treshold)
-    {
-        this.treshold = treshold;
+    public void setCompressionTreshold(int treshold) {
+        this.threshold = treshold;
     }
 }

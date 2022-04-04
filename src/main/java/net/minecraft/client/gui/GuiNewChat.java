@@ -28,15 +28,15 @@ public class GuiNewChat extends Gui {
 
     public void drawChat(int p_146230_1_) {
         if (this.mc.gameSettings.chatVisibility != EntityPlayer.EnumChatVisibility.HIDDEN) {
-            int i = this.getLineCount();
-            boolean flag = false;
+            int lineCount = this.getLineCount();
+            boolean chatOpen = false;
             int j = 0;
             int k = this.drawnChatLines.size();
             float f = this.mc.gameSettings.chatOpacity * 0.9F + 0.1F;
 
             if (k > 0) {
                 if (this.getChatOpen()) {
-                    flag = true;
+                    chatOpen = true;
                 }
 
                 float f1 = this.getChatScale();
@@ -45,13 +45,13 @@ public class GuiNewChat extends Gui {
                 GlStateManager.translate(2.0F, 20.0F, 0.0F);
                 GlStateManager.scale(f1, f1, 1.0F);
 
-                for (int i1 = 0; i1 + this.scrollPos < this.drawnChatLines.size() && i1 < i; ++i1) {
+                for (int i1 = 0; i1 + this.scrollPos < this.drawnChatLines.size() && i1 < lineCount; ++i1) {
                     ChatLine chatline = this.drawnChatLines.get(i1 + this.scrollPos);
 
                     if (chatline != null) {
                         int j1 = p_146230_1_ - chatline.getUpdatedCounter();
 
-                        if (j1 < 200 || flag) {
+                        if (j1 < 200 || chatOpen) {
                             double d0 = (double) j1 / 200.0D;
                             d0 = 1.0D - d0;
                             d0 = d0 * 10.0D;
@@ -59,7 +59,7 @@ public class GuiNewChat extends Gui {
                             d0 = d0 * d0;
                             int l1 = (int) (255.0D * d0);
 
-                            if (flag) {
+                            if (chatOpen) {
                                 l1 = 255;
                             }
 
@@ -80,7 +80,7 @@ public class GuiNewChat extends Gui {
                     }
                 }
 
-                if (flag) {
+                if (chatOpen) {
                     int k2 = this.mc.fontRendererObj.FONT_HEIGHT;
                     GlStateManager.translate(-3.0F, 0.0F, 0.0F);
                     int l2 = k * k2 + k;

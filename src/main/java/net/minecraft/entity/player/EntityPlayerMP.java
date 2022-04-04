@@ -984,7 +984,7 @@ public class EntityPlayerMP extends EntityPlayer implements ICrafting
      */
     protected void onItemUseFinish()
     {
-        this.playerNetServerHandler.sendPacket(new S19PacketEntityStatus(this, (byte)9));
+        this.playerNetServerHandler.sendPacket(new S1APacketEntityStatus(this, (byte) 9));
         super.onItemUseFinish();
     }
 

@@ -99,13 +99,8 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
     private int field_92019_w;
     private ResourceLocation backgroundTexture;
 
-    private boolean field_183502_L;
-    private GuiButton modButton;
-    private GuiScreen modUpdateNotification;
-
     public GuiMainMenu() {
         this.openGLWarning2 = field_96138_a;
-        this.field_183502_L = false;
         this.splashText = "missingno";
         BufferedReader bufferedreader = null;
 
@@ -538,10 +533,6 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
         }
 
         super.drawScreen(mouseX, mouseY, partialTicks);
-
-        if (this.modUpdateNotification != null) {
-            this.modUpdateNotification.drawScreen(mouseX, mouseY, partialTicks);
-        }
     }
 
     /**

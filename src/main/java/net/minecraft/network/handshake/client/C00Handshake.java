@@ -14,6 +14,7 @@ public class C00Handshake implements Packet<INetHandlerHandshakeServer> {
     private int port;
     private EnumConnectionState requestedState;
 
+    @SuppressWarnings("unused")
     public C00Handshake() {
     }
 

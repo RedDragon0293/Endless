@@ -1,20 +1,19 @@
 package net.minecraft.command;
 
-import java.util.List;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.network.play.server.S19PacketEntityStatus;
+import net.minecraft.network.play.server.S1APacketEntityStatus;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.world.GameRules;
 
-public class CommandGameRule extends CommandBase
-{
+import java.util.List;
+
+public class CommandGameRule extends CommandBase {
     /**
      * Gets the name of the command
      */
-    public String getCommandName()
-    {
+    public String getCommandName() {
         return "gamerule";
     }
 
@@ -85,7 +84,7 @@ public class CommandGameRule extends CommandBase
 
             for (EntityPlayerMP entityplayermp : MinecraftServer.getServer().getConfigurationManager().func_181057_v())
             {
-                entityplayermp.playerNetServerHandler.sendPacket(new S19PacketEntityStatus(entityplayermp, b0));
+                entityplayermp.playerNetServerHandler.sendPacket(new S1APacketEntityStatus(entityplayermp, b0));
             }
         }
     }

@@ -54,7 +54,7 @@ public enum EnumConnectionState {
             this.registerPacket(EnumPacketDirection.CLIENTBOUND, S14PacketEntity.S17PacketEntityLookMove.class);
             this.registerPacket(EnumPacketDirection.CLIENTBOUND, S18PacketEntityTeleport.class);
             this.registerPacket(EnumPacketDirection.CLIENTBOUND, S19PacketEntityHeadLook.class);
-            this.registerPacket(EnumPacketDirection.CLIENTBOUND, S19PacketEntityStatus.class);
+            this.registerPacket(EnumPacketDirection.CLIENTBOUND, S1APacketEntityStatus.class);
             this.registerPacket(EnumPacketDirection.CLIENTBOUND, S1BPacketEntityAttach.class);
             this.registerPacket(EnumPacketDirection.CLIENTBOUND, S1CPacketEntityMetadata.class);
             this.registerPacket(EnumPacketDirection.CLIENTBOUND, S1DPacketEntityEffect.class);
@@ -149,8 +149,8 @@ public enum EnumConnectionState {
         }
     };
 
-    private static int field_181136_e = -1;
-    private static int field_181137_f = 2;
+    private static final int field_181136_e = -1;
+    private static final int field_181137_f = 2;
     private static final EnumConnectionState[] STATES_BY_ID = new EnumConnectionState[field_181137_f - field_181136_e + 1];
     private static final Map<Class<? extends Packet<?>>, EnumConnectionState> STATES_BY_CLASS = Maps.newHashMap();
     private final int id;

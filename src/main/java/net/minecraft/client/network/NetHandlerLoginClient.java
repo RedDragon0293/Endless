@@ -5,7 +5,6 @@ import com.mojang.authlib.exceptions.AuthenticationException;
 import com.mojang.authlib.exceptions.AuthenticationUnavailableException;
 import com.mojang.authlib.exceptions.InvalidCredentialsException;
 import com.mojang.authlib.minecraft.MinecraftSessionService;
-import io.netty.util.concurrent.GenericFutureListener;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiDisconnected;
 import net.minecraft.client.gui.GuiScreen;
@@ -22,6 +21,7 @@ import net.minecraft.util.CryptManager;
 import net.minecraft.util.IChatComponent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 
 import javax.crypto.SecretKey;
 import java.math.BigInteger;
@@ -40,7 +40,7 @@ public class NetHandlerLoginClient implements INetHandlerLoginClient {
         this.previousGuiScreen = p_i45059_3_;
     }
 
-    public void handleEncryptionRequest(S01PacketEncryptionRequest packetIn) {
+    public void handleEncryptionRequest(@NotNull S01PacketEncryptionRequest packetIn) {
         final SecretKey secretkey = CryptManager.createNewSharedKey();
         String s = packetIn.getServerId();
         PublicKey publickey = packetIn.getPublicKey();
@@ -67,7 +67,7 @@ public class NetHandlerLoginClient implements INetHandlerLoginClient {
             }
         }
 
-        this.networkManager.sendPacket(new C01PacketEncryptionResponse(secretkey, publickey, packetIn.getVerifyToken()), p_operationComplete_1_ -> NetHandlerLoginClient.this.networkManager.enableEncryption(secretkey), new GenericFutureListener[0]);
+        this.networkManager.sendPacket(new C01PacketEncryptionResponse(secretkey, publickey, packetIn.getVerifyToken()), onComplete -> NetHandlerLoginClient.this.networkManager.enableEncryption(secretkey));
     }
 
     private MinecraftSessionService getSessionService() {

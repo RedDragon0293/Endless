@@ -1,10 +1,10 @@
 package net.minecraft.client.multiplayer;
 
-import java.net.IDN;
-import java.util.Hashtable;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.InitialDirContext;
+import java.net.IDN;
+import java.util.Hashtable;
 
 public class ServerAddress
 {
@@ -27,14 +27,10 @@ public class ServerAddress
         return this.serverPort;
     }
 
-    public static ServerAddress func_78860_a(String p_78860_0_)
-    {
-        if (p_78860_0_ == null)
-        {
+    public static ServerAddress fromString(String p_78860_0_) {
+        if (p_78860_0_ == null) {
             return null;
-        }
-        else
-        {
+        } else {
             String[] astring = p_78860_0_.split(":");
 
             if (p_78860_0_.startsWith("["))
