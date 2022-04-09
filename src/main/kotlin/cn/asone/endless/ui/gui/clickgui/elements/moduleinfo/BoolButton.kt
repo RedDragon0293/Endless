@@ -30,6 +30,13 @@ class BoolButton(override val value: BoolValue, isSub: Boolean) : AbstractValueB
         colorAlphaHelper.reset(if (value.get()) 255F else 0F)
     }
 
+    private fun updateSmoothHelper() {
+        colorRedHelper.currentValue = if (value.get()) 0F else 140F
+        colorGreenHelper.currentValue = if (value.get()) 111F else 140F
+        colorBlueHelper.currentValue = if (value.get()) 255F else 140F
+        colorAlphaHelper.currentValue = if (value.get()) 255F else 0F
+    }
+
     override fun updateX(x: Float) {
         super.updateX(x)
         if (subButtons.isNotEmpty()) {
@@ -57,6 +64,7 @@ class BoolButton(override val value: BoolValue, isSub: Boolean) : AbstractValueB
 
     override fun drawBox(mouseX: Int, mouseY: Int) {
         super.drawBox(mouseX, mouseY)
+        updateSmoothHelper()
         colorRedHelper.tick()
         colorGreenHelper.tick()
         colorBlueHelper.tick()
@@ -116,10 +124,7 @@ class BoolButton(override val value: BoolValue, isSub: Boolean) : AbstractValueB
             ) {
                 mc.soundHandler.playSound("gui.button.press", 1F)
                 this.value.set(!this.value.get())
-                colorRedHelper.currentValue = if (value.get()) 0F else 140F
-                colorGreenHelper.currentValue = if (value.get()) 111F else 140F
-                colorBlueHelper.currentValue = if (value.get()) 255F else 140F
-                colorAlphaHelper.currentValue = if (value.get()) 255F else 0F
+                updateSmoothHelper()
             } else if (this.value.get()) {
                 for (button in subButtons) {
                     if (button.isHovering(mouseX, mouseY)) {

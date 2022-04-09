@@ -1,5 +1,6 @@
 package net.minecraft.client.gui;
 
+import cn.asone.endless.utils.animation.SmoothHelper;
 import com.google.common.collect.Lists;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
@@ -19,7 +20,7 @@ public class GuiNewChat extends Gui {
     private final List<String> sentMessages = Lists.newArrayList();
     private final List<ChatLine> chatLines = Lists.newArrayList();
     private final List<ChatLine> drawnChatLines = Lists.newArrayList();
-    private int scrollPos;
+    private final SmoothHelper scrollHelper = new SmoothHelper();
     private boolean isScrolled;
 
     public GuiNewChat(Minecraft mcIn) {
@@ -27,6 +28,7 @@ public class GuiNewChat extends Gui {
     }
 
     public void drawChat(int updateCounter) {
+        scrollHelper.tick();
         if (this.mc.gameSettings.chatVisibility != EntityPlayer.EnumChatVisibility.HIDDEN) {
             int lineCount = this.getLineCount();
             boolean chatOpen = false;
@@ -38,7 +40,7 @@ public class GuiNewChat extends Gui {
             float opacity = this.mc.gameSettings.chatOpacity * 0.9F + 0.1F;
 
             if (drawnChatLines > 0) {
-                int chatLineHeight = this.mc.fontRendererObj.FONT_HEIGHT + 2;
+                int chatLineHeight = this.mc.fontRendererObj.FONT_HEIGHT;
                 if (this.getChatOpen()) {
                     chatOpen = true;
                 }
@@ -49,8 +51,8 @@ public class GuiNewChat extends Gui {
                 GlStateManager.translate(2.0F, 20.0F, 0.0F);
                 GlStateManager.scale(chatScale, chatScale, 1.0F);
 
-                for (int index = 0; index + this.scrollPos < this.drawnChatLines.size() && index < lineCount; ++index) {
-                    ChatLine chatline = this.drawnChatLines.get(index + this.scrollPos);
+                for (int index = 0; index + (int) (this.scrollHelper.getCurrentValue()) < this.drawnChatLines.size() && index < lineCount; ++index) {
+                    ChatLine chatline = this.drawnChatLines.get(index + (int) (this.scrollHelper.get()));
 
                     if (chatline != null) {
                         int counter = updateCounter - chatline.getUpdatedCounter();
@@ -90,11 +92,14 @@ public class GuiNewChat extends Gui {
                     }
                 }
 
+                /*
+                scrolling滑条
+                 */
                 if (chatOpen) {
                     GlStateManager.translate(-3.0F, 0.0F, 0.0F);
                     int l2 = drawnChatLines * chatLineHeight + drawnChatLines;
                     int i3 = drawnChatLineCount * chatLineHeight + drawnChatLineCount;
-                    int j3 = this.scrollPos * i3 / drawnChatLines;
+                    int j3 = (int) (this.scrollHelper.get()) * i3 / drawnChatLines;
                     int k1 = i3 * i3 / l2;
 
                     if (l2 != i3) {
@@ -141,7 +146,7 @@ public class GuiNewChat extends Gui {
         boolean flag = this.getChatOpen();
 
         for (IChatComponent ichatcomponent : list) {
-            if (flag && this.scrollPos > 0) {
+            if (flag && this.scrollHelper.getCurrentValue() > 0) {
                 this.isScrolled = true;
                 this.scroll(1);
             }
@@ -189,23 +194,27 @@ public class GuiNewChat extends Gui {
      * Resets the chat scroll (executed when the GUI is closed, among others)
      */
     public void resetScroll() {
-        this.scrollPos = 0;
+        //this.scrollPos = 0;
+        scrollHelper.setCurrentValue(0);
         this.isScrolled = false;
     }
 
     /**
      * Scrolls the chat by the given number of lines.
      */
-    public void scroll(int p_146229_1_) {
-        this.scrollPos += p_146229_1_;
+    public void scroll(int wheel) {
+        //this.scrollPos += wheel;
+        scrollHelper.setCurrentValue(scrollHelper.getCurrentValue() + wheel);
         int i = this.drawnChatLines.size();
 
-        if (this.scrollPos > i - this.getLineCount()) {
-            this.scrollPos = i - this.getLineCount();
+        if (this.scrollHelper.getCurrentValue() > i - this.getLineCount()) {
+            //this.scrollPos = i - this.getLineCount();
+            scrollHelper.setCurrentValue(i - this.getLineCount());
         }
 
-        if (this.scrollPos <= 0) {
-            this.scrollPos = 0;
+        if (this.scrollHelper.getCurrentValue() <= 0) {
+            //this.scrollPos = 0;
+            scrollHelper.setCurrentValue(0);
             this.isScrolled = false;
         }
     }
@@ -227,7 +236,7 @@ public class GuiNewChat extends Gui {
                 int l = Math.min(this.getLineCount(), this.drawnChatLines.size());
 
                 if (j <= MathHelper.floor_float((float) this.getChatWidth() / this.getChatScale()) && k < this.mc.fontRendererObj.FONT_HEIGHT * l + l) {
-                    int i1 = k / this.mc.fontRendererObj.FONT_HEIGHT + this.scrollPos;
+                    int i1 = k / this.mc.fontRendererObj.FONT_HEIGHT + (int) (this.scrollHelper.get());
 
                     if (i1 >= 0 && i1 < this.drawnChatLines.size()) {
                         ChatLine chatline = this.drawnChatLines.get(i1);

@@ -40,13 +40,11 @@ public class GuiChat extends GuiScreen {
     public GuiChat() {
         this.defaultInputFieldText = "";
         helper.reset(0);
-        helper.setSpeed(0.01F);
     }
 
     public GuiChat(String defaultText) {
         this.defaultInputFieldText = defaultText;
         helper.reset(0);
-        helper.setSpeed(0.01F);
     }
 
     /**
@@ -54,7 +52,6 @@ public class GuiChat extends GuiScreen {
      * window resizes, the buttonList is cleared beforehand.
      */
     public void initGui() {
-        helper.setCurrentValue(12);
         Keyboard.enableRepeatEvents(true);
         this.sentHistoryCursor = this.mc.ingameGUI.getChatGUI().getSentMessages().size();
         this.inputField = new GuiTextField(0, 4, this.height, this.width - 4, 12);
@@ -63,6 +60,7 @@ public class GuiChat extends GuiScreen {
         this.inputField.setFocused(true);
         this.inputField.setText(this.defaultInputFieldText);
         this.inputField.setCanLoseFocus(false);
+        helper.setCurrentValue(this.inputField.getFontRenderer().FONT_HEIGHT + 6);
     }
 
     /**
@@ -123,22 +121,22 @@ public class GuiChat extends GuiScreen {
      */
     public void handleMouseInput() throws IOException {
         super.handleMouseInput();
-        int i = Mouse.getEventDWheel();
+        int mouseWheel = Mouse.getEventDWheel();
 
-        if (i != 0) {
-            if (i > 1) {
-                i = 1;
+        if (mouseWheel != 0) {
+            if (mouseWheel > 1) {
+                mouseWheel = 1;
             }
 
-            if (i < -1) {
-                i = -1;
+            if (mouseWheel < -1) {
+                mouseWheel = -1;
             }
 
             if (!isShiftKeyDown()) {
-                i *= 7;
+                mouseWheel *= 7;
             }
 
-            this.mc.ingameGUI.getChatGUI().scroll(i);
+            this.mc.ingameGUI.getChatGUI().scroll(mouseWheel);
         }
     }
 
@@ -256,8 +254,8 @@ public class GuiChat extends GuiScreen {
      */
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         helper.tick();
-        drawRect(2, this.height - 2 - (int) helper.get(), this.width - 2, this.height + 10 - (int) helper.get(), Integer.MIN_VALUE);
-        this.inputField.yPosition = this.height - (int) helper.get();
+        drawRect(2, this.height - (int) helper.get(), this.width - 2, this.height + 2 + this.inputField.getFontRenderer().FONT_HEIGHT - (int) helper.get(), Integer.MIN_VALUE);
+        this.inputField.yPosition = this.height + 2 - (int) helper.get();
         this.inputField.drawTextBox();
         IChatComponent ichatcomponent = this.mc.ingameGUI.getChatGUI().getChatComponent(Mouse.getX(), Mouse.getY());
 

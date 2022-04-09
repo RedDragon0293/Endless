@@ -85,7 +85,7 @@ abstract class AbstractButton(open val name: String) {
     }
 
     open fun drawText(mouseX: Int, mouseY: Int) {
-        Fonts.regular26.drawString(name, x + 4, y + 5, GuiClickGUI.textColor)
+        Fonts.regular26.drawString(name, x + 4, y + 7, GuiClickGUI.textColor)
     }
 
     fun isHovering(mouseX: Int, mouseY: Int): Boolean =

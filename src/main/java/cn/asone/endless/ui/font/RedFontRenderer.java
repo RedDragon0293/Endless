@@ -36,6 +36,7 @@ public class RedFontRenderer {
     private final int fontImageHeight;
     private final float scale = 0.5F;
     public int fontHeight;
+    private final int heightDiff;
 
     public RedFontRenderer(Font font) {
         this.font = font;
@@ -61,11 +62,12 @@ public class RedFontRenderer {
             }
         }
         fontHeight = (int) (fontImageHeight * scale);
+        heightDiff = fontHeight - 9;
     }
 
     public int drawString(String text, double x, double y, int color) {
         GL11.glPushMatrix();
-        GL11.glTranslated(x, y - 1, 0D);
+        GL11.glTranslated(x, y - (heightDiff / 2D), 0D);
         GL11.glScalef(scale, scale, scale);
         RenderUtils.quickGLColor(color);
         int width = 0;
@@ -80,7 +82,7 @@ public class RedFontRenderer {
 
     public int drawChar(char charAt, double x, double y, int color) {
         GL11.glPushMatrix();
-        GL11.glTranslated(x, y - 1.5, 0D);
+        GL11.glTranslated(x, y - (heightDiff / 2D), 0D);
         GL11.glScalef(scale, scale, scale);
         RenderUtils.quickGLColor(color);
         int width = drawCharImage(charAt, 0);
@@ -253,7 +255,10 @@ public class RedFontRenderer {
                     chars[charAt] = new FontChar((char) charAt, generateCharImage(charAt));
                 });
             }
-            Fonts.caches[charAt] = true;
+            if (!Fonts.caches[charAt]) {
+                Fonts.caches[charAt] = true;
+                Fonts.cachedChars++;
+            }
         }
         return chars[charAt];
     }

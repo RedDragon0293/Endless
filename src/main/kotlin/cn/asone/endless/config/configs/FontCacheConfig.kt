@@ -13,7 +13,11 @@ class FontCacheConfig : AbstractConfig(File(ConfigManager.rootDir, "fontCache.js
     override fun configParser(entry: Map.Entry<String, JsonElement>) {
         val array = entry.value.asJsonArray
         for ((i, bool) in array.withIndex()) {
-            Fonts.caches[i] = bool.asBoolean
+            val boolean = bool.asBoolean
+            Fonts.caches[i] = boolean
+            if (boolean) {
+                Fonts.cachedChars++
+            }
         }
     }
 

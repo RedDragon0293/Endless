@@ -40,6 +40,9 @@ object Fonts : ValueRegister, IResourceManagerReloadListener {
     @JvmField
     val cacheFont = BoolValue("CacheFont", true)
 
+    @JvmField
+    var cachedChars: Int = 0
+
     @JvmStatic
     lateinit var condensedLight16: GameFontRenderer
 
@@ -125,7 +128,7 @@ object Fonts : ValueRegister, IResourceManagerReloadListener {
         regular38 = GameFontRenderer(getFont("HarmonyOS_Sans_SC_Regular.ttf", 38))
         medium44 = GameFontRenderer(getFont("HarmonyOS_Sans_Medium.ttf", 44))
 
-        ClientUtils.logger.info("成功初始化默认字体, 用时${(System.currentTimeMillis() - var0) / 1000F}秒.")
+        ClientUtils.logger.info("成功初始化默认字体, 共 $cachedChars 个字符, 用时${(System.currentTimeMillis() - var0) / 1000F}秒.")
     }
 
     @JvmStatic

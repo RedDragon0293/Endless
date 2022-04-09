@@ -11,7 +11,6 @@ class ModuleButton(val module: AbstractModule) : AbstractButton(module.name) {
         get() = module.state
         set(value) {
             module.state = value
-            updateSmoothHelper(value)
         }
 
     init {
@@ -32,6 +31,11 @@ class ModuleButton(val module: AbstractModule) : AbstractButton(module.name) {
     }
     //override val infoValues: ArrayList<Value<*>>
     //get() = module.values
+
+    override fun drawBox(mouseX: Int, mouseY: Int) {
+        updateSmoothHelper(state)
+        super.drawBox(mouseX, mouseY)
+    }
 
     override fun mouseClicked(mouseX: Int, mouseY: Int, mouseButton: Int) {
         if (mouseButton == 1) {
