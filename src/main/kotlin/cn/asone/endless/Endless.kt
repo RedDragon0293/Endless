@@ -7,11 +7,13 @@ import cn.asone.endless.features.module.ModuleManager
 import cn.asone.endless.script.ScriptManager
 import cn.asone.endless.ui.font.Fonts
 import cn.asone.endless.ui.gui.clickgui.GuiClickGUI
+import com.google.common.util.concurrent.ThreadFactoryBuilder
 import net.minecraft.client.main.Main
 import org.apache.logging.log4j.LogManager
 import org.lwjgl.opengl.Display
 import viamcp.ViaMCP
-import kotlin.concurrent.thread
+import java.util.concurrent.CompletableFuture
+import java.util.concurrent.Executors
 
 object Endless {
     const val CLIENT_NAME = "Endless"
@@ -41,6 +43,11 @@ object Endless {
 
     fun startClient() {
         logger.info("正在启动 $CLIENT_NAME $CLIENT_VERSION...")
+        val factory = ThreadFactoryBuilder()
+            .setDaemon(true)
+            .setNameFormat("Endless init #%d")
+            .build()
+        val asyncExec = Executors.newFixedThreadPool(4, factory)
         if (!disableVia) {
             try {
                 logger.info("正在加载 ViaVersion...")
@@ -51,23 +58,36 @@ object Endless {
                 e.printStackTrace()
             }
         }
-        ConfigManager
-        EventManager
-        CommandManager
-        ModuleManager
-        EventManager.sort()
-        ScriptManager.loadAllScripts()
-        ConfigManager.loadAllConfigs()
+        val initFuture = CompletableFuture.runAsync({
+            ConfigManager
+            EventManager
+        }, asyncExec).thenRunAsync({
+            CommandManager
+            ModuleManager
+            EventManager.sort()
+        }, asyncExec)
+        val scriptFuture = CompletableFuture.runAsync({
+            ScriptManager.loadAllScripts()
+        }, asyncExec)
+        val configLoadingFuture = CompletableFuture.runAsync({
+            ConfigManager.loadAllConfigs()
+        }, asyncExec)
+        val clickGUIFuture = CompletableFuture.runAsync({
+            clickGUI = GuiClickGUI()
+        }, asyncExec)
+
         Fonts.downloadFonts()
         Fonts.loadFonts()
-        thread {
-            clickGUI = GuiClickGUI()
+
+        while (!(initFuture.isDone && scriptFuture.isDone && configLoadingFuture.isDone && clickGUIFuture.isDone)) {
+            Thread.sleep(100L)
         }
 
         Display.setTitle("$CLIENT_NAME $CLIENT_VERSION | 1.8.9 - Cracked by AsOne & RedDragon0293")
-        logger.info("成功加载 $CLIENT_NAME!")
         inited = true
+        asyncExec.shutdown()
         System.gc()
+        logger.info("成功加载 $CLIENT_NAME!")
     }
 
     fun stopClient() {

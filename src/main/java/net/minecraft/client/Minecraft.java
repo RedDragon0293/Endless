@@ -92,6 +92,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.Validate;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.Sys;
 import org.lwjgl.input.Keyboard;
@@ -2140,7 +2141,6 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
             NBTTagCompound nbttagcompound3 = new NBTTagCompound();
             nbttagcompound3.setTag("SkullOwner", nbttagcompound2);
             itemstack.setTagCompound(nbttagcompound3);
-            return itemstack;
         } else {
             itemstack.setTagInfo("BlockEntityTag", nbttagcompound);
             NBTTagCompound nbttagcompound1 = new NBTTagCompound();
@@ -2148,8 +2148,8 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
             nbttaglist.appendTag(new NBTTagString("(+NBT)"));
             nbttagcompound1.setTag("Lore", nbttaglist);
             itemstack.setTagInfo("display", nbttagcompound1);
-            return itemstack;
         }
+        return itemstack;
     }
 
     /**
@@ -2211,7 +2211,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
         playerSnooper.addClientStat("display_frequency", Display.getDisplayMode().getFrequency());
         playerSnooper.addClientStat("display_type", this.fullscreen ? "fullscreen" : "windowed");
         playerSnooper.addClientStat("run_time", (MinecraftServer.getCurrentTimeMillis() - playerSnooper.getMinecraftStartTimeMillis()) / 60L * 1000L);
-        playerSnooper.addClientStat("current_action", this.func_181538_aA());
+        playerSnooper.addClientStat("current_action", this.getCurrentAction());
         String s = ByteOrder.nativeOrder() == ByteOrder.LITTLE_ENDIAN ? "little" : "big";
         playerSnooper.addClientStat("endianness", s);
         playerSnooper.addClientStat("resource_packs", this.mcResourcePackRepository.getRepositoryEntries().size());
@@ -2226,7 +2226,8 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
         }
     }
 
-    private String func_181538_aA() {
+    @NotNull
+    private String getCurrentAction() {
         return this.theIntegratedServer != null ? (this.theIntegratedServer.getPublic() ? "hosting_lan" : "singleplayer") : (this.currentServerData != null ? (this.currentServerData.isOnLAN() ? "playing_lan" : "multiplayer") : "out_of_game");
     }
 

@@ -8,17 +8,6 @@ import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
-import java.awt.image.BufferedImage;
-import java.io.Closeable;
-import java.io.File;
-import java.io.FileFilter;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.locks.ReentrantLock;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreenWorking;
 import net.minecraft.client.renderer.texture.DynamicTexture;
@@ -37,13 +26,18 @@ import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ResourcePackRepository
-{
+import java.awt.image.BufferedImage;
+import java.io.Closeable;
+import java.io.File;
+import java.io.FileFilter;
+import java.io.IOException;
+import java.util.*;
+import java.util.concurrent.locks.ReentrantLock;
+
+public class ResourcePackRepository {
     private static final Logger logger = LogManager.getLogger();
-    private static final FileFilter resourcePackFilter = new FileFilter()
-    {
-        public boolean accept(File p_accept_1_)
-        {
+    private static final FileFilter resourcePackFilter = new FileFilter() {
+        public boolean accept(File p_accept_1_) {
             boolean flag = p_accept_1_.isFile() && p_accept_1_.getName().endsWith(".zip");
             boolean flag1 = p_accept_1_.isDirectory() && (new File(p_accept_1_, "pack.mcmeta")).isFile();
             return flag || flag1;
@@ -201,8 +195,7 @@ public class ResourcePackRepository
                     if (s1.equals(hash))
                     {
                         ListenableFuture listenablefuture2 = this.setResourcePackInstance(file1);
-                        ListenableFuture listenablefuture3 = listenablefuture2;
-                        return listenablefuture3;
+                        return listenablefuture2;
                     }
 
                     logger.warn("File " + file1 + " had wrong hash (expected " + hash + ", found " + s1 + "). Deleting it.");
