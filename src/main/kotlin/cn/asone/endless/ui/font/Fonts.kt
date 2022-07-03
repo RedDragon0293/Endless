@@ -7,9 +7,9 @@ import cn.asone.endless.utils.extensions.mc
 import cn.asone.endless.utils.io.FileUtils
 import cn.asone.endless.utils.io.HttpUtils
 import cn.asone.endless.utils.security.SecurityUtils
-import cn.asone.endless.value.AbstractValue
-import cn.asone.endless.value.BoolValue
-import cn.asone.endless.value.ValueRegister
+import cn.asone.endless.option.AbstractOption
+import cn.asone.endless.option.BoolOption
+import cn.asone.endless.option.OptionRegister
 import net.minecraft.client.resources.IResourceManager
 import net.minecraft.client.resources.IResourceManagerReloadListener
 import org.apache.commons.codec.digest.DigestUtils
@@ -17,7 +17,7 @@ import java.awt.Font
 import java.io.File
 import java.io.FileInputStream
 
-object Fonts : ValueRegister, IResourceManagerReloadListener {
+object Fonts : OptionRegister, IResourceManagerReloadListener {
     @JvmField
     val caches: BooleanArray = BooleanArray(65535)
     private val fontsDir: File = File(ConfigManager.rootDir, "fonts").apply {
@@ -27,7 +27,7 @@ object Fonts : ValueRegister, IResourceManagerReloadListener {
     }
 
     @JvmField
-    val forceCustomFont = object : BoolValue("ForceCustomFont", true) {
+    val forceCustomFont = object : BoolOption("ForceCustomFont", true) {
         override fun changeValue(newValue: Boolean) {
             super.changeValue(newValue)
             if (newValue)
@@ -38,7 +38,7 @@ object Fonts : ValueRegister, IResourceManagerReloadListener {
     }
 
     @JvmField
-    val cacheFont = BoolValue("CacheFont", true)
+    val cacheFont = BoolOption("CacheFont", true)
 
     @JvmField
     var cachedChars: Int = 0
@@ -186,7 +186,7 @@ object Fonts : ValueRegister, IResourceManagerReloadListener {
         }
     }
 
-    override val values: ArrayList<AbstractValue<*>> = arrayListOf(
+    override val options: ArrayList<AbstractOption<*>> = arrayListOf(
         forceCustomFont,
         cacheFont
     )

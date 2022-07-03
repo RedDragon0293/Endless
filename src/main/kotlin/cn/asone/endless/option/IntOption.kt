@@ -1,15 +1,20 @@
-package cn.asone.endless.value
+package cn.asone.endless.option
 
 import com.google.gson.JsonElement
 import com.google.gson.JsonPrimitive
 
-open class TextValue(name: String, value: String) : AbstractValue<String>(name, value) {
+open class IntOption(name: String, value: Int, val range: IntRange = 0..Int.MAX_VALUE) :
+    AbstractOption<Int>(name, value) {
+
+    fun set(newValue: Number) {
+        super.set(newValue.toInt())
+    }
 
     override fun toJson() = JsonPrimitive(value)
 
     override fun fromJson(element: JsonElement) {
         if (element.isJsonPrimitive)
-            set(element.asString)
+            set(element.asInt)
         else
             super.fromJson(element)
     }

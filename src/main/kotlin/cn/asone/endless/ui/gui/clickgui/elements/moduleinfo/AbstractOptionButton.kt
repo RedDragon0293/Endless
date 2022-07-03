@@ -4,20 +4,20 @@ import cn.asone.endless.ui.font.Fonts
 import cn.asone.endless.ui.gui.clickgui.GuiClickGUI
 import cn.asone.endless.ui.gui.clickgui.elements.moduleslist.AbstractButton
 import cn.asone.endless.utils.RenderUtils
-import cn.asone.endless.value.*
+import cn.asone.endless.option.*
 
 /**
  * 232 or 212 × 20 button
  */
-abstract class AbstractValueButton(open val value: AbstractValue<*>, val isSub: Boolean) {
+abstract class AbstractOptionButton(open val value: AbstractOption<*>, val isSub: Boolean) {
     companion object {
-        fun valueToButton(value: AbstractValue<*>, isSub: Boolean): AbstractValueButton {
+        fun optionToButton(value: AbstractOption<*>, isSub: Boolean): AbstractOptionButton {
             return when (value) {
-                is BoolValue -> BoolButton(value, isSub)
-                is IntValue -> IntButton(value, isSub)
-                is FloatValue -> FloatButton(value, isSub)
-                is ListValue -> ListButton(value, isSub)
-                is TextValue -> TextButton(value, isSub)
+                is BoolOption -> BoolButton(value, isSub)
+                is IntOption -> IntButton(value, isSub)
+                is FloatOption -> FloatButton(value, isSub)
+                is ListOption -> ListButton(value, isSub)
+                is TextOption -> TextButton(value, isSub)
                 else -> throw Exception("内部错误!")
             }
         }
@@ -47,7 +47,7 @@ abstract class AbstractValueButton(open val value: AbstractValue<*>, val isSub: 
     }
 
     open fun drawText(mouseX: Int, mouseY: Int) {
-        Fonts.light24.drawString(value.name, x + 5F, y + 6F, GuiClickGUI.textColor)
+        Fonts.light24.drawString(value.name, x + 5F, y + 5F, GuiClickGUI.textColor)
     }
 
     open fun drawBox(mouseX: Int, mouseY: Int) {

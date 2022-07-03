@@ -4,9 +4,9 @@ import cn.asone.endless.ui.font.Fonts
 import cn.asone.endless.ui.gui.clickgui.GuiClickGUI
 import cn.asone.endless.utils.ColorUtils
 import cn.asone.endless.utils.RenderUtils
-import cn.asone.endless.value.FloatValue
+import cn.asone.endless.option.FloatOption
 
-class FloatButton(override val value: FloatValue, isSub: Boolean) : AbstractValueButton(value, isSub) {
+class FloatButton(override val value: FloatOption, isSub: Boolean) : AbstractOptionButton(value, isSub) {
     private val valueString
         get() = String.format("%.2f", value.get())
 

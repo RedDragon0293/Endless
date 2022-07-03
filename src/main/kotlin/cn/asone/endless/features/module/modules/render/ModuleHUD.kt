@@ -6,15 +6,15 @@ import cn.asone.endless.features.module.AbstractModule
 import cn.asone.endless.features.module.ModuleCategory
 import cn.asone.endless.ui.hud.AbstractElement
 import cn.asone.endless.ui.hud.elements.ElementArraylist
-import cn.asone.endless.value.AbstractValue
-import cn.asone.endless.value.BoolValue
+import cn.asone.endless.option.AbstractOption
+import cn.asone.endless.option.BoolOption
 
 object
 ModuleHUD : AbstractModule("HUD", "Toggles visibility of the HUD.", ModuleCategory.VISUAL) {
-    val blackHotbarValue = BoolValue("BlackHotbar", true)
-    val smoothHotbarValue = BoolValue("Smooth", false)
-    private val arraylistValue = BoolValue("Arraylist", true)
-    override val values: ArrayList<AbstractValue<*>> = arrayListOf(
+    val blackHotbarValue = BoolOption("BlackHotbar", true)
+    val smoothHotbarValue = BoolOption("Smooth", false)
+    private val arraylistValue = BoolOption("Arraylist", true)
+    override val options: ArrayList<AbstractOption<*>> = arrayListOf(
         blackHotbarValue,
         arraylistValue
     )
@@ -27,7 +27,7 @@ ModuleHUD : AbstractModule("HUD", "Toggles visibility of the HUD.", ModuleCatego
     )
 
     init {
-        blackHotbarValue.subValue.add(smoothHotbarValue)
+        blackHotbarValue.subOptions.add(smoothHotbarValue)
     }
 
     override fun onRender2D(event: Render2DEvent) {

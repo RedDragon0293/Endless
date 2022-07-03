@@ -2,7 +2,7 @@ package cn.asone.endless.ui.gui.clickgui.elements.moduleslist
 
 import cn.asone.endless.features.module.AbstractModule
 import cn.asone.endless.ui.gui.clickgui.GuiClickGUI
-import cn.asone.endless.ui.gui.clickgui.elements.moduleinfo.AbstractValueButton
+import cn.asone.endless.ui.gui.clickgui.elements.moduleinfo.AbstractOptionButton
 import cn.asone.endless.utils.extensions.mc
 import cn.asone.endless.utils.extensions.playSound
 
@@ -14,9 +14,9 @@ class ModuleButton(val module: AbstractModule) : AbstractButton(module.name) {
         }
 
     init {
-        if (module.values.isNotEmpty()) {
-            module.values.forEach {
-                infoButtons.add(AbstractValueButton.valueToButton(it, false))
+        if (module.options.isNotEmpty()) {
+            module.options.forEach {
+                infoButtons.add(AbstractOptionButton.optionToButton(it, false))
             }
         }
         /*val enabledHSB = Color.RGBtoHSB(0, 111, 250, null)

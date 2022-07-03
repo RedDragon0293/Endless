@@ -8,11 +8,11 @@ import java.util.*
 
 class CommandBind : AbstractCommand("bind") {
     override fun onExecute(command: String) {
-        val args = command.split(' ').toTypedArray()
-        if (args.isEmpty() || (args.size == 1 && args[0] == "")) {
+        if (command == "") {
             chatSyntax(arrayOf("<功能> <快捷键>", "<功能> none"))
             return
         }
+        val args = command.split(' ').toTypedArray()
         val module = ModuleManager.getModule(args[0])
         if (module == null) {
             ClientUtils.chatError("找不到功能 §9§l${args[0]}§c.")

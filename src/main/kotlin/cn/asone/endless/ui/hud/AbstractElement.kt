@@ -1,12 +1,12 @@
 package cn.asone.endless.ui.hud
 
 import cn.asone.endless.utils.RenderUtils
-import cn.asone.endless.value.ValueRegister
+import cn.asone.endless.option.OptionRegister
 
 abstract class AbstractElement(
     var name: String,
     var x: Float = 2F, var y: Float = 2F, var side: Side = Side.default(),
-) : ValueRegister {
+) : OptionRegister {
     open var renderX: Float
         get() = when (side.horizontal) {
             Side.Horizontal.LEFT -> x

@@ -6,10 +6,10 @@ import cn.asone.endless.utils.ColorUtils
 import cn.asone.endless.utils.RenderUtils
 import cn.asone.endless.utils.extensions.mc
 import cn.asone.endless.utils.extensions.playSound
-import cn.asone.endless.value.ListValue
+import cn.asone.endless.option.ListOption
 
-class ListButton(override val value: ListValue, isSub: Boolean) : AbstractValueButton(value, isSub) {
-    private val subButtons: MutableMap<String, ArrayList<AbstractValueButton>> = mutableMapOf()
+class ListButton(override val value: ListOption, isSub: Boolean) : AbstractOptionButton(value, isSub) {
+    private val subButtons: MutableMap<String, ArrayList<AbstractOptionButton>> = mutableMapOf()
     override val boundingBoxHeight: Float
         get() = super.boundingBoxHeight +
                 if (!subButtons[this.value.get()].isNullOrEmpty())
@@ -17,12 +17,12 @@ class ListButton(override val value: ListValue, isSub: Boolean) : AbstractValueB
                 else 0
 
     init {
-        for (currentValue in value.values)
+        for (currentValue in value.availableValues)
             subButtons[currentValue] = arrayListOf()
-        for (currentValue in value.subValue) {
+        for (currentValue in value.subOptions) {
             if (currentValue.value.isNotEmpty()) {
                 currentValue.value.forEach {
-                    subButtons[currentValue.key]!!.add(valueToButton(it, true))
+                    subButtons[currentValue.key]!!.add(optionToButton(it, true))
                 }
             }
         }
@@ -65,7 +65,7 @@ class ListButton(override val value: ListValue, isSub: Boolean) : AbstractValueB
                 x + (if (isSub) 212 else 232) - 5 - Fonts.condensedLight18.getStringWidth(value.get()) - 2,
                 y + 3,
                 x + (if (isSub) 212 else 232) - 5 + 2,
-                y + 7 + Fonts.condensedLight18.FONT_HEIGHT + 2,
+                y + 5 + Fonts.condensedLight18.FONT_HEIGHT + 2,
                 1F,
                 ColorUtils.getColorInt(140, 140, 140)
             )
@@ -87,7 +87,7 @@ class ListButton(override val value: ListValue, isSub: Boolean) : AbstractValueB
         Fonts.condensedLight18.drawString(
             value.get(),
             x + (if (isSub) 212 else 232) - 5 - Fonts.condensedLight18.getStringWidth(value.get()),
-            y + 7,
+            y + 5,
             GuiClickGUI.textColor
         )
         if (subButtons[this.value.get()]!!.isNotEmpty()) {

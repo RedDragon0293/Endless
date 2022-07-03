@@ -10,8 +10,8 @@ import cn.asone.endless.ui.gui.clickgui.GuiClickGUI
 import cn.asone.endless.ui.gui.clickgui.elements.CategoryButton
 import cn.asone.endless.ui.gui.clickgui.elements.moduleslist.AbstractButton
 import cn.asone.endless.utils.ClientUtils
-import cn.asone.endless.value.AbstractValue
-import cn.asone.endless.value.ListValue
+import cn.asone.endless.option.AbstractOption
+import cn.asone.endless.option.ListOption
 import net.minecraft.network.play.client.C0DPacketCloseWindow
 import net.minecraft.network.play.server.S2EPacketCloseWindow
 import org.lwjgl.input.Keyboard
@@ -24,7 +24,7 @@ object ModuleClickGUI : AbstractModule(
     Keyboard.KEY_RSHIFT,
     false
 ) {
-    private val themeValue = object : ListValue("Theme", arrayOf("Light", "Dark"), "Light") {
+    private val themeValue = object : ListOption("Theme", arrayOf("Light", "Dark"), "Light") {
         override fun changeValue(newValue: String) {
             super.changeValue(newValue)
             if (this.get() == "Light") {
@@ -51,7 +51,7 @@ object ModuleClickGUI : AbstractModule(
         EventHook(ReceivePacketEvent::class.java)
     )
 
-    override val values: ArrayList<AbstractValue<*>> = arrayListOf(themeValue)
+    override val options: ArrayList<AbstractOption<*>> = arrayListOf(themeValue)
 
     override fun onEnable() {
         mc.displayGuiScreen(Endless.clickGUI)

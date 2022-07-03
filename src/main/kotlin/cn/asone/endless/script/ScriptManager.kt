@@ -46,7 +46,7 @@ object ScriptManager {
 
     private fun loadScriptModule(module: AbstractScriptClass) {
         ModuleManager.registerModule(module)
-        if (module.values.isNotEmpty()) {
+        if (module.options.isNotEmpty()) {
             CommandManager.registerModuleCommand(module)
         }
     }

@@ -3,8 +3,8 @@ package cn.asone.endless.features.module
 import cn.asone.endless.event.EventHook
 import cn.asone.endless.event.ListenableClass
 import cn.asone.endless.utils.extensions.playSound
-import cn.asone.endless.value.AbstractValue
-import cn.asone.endless.value.ValueRegister
+import cn.asone.endless.option.AbstractOption
+import cn.asone.endless.option.OptionRegister
 import org.lwjgl.input.Keyboard
 
 abstract class AbstractModule(
@@ -18,7 +18,7 @@ abstract class AbstractModule(
     var keyBind: Int = Keyboard.KEY_NONE,
     @JvmField
     var canEnable: Boolean = true
-) : ListenableClass(), ValueRegister {
+) : ListenableClass(), OptionRegister {
     var state = false
         set(value) {
             if (field == value)
@@ -46,7 +46,7 @@ abstract class AbstractModule(
 
     override val handledEvents: ArrayList<EventHook> = arrayListOf()
 
-    override val values: ArrayList<AbstractValue<*>> = arrayListOf()
+    override val options: ArrayList<AbstractOption<*>> = arrayListOf()
 
     fun toggle() {
         state = !state

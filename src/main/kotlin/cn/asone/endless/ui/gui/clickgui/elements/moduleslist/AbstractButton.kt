@@ -2,7 +2,7 @@ package cn.asone.endless.ui.gui.clickgui.elements.moduleslist
 
 import cn.asone.endless.ui.font.Fonts
 import cn.asone.endless.ui.gui.clickgui.GuiClickGUI
-import cn.asone.endless.ui.gui.clickgui.elements.moduleinfo.AbstractValueButton
+import cn.asone.endless.ui.gui.clickgui.elements.moduleinfo.AbstractOptionButton
 import cn.asone.endless.utils.ColorUtils
 import cn.asone.endless.utils.RenderUtils
 import cn.asone.endless.utils.animation.SmoothHelper
@@ -36,7 +36,7 @@ abstract class AbstractButton(open val name: String) {
     /**
      * 当前AbstractButton 保存的 ValueButtons
      */
-    open val infoButtons: ArrayList<AbstractValueButton> = arrayListOf()
+    open val infoButtons: ArrayList<AbstractOptionButton> = arrayListOf()
     val visible: Boolean
         get() = y < GuiClickGUI.windowYStart + GuiClickGUI.guiHeight - 7 && y + 23 > GuiClickGUI.windowYStart + 7
     protected val buttonAnimationHelper = SmoothHelper()

@@ -5,12 +5,12 @@ import cn.asone.endless.utils.RenderUtils
 import cn.asone.endless.utils.animation.SmoothHelper
 import cn.asone.endless.utils.extensions.mc
 import cn.asone.endless.utils.extensions.playSound
-import cn.asone.endless.value.BoolValue
+import cn.asone.endless.option.BoolOption
 import net.minecraft.client.renderer.GlStateManager
 import org.lwjgl.opengl.GL11
 
-class BoolButton(override val value: BoolValue, isSub: Boolean) : AbstractValueButton(value, isSub) {
-    private val subButtons: ArrayList<AbstractValueButton> = arrayListOf()
+class BoolButton(override val value: BoolOption, isSub: Boolean) : AbstractOptionButton(value, isSub) {
+    private val subButtons: ArrayList<AbstractOptionButton> = arrayListOf()
     override val boundingBoxHeight: Float
         get() = if (this.value.get()) super.boundingBoxHeight + subButtons.size * 24 else super.boundingBoxHeight
     private val colorRedHelper = SmoothHelper()
@@ -19,9 +19,9 @@ class BoolButton(override val value: BoolValue, isSub: Boolean) : AbstractValueB
     private val colorAlphaHelper = SmoothHelper()
 
     init {
-        if (value.subValue.isNotEmpty()) {
-            value.subValue.forEach {
-                subButtons.add(valueToButton(it, true))
+        if (value.subOptions.isNotEmpty()) {
+            value.subOptions.forEach {
+                subButtons.add(optionToButton(it, true))
             }
         }
         colorRedHelper.reset(if (value.get()) 0F else 140F)

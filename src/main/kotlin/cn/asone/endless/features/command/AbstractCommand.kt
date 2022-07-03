@@ -8,10 +8,16 @@ abstract class AbstractCommand(val name: String, vararg val alias: String) {
     abstract fun onExecute(command: String)
 
     //open fun tabComplete(args: Array<String>): List<String> = emptyList()
+    /**
+     * 获取一个命令的用法
+     */
     protected fun chatSyntax(syntax: String) = ClientUtils.chatInfo(
-        "用法: §7${CommandManager.prefix}$name ${syntax.lowercase()}"
+        "用法: §7${CommandManager.prefix}$name $syntax"
     )
 
+    /**
+     * 获取一个命令的用法
+     */
     protected fun chatSyntax(syntaxes: Array<String>) {
         ClientUtils.chatInfo("用法: ")
 

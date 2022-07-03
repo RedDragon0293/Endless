@@ -1,9 +1,9 @@
-package cn.asone.endless.value
+package cn.asone.endless.option
 
 import com.google.gson.JsonElement
 import com.google.gson.JsonPrimitive
 
-class ColorValue(name: String, value: Int) : AbstractValue<Int>(name, value) {
+class ColorOption(name: String, value: Int) : AbstractOption<Int>(name, value) {
     fun set(red: Int, green: Int, blue: Int, alpha: Int) {
         super.set((alpha shl 24 and 0xFF) + (red shl 16 and 0xFF) + (green shl 8 and 0xFF) + blue and 0xFF)
     }

@@ -25,7 +25,7 @@ class ValuesConfig : AbstractConfig(File(ConfigManager.rootDir, "values.json")) 
          *  "ValueName": Value
          */
         for (jsonValue in jsonModule.entrySet()) {
-            val value = module.getValue(jsonValue.key)
+            val value = module.getOption(jsonValue.key)
             if (value == null) {
                 ClientUtils.logger.error("找不到功能 ${entry.key} 的选项 ${jsonValue.key}.跳过此选项的解析.")
             } else
@@ -37,9 +37,9 @@ class ValuesConfig : AbstractConfig(File(ConfigManager.rootDir, "values.json")) 
         val jsonObject = JsonObject()
 
         for (module in ModuleManager.modules) {
-            if (module.values.isNotEmpty()) {
+            if (module.options.isNotEmpty()) {
                 val jsonModule = JsonObject()
-                for (value in module.values) {
+                for (value in module.options) {
                     jsonModule.add(value.name, value.toJson())
                 }
                 jsonObject.add(module.name, jsonModule)

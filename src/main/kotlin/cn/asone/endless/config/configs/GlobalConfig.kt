@@ -5,8 +5,8 @@ import cn.asone.endless.config.ConfigManager
 import cn.asone.endless.features.special.FakeForge
 import cn.asone.endless.ui.font.Fonts
 import cn.asone.endless.utils.ClientUtils
-import cn.asone.endless.value.AbstractValue
-import cn.asone.endless.value.ValueRegister
+import cn.asone.endless.option.AbstractOption
+import cn.asone.endless.option.OptionRegister
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import net.minecraft.client.gui.GuiMultiplayer
@@ -14,11 +14,11 @@ import viamcp.ViaMCP
 import java.io.File
 
 class GlobalConfig : AbstractConfig(File(ConfigManager.rootDir, "global.json")) {
-    private val objectRegister: HashMap<String, ValueRegister> = hashMapOf(
+    private val objectRegister: HashMap<String, OptionRegister> = hashMapOf(
         Pair("FakeForge", FakeForge),
         Pair("CustomFont", Fonts)
     )
-    private val staticRegister: ArrayList<AbstractValue<*>> = arrayListOf(
+    private val staticRegister: ArrayList<AbstractOption<*>> = arrayListOf(
         ViaMCP.versionValue,
         GuiMultiplayer.authType
     )
@@ -26,7 +26,7 @@ class GlobalConfig : AbstractConfig(File(ConfigManager.rootDir, "global.json")) 
     override fun configParser(entry: Map.Entry<String, JsonElement>) {
         if (objectRegister[entry.key] != null) {
             for (jsonValue in entry.value.asJsonObject.entrySet()) {
-                val value = objectRegister[entry.key]!!.getValue(jsonValue.key)
+                val value = objectRegister[entry.key]!!.getOption(jsonValue.key)
                 if (value == null)
                     ClientUtils.logger.error("找不到 ${entry.key} 的选项 ${jsonValue.key}.跳过此选项的解析.")
                 else
@@ -47,7 +47,7 @@ class GlobalConfig : AbstractConfig(File(ConfigManager.rootDir, "global.json")) 
         val jsonObject = JsonObject()
         for (entry in objectRegister) {
             val subObject = JsonObject()
-            for (value in entry.value.values)
+            for (value in entry.value.options)
                 subObject.add(value.name, value.toJson())
             jsonObject.add(entry.key, subObject)
         }

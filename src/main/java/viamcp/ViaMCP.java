@@ -1,7 +1,7 @@
 package viamcp;
 
 import cn.asone.endless.Endless;
-import cn.asone.endless.value.AbstractValue;
+import cn.asone.endless.option.AbstractOption;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
@@ -49,7 +49,7 @@ public class ViaMCP {
 
     private File file;
     //private int version = 47;
-    public static final AbstractValue<Integer> versionValue = new AbstractValue<Integer>("ViaClientVersion", 47) {
+    public static final AbstractOption<Integer> versionValue = new AbstractOption<Integer>("ViaClientVersion", 47) {
         @NotNull
         @Override
         public JsonElement toJson() {

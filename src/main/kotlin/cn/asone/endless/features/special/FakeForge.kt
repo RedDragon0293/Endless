@@ -5,27 +5,27 @@ import cn.asone.endless.event.EventManager
 import cn.asone.endless.event.ListenableClass
 import cn.asone.endless.event.SendPacketEvent
 import cn.asone.endless.utils.ClientUtils
-import cn.asone.endless.value.AbstractValue
-import cn.asone.endless.value.BoolValue
-import cn.asone.endless.value.ValueRegister
+import cn.asone.endless.option.AbstractOption
+import cn.asone.endless.option.BoolOption
+import cn.asone.endless.option.OptionRegister
 import io.netty.buffer.Unpooled
 import net.minecraft.network.PacketBuffer
 import net.minecraft.network.play.client.C17PacketCustomPayload
 
-object FakeForge : ListenableClass(), ValueRegister {
+object FakeForge : ListenableClass(), OptionRegister {
     @JvmField
-    val enabled = BoolValue("enabled", false)
+    val enabled = BoolOption("enabled", false)
 
     @JvmField
-    val fml = BoolValue("fml", false)
+    val fml = BoolOption("fml", false)
 
     @JvmField
-    val fmlProxy = BoolValue("fmlProxy", false)
+    val fmlProxy = BoolOption("fmlProxy", false)
 
     @JvmField
-    val payload = BoolValue("payload", false)
+    val payload = BoolOption("payload", false)
 
-    override val values: ArrayList<AbstractValue<*>> = arrayListOf(enabled)
+    override val options: ArrayList<AbstractOption<*>> = arrayListOf(enabled)
 
     override val handledEvents: ArrayList<EventHook> = arrayListOf(
         //EventHook(SendPacketEvent::class.java, 100)
@@ -33,9 +33,9 @@ object FakeForge : ListenableClass(), ValueRegister {
 
     init {
         EventManager.registerListener(this)
-        enabled.subValue.add(fml)
-        enabled.subValue.add(fmlProxy)
-        enabled.subValue.add(payload)
+        enabled.subOptions.add(fml)
+        enabled.subOptions.add(fmlProxy)
+        enabled.subOptions.add(payload)
     }
 
     override fun onSendPacket(event: SendPacketEvent) {

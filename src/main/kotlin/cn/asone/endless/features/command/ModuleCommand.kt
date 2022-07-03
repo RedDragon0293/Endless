@@ -3,98 +3,203 @@ package cn.asone.endless.features.command
 import cn.asone.endless.features.module.AbstractModule
 import cn.asone.endless.utils.ClientUtils
 import cn.asone.endless.utils.StringUtils
-import cn.asone.endless.value.*
+import cn.asone.endless.option.*
 
 class ModuleCommand(val module: AbstractModule) : AbstractCommand(module.name) {
+    /**
+     * 解析一个选项 (Option) 的流程:
+     * 1. 判断是否有参数, 没有参数输出提示
+     * 2. 有参数则判断是否参数为子选项 (SubOption) 的名称, 若不是则根据参数设置值
+     * 3. 是子选项的名称则递推至第一步
+     */
+    //.sprint checkServerSide checkServerSideOnlyGround true
     override fun onExecute(command: String) {
-        val valueNames = module.values
-            .joinToString(separator = "/") { it.name.lowercase() }
-
-        val args = command.split(' ').toTypedArray()
-        if (args.isEmpty() || (args.size == 1 && args[0] == "")) {
-            chatSyntax("$valueNames <值>")
+        val optionListsString = module.options.joinToString(separator = "/") { it.name.lowercase() }
+        if (command == "") {
+            chatSyntax("$optionListsString <值>")
             return
         }
-        val currentValue = module.values.find { it.name.equals(args[0], true) }
-        if (currentValue == null) {
+        val args: MutableList<String> = command.split(' ').toMutableList()
+        val currentOption = module.getOption(args[0])
+        if (currentOption == null) {
             ClientUtils.chatError("找不到选项.")
-            chatSyntax("$valueNames <值>")
+            chatSyntax("$optionListsString <值>")
         } else {
-            if (currentValue is BoolValue) {
-                if (args.size >= 2) {
-                    val subValue = currentValue.subValue.find { it.name.equals(args[1], true) }
-                    if (subValue != null) {
+            args.removeAt(0)
+            processOption(currentOption, args, mutableListOf())
+        }
+    }
 
-                    }
-                    currentValue.set(args[1] == "true")
-                } else
-                    currentValue.set(!currentValue.get())
-                ClientUtils.chatSuccess("设置功能 §b${module.name} §7${args[0]}§a 的值为 §8${if (currentValue.get()) "true" else "false"} §a.")
-                playEditSound()
-            } else {
-                if (args.size < 2) {
-                    if (currentValue is IntValue || currentValue is FloatValue || currentValue is TextValue)
-                        chatSyntax("${args[0].lowercase()} <值>")
-                    else if (currentValue is ListValue)
-                        chatSyntax(
-                            "${args[0].lowercase()} <${
-                                currentValue.values.joinToString(separator = "/")
-                                    .lowercase()
-                            }>"
+    private fun processOption(host: AbstractOption<*>, args: MutableList<String>, stack: MutableList<String>) {
+        if (host is BoolOption) {
+            if (args.isNotEmpty()) {
+                val subOption = host.subOptions.find { it.name.equals(args[0], true) }
+                if (subOption != null) {
+                    args.removeAt(0)
+                    stack.add(host.name)
+                    processOption(subOption, args, stack)
+                } else {
+                    if (args[0].equals("true", ignoreCase = true) || args[0].equals("false", ignoreCase = true)) {
+                        host.set(args[0].equals("true", ignoreCase = true))
+                        ClientUtils.chatSuccess(
+                            "设置功能 §b${module.name} §7${
+                                if (stack.isNotEmpty()) stack.joinToString(
+                                    separator = " ",
+                                    postfix = " "
+                                ) else ""
+                            }${host.name}§a 的值为 §8${if (host.get()) "true" else "false"} §a."
                         )
-                    return
-                }
-                try {
-                    when (currentValue) {
-                        /*is BlockValue -> {
-                            val id = try {
-                                args[1].toInt()
-                            } catch (exception: NumberFormatException) {
-                                val tmpId = Block.getBlockFromName(args[1])?.let { Block.getIdFromBlock(it) }
-                                if (tmpId == null || tmpId <= 0) {
-                                    ClientUtils.chatError("方块 §7${args[1]} §c不存在!")
-                                    return
-                                }
-                                tmpId
-                            }
-
-                            currentValue.set(id)
-                            ClientUtils.chatSuccess(
-                                "设置功能 §b${module.name} §7${args[0].lowercase(Locale.getDefault())}§a 的方块为 §8${
-                                    BlockUtils.getBlockName(
-                                        id
-                                    )
-                                }§a."
-                            )
-                            playEditSound()
-                            return
-                        }*/
-                        is IntValue -> currentValue.set(args[1].toInt())
-                        is FloatValue -> currentValue.set(args[1].toFloat())
-                        is ListValue -> {
-                            if (!currentValue.contains(args[1])) {
-                                chatSyntax(
-                                    "${args[0].lowercase()} <${
-                                        currentValue.values.joinToString(
-                                            separator = "/"
-                                        ).lowercase()
-                                    }>"
-                                )
-                                return
-                            }
-                            currentValue.set(args[1])
-                        }
-                        is TextValue -> currentValue.set(StringUtils.toCompleteString(args, 1))
+                        playEditSound()
+                    } else {
+                        val optionListsString = host.subOptions.joinToString(separator = "/") { it.name.lowercase() }
+                        chatSyntax(
+                            "${
+                                if (stack.isNotEmpty()) stack.joinToString(
+                                    separator = " ",
+                                    postfix = " "
+                                ) else ""
+                            }${host.name} $optionListsString <值>"
+                        )
                     }
-
-                    ClientUtils.chatSuccess("设置功能 §b${module.name} §7${args[0]}§a 的值为 §8${currentValue.get()}§a.")
-                    playEditSound()
-                } catch (e: NumberFormatException) {
-                    ClientUtils.chatError("§7${args[2]}§c 不能被转换为数字!")
-                    e.printStackTrace()
-                    return
                 }
+            } else {
+                ClientUtils.chatInfo("${host.name} 值: ${host.get()}")
+                chatSyntax(
+                    "${
+                        if (stack.isNotEmpty()) stack.joinToString(
+                            separator = " ",
+                            postfix = " "
+                        ) else ""
+                    }${host.name} true/false"
+                )
+            }
+        } else if (args.isEmpty()) {
+            ClientUtils.chatInfo("${host.name} 值: ${host.get()}")
+            if (host is IntOption || host is FloatOption || host is TextOption) {
+                chatSyntax(
+                    "${
+                        if (stack.isNotEmpty()) stack.joinToString(
+                            separator = " ",
+                            postfix = " "
+                        ) else ""
+                    }${host.name} <值>"
+                )
+            } else if (host is ListOption) {
+                chatSyntax(
+                    "${
+                        if (stack.isNotEmpty()) stack.joinToString(
+                            separator = " ",
+                            postfix = " "
+                        ) else ""
+                    }${host.name} <${
+                        host.availableValues.joinToString(separator = "/").lowercase()
+                    }>"
+                )
+            }
+        } else {
+            try {
+                when (host) {
+                    is IntOption -> {
+                        host.set(args[0].toInt())
+                        ClientUtils.chatSuccess(
+                            "设置功能 §b${module.name} §7${
+                                if (stack.isNotEmpty()) stack.joinToString(
+                                    separator = " ",
+                                    postfix = " "
+                                ) else ""
+                            }${host.name}§a 的值为 §8${host.get()}§a."
+                        )
+                        playEditSound()
+                    }
+                    is FloatOption -> {
+                        host.set(args[0].toFloat())
+                        ClientUtils.chatSuccess(
+                            "设置功能 §b${module.name} §7${
+                                if (stack.isNotEmpty()) stack.joinToString(
+                                    separator = " ",
+                                    postfix = " "
+                                ) else ""
+                            }${host.name}§a 的值为 §8${host.get()}§a."
+                        )
+                        playEditSound()
+                    }
+                    is TextOption -> {
+                        host.set(StringUtils.toCompleteString(args.toTypedArray(), 0))
+                        ClientUtils.chatSuccess(
+                            "设置功能 §b${module.name} §7${
+                                if (stack.isNotEmpty()) stack.joinToString(
+                                    separator = " ",
+                                    postfix = " "
+                                ) else ""
+                            }${host.name}§a 的值为 §8${host.get()}§a."
+                        )
+                        playEditSound()
+                    }
+                    /*                                      0                1         2
+                     * .moduleName listOptionName availableElementName subOptionName value
+                     */
+                    is ListOption -> {
+                        if (!host.contains(args[0])) {
+                            ClientUtils.chatError("无效的参数.")
+                            chatSyntax(
+                                "${
+                                    if (stack.isNotEmpty()) stack.joinToString(
+                                        separator = " ",
+                                        postfix = " "
+                                    ) else ""
+                                }${host.name} <${
+                                    host.availableValues.joinToString(
+                                        separator = "/"
+                                    ).lowercase()
+                                }>"
+                            )
+                            return
+                        } else {
+                            if (args.size >= 2) {
+                                val subOption = host.subOptions[host.availableValues.find { it.equals(args[0], ignoreCase = true) }]!!.find { it.name.equals(args[1], true) }
+                                if (subOption != null) {
+                                    stack.add(host.name)
+                                    stack.add(args[0])
+                                    args.removeAt(0)
+                                    args.removeAt(0)
+                                    processOption(subOption, args, stack)
+                                } else {
+                                    ClientUtils.chatError("找不到选项.")
+                                    chatSyntax(
+                                        "${
+                                            if (stack.isNotEmpty()) stack.joinToString(
+                                                separator = " ",
+                                                postfix = " "
+                                            ) else ""
+                                        }${host.name} ${args[0]} <${
+                                            host.subOptions[host.availableValues.find { it.equals(args[0], ignoreCase = true) }]!!.joinToString(
+                                                separator = "/", transform = { 
+                                                    it.name
+                                            }
+                                            ).lowercase()
+                                        }>"
+                                    )
+                                }
+                            } else {
+                                host.set(args[0])
+                                ClientUtils.chatSuccess(
+                                    "设置功能 §b${module.name} §7${
+                                        if (stack.isNotEmpty()) stack.joinToString(
+                                            separator = " ", postfix = " "
+                                        ) else ""
+                                    }${host.name}§a 的值为 §8${host.get()}§a."
+                                )
+                                playEditSound()
+                            }
+                        }
+                    }
+                }
+            } catch (e: NumberFormatException) {
+                ClientUtils.chatError("§7${args[0]}§c 类型错误!")
+                e.printStackTrace()
+                return
             }
         }
     }
+
 }

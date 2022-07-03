@@ -6,13 +6,13 @@ import cn.asone.endless.ui.font.Fonts
 import cn.asone.endless.ui.hud.AbstractElement
 import cn.asone.endless.ui.hud.Side
 import cn.asone.endless.utils.StringUtils
-import cn.asone.endless.value.AbstractValue
-import cn.asone.endless.value.BoolValue
+import cn.asone.endless.option.AbstractOption
+import cn.asone.endless.option.BoolOption
 import java.awt.Color
 
 class ElementArraylist(name: String, x: Float, y: Float, side: Side = Side(Side.Horizontal.RIGHT, Side.Vertical.UP)) :
     AbstractElement(name, x, y, side) {
-    private val nameBreakValue = object : BoolValue("NameBreak", false) {
+    private val nameBreakValue = object : BoolOption("NameBreak", false) {
         override fun changeValue(newValue: Boolean) {
             super.changeValue(newValue)
             if (newValue) {
@@ -22,7 +22,7 @@ class ElementArraylist(name: String, x: Float, y: Float, side: Side = Side(Side.
             }
         }
     }
-    override val values: ArrayList<AbstractValue<*>> = arrayListOf(
+    override val options: ArrayList<AbstractOption<*>> = arrayListOf(
         nameBreakValue
     )
 

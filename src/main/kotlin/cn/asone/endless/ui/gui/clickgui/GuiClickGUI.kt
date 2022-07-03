@@ -5,7 +5,7 @@ import cn.asone.endless.features.module.ModuleManager
 import cn.asone.endless.features.special.FakeForge
 import cn.asone.endless.ui.font.Fonts
 import cn.asone.endless.ui.gui.clickgui.elements.CategoryButton
-import cn.asone.endless.ui.gui.clickgui.elements.moduleinfo.AbstractValueButton
+import cn.asone.endless.ui.gui.clickgui.elements.moduleinfo.AbstractOptionButton
 import cn.asone.endless.ui.gui.clickgui.elements.moduleinfo.ListButton
 import cn.asone.endless.ui.gui.clickgui.elements.moduleslist.AbstractButton
 import cn.asone.endless.ui.gui.clickgui.elements.moduleslist.DisabledButton
@@ -47,7 +47,7 @@ class GuiClickGUI : GuiScreen() {
         var currentInfoButton: AbstractButton? = null
 
         /**
-         * 右键ListButton实现更改值
+         * 为ListButton单独渲染一个区域实现更改值
          */
         var listButton: ListButton? = null
 
@@ -96,13 +96,13 @@ class GuiClickGUI : GuiScreen() {
         for (module in ModuleManager.modules) buttonsMap[module.category]?.add(ModuleButton(module))
         buttonsMap[7]!!.add(object : DisabledButton("FakeForge") {
             init {
-                infoButtons.add(AbstractValueButton.valueToButton(FakeForge.enabled, false))
+                infoButtons.add(AbstractOptionButton.optionToButton(FakeForge.enabled, false))
             }
         })
         buttonsMap[7]!!.add(object : DisabledButton("Font") {
             init {
-                infoButtons.add(AbstractValueButton.valueToButton(Fonts.forceCustomFont, false))
-                infoButtons.add(AbstractValueButton.valueToButton(Fonts.cacheFont, false))
+                infoButtons.add(AbstractOptionButton.optionToButton(Fonts.forceCustomFont, false))
+                infoButtons.add(AbstractOptionButton.optionToButton(Fonts.cacheFont, false))
             }
         })
         modulesScrollingAnimationHelper = SmoothHelper()
@@ -255,13 +255,13 @@ class GuiClickGUI : GuiScreen() {
 
         GL11.glPushMatrix()
         /**
-         * Module values
+         * Module options
          */
         //x: windowXStart + 231 ~ windowXStart + guiWidth - 7
         if (currentInfoButton != null) {
             if (currentInfoButton!!.infoButtons.isNotEmpty()) {
                 /**
-                 * Module的Values list滚轮
+                 * Module的Options list滚轮
                  */
                 if (mouseX in (windowXStart + 231 + 2)..(windowXStart + guiWidth - 9) && mouseY in (windowYStart + 44 + 2)..(windowYStart + guiHeight - 9) && keyBindModule == null && listButton == null) {
                     infoScrollingAnimationHelper.currentValue += wheel
@@ -276,7 +276,7 @@ class GuiClickGUI : GuiScreen() {
                     currentInfoButton!!.infoButtons.forEach { it.updateOffset(infoScrollingAnimationHelper.get()) }
                 }
                 /**
-                 * Update values list y position
+                 * Update options list y position
                  */
                 var y = 0F
                 currentInfoButton!!.infoButtons.forEach {
@@ -303,7 +303,7 @@ class GuiClickGUI : GuiScreen() {
                 RenderUtils.post2D()
             }
             /**
-             * Name
+             * Module Name
              */
             Fonts.medium44.drawCenteredString(
                 currentInfoButton!!.name,
@@ -312,7 +312,7 @@ class GuiClickGUI : GuiScreen() {
                 textColor
             )
             /**
-             * Description
+             * Module Description
              */
             if (currentInfoButton is ModuleButton) Fonts.condensedLight16.drawString(
                 (currentInfoButton as ModuleButton).module.description,
@@ -321,7 +321,7 @@ class GuiClickGUI : GuiScreen() {
                 textColor
             )
             /**
-             * Values list text
+             * Options list text
              */
             if (currentInfoButton!!.infoButtons.isNotEmpty()) {
                 GL11.glEnable(GL11.GL_SCISSOR_TEST)
@@ -384,11 +384,11 @@ class GuiClickGUI : GuiScreen() {
             )
             if (mouseX in (windowXStart + guiWidth / 2 - 98)..(windowXStart + guiWidth / 2 + 98) && mouseY in (windowYStart + guiHeight / 2 - 78)..(windowYStart + guiHeight / 2 + 128)) {
                 /**
-                 * ListValue 滚轮
+                 * ListOption 滚轮
                  */
                 listButtonScrollingAnimationHelper.currentValue += wheel
-                if (listButtonScrollingAnimationHelper.currentValue < listButton!!.value.values.size * -(Fonts.light30.FONT_HEIGHT + 4) - 8 + 210) listButtonScrollingAnimationHelper.currentValue =
-                    listButton!!.value.values.size * -(Fonts.light30.FONT_HEIGHT + 4) + 210 - 8F
+                if (listButtonScrollingAnimationHelper.currentValue < listButton!!.value.availableValues.size * -(Fonts.light30.FONT_HEIGHT + 4) - 8 + 210) listButtonScrollingAnimationHelper.currentValue =
+                    listButton!!.value.availableValues.size * -(Fonts.light30.FONT_HEIGHT + 4) + 210 - 8F
                 if (listButtonScrollingAnimationHelper.currentValue > 0) listButtonScrollingAnimationHelper.currentValue =
                     0F
                 listButtonScrollingAnimationHelper.tick()
@@ -400,7 +400,7 @@ class GuiClickGUI : GuiScreen() {
                     i++
                     if (i >= 100) break
                 }
-                if (i >= 0 && i <= listButton!!.value.values.lastIndex) {
+                if (i >= 0 && i <= listButton!!.value.availableValues.lastIndex) {
                     GL11.glEnable(GL11.GL_SCISSOR_TEST)
                     /**
                      * 向内 -2
@@ -415,9 +415,9 @@ class GuiClickGUI : GuiScreen() {
                      * Blue border
                      */
                     RenderUtils.drawBorder(
-                        windowXStart + guiWidth / 2 - Fonts.light30.getStringWidth(listButton!!.value.values[i]) / 2 - 2F,
+                        windowXStart + guiWidth / 2 - Fonts.light30.getStringWidth(listButton!!.value.availableValues[i]) / 2 - 2F,
                         windowYStart + guiHeight / 2 - 80 + 2F + listButtonScrollingAnimationHelper.get() + i * (Fonts.light30.FONT_HEIGHT + 4),
-                        windowXStart + guiWidth / 2 + Fonts.light30.getStringWidth(listButton!!.value.values[i]) / 2 + 2F,
+                        windowXStart + guiWidth / 2 + Fonts.light30.getStringWidth(listButton!!.value.availableValues[i]) / 2 + 2F,
                         windowYStart + guiHeight / 2 - 80 + 2F + listButtonScrollingAnimationHelper.get() + (i + 1) * (Fonts.light30.FONT_HEIGHT + 4) - 2F,
                         1F,
                         //Color(0, 111, 255).rgb
@@ -431,7 +431,7 @@ class GuiClickGUI : GuiScreen() {
             Fonts.regular38.drawCenteredString(
                 listButton!!.value.name,
                 windowXStart + guiWidth / 2F,
-                windowYStart + guiHeight / 2F - 110 + 6F,
+                windowYStart + guiHeight / 2F - 110 + 9F,
                 textColor
             )
             GL11.glEnable(GL11.GL_SCISSOR_TEST)
@@ -444,8 +444,8 @@ class GuiClickGUI : GuiScreen() {
                 windowXStart + guiWidth / 2 + 98,
                 windowYStart + guiHeight / 2 + 128
             )
-            var var0 = windowYStart + guiHeight / 2 - 80 + 4F + listButtonScrollingAnimationHelper.get()
-            listButton!!.value.values.forEach {
+            var var0 = windowYStart + guiHeight / 2 - 80 + 7F + listButtonScrollingAnimationHelper.get()
+            listButton!!.value.availableValues.forEach {
                 Fonts.light30.drawCenteredString(it, windowXStart + guiWidth / 2F, var0, textColor)
                 var0 += Fonts.light30.FONT_HEIGHT + 4
             }
@@ -484,9 +484,9 @@ class GuiClickGUI : GuiScreen() {
                     i++
                     if (i >= 100) break
                 }
-                if (i >= 0 && i <= listButton!!.value.values.lastIndex) {
-                    listButton!!.value.set(listButton!!.value.values[i])
-                    listButton!!.updateX(windowXStart + 231 + 6F)
+                if (i >= 0 && i <= listButton!!.value.availableValues.lastIndex) {
+                    listButton!!.value.set(listButton!!.value.availableValues[i])
+                    listButton!!.updateX(windowXStart + (if (listButton!!.isSub) 251 else 231) + 6F)
                     mc.soundHandler.playSound("gui.button.press", 1F)
                     listButton = null
                 }

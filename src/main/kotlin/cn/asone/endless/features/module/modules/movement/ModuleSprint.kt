@@ -5,8 +5,8 @@ import cn.asone.endless.event.UpdateEvent
 import cn.asone.endless.features.module.AbstractModule
 import cn.asone.endless.features.module.ModuleCategory
 import cn.asone.endless.utils.MovementUtils
-import cn.asone.endless.value.AbstractValue
-import cn.asone.endless.value.BoolValue
+import cn.asone.endless.option.AbstractOption
+import cn.asone.endless.option.BoolOption
 import net.minecraft.potion.Potion
 
 object ModuleSprint : AbstractModule(
@@ -17,31 +17,31 @@ object ModuleSprint : AbstractModule(
     override val handledEvents: ArrayList<EventHook> = arrayListOf(
         EventHook(UpdateEvent::class.java)
     )
-    private val allDirectionsValue = BoolValue("AllDirections", false)
-    private val blindnessValue = BoolValue("Blindness", true)
-    private val foodValue = BoolValue("Food", true)
-    private val checkServerSide = BoolValue("CheckServerSide", false)
-    private val checkServerSideGround = BoolValue("CheckServerSideOnlyGround", false)
+    private val allDirectionsOption = BoolOption("AllDirections", false)
+    private val blindnessOption = BoolOption("Blindness", true)
+    private val foodOption = BoolOption("Food", true)
+    private val checkServerSide = BoolOption("CheckServerSide", false)
+    private val checkServerSideGround = BoolOption("CheckServerSideOnlyGround", false)
 
-    override val values: ArrayList<AbstractValue<*>> = arrayListOf(
-        allDirectionsValue,
-        blindnessValue,
+    override val options: ArrayList<AbstractOption<*>> = arrayListOf(
+        allDirectionsOption,
+        blindnessOption,
         checkServerSide,
-        foodValue
+        foodOption
     )
 
     init {
-        checkServerSide.subValue.add(checkServerSideGround)
+        checkServerSide.subOptions.add(checkServerSideGround)
     }
 
     override fun onUpdate() {
-        if (allDirectionsValue.get()) {
+        if (allDirectionsOption.get()) {
             mc.thePlayer.sprinting = true
             return
         }
         if (!MovementUtils.isMoving() || mc.thePlayer.isSneaking
-            || (blindnessValue.get() && mc.thePlayer.isPotionActive(Potion.blindness))
-            || (foodValue.get() && !(mc.thePlayer.foodStats.foodLevel > 6.0F || mc.thePlayer.capabilities.allowFlying))
+            || (blindnessOption.get() && mc.thePlayer.isPotionActive(Potion.blindness))
+            || (foodOption.get() && !(mc.thePlayer.foodStats.foodLevel > 6.0F || mc.thePlayer.capabilities.allowFlying))
         ) {
             mc.thePlayer.sprinting = false
             return

@@ -1,9 +1,9 @@
-package cn.asone.endless.value
+package cn.asone.endless.option
 
 import cn.asone.endless.utils.ClientUtils
 import com.google.gson.JsonElement
 
-abstract class AbstractValue<T>(val name: String, value: T) {
+abstract class AbstractOption<T>(val name: String, value: T) {
     protected var value: T
         private set
 
@@ -46,4 +46,4 @@ abstract class AbstractValue<T>(val name: String, value: T) {
     }
 }*/
 
-//open class BlockValue(name: String, value: Int) : IntValue(name, value, 1..197)
+//open class BlockValue(name: String, value: Int) : IntOption(name, value, 1..197)

@@ -4,9 +4,9 @@ import cn.asone.endless.ui.font.Fonts
 import cn.asone.endless.ui.gui.clickgui.GuiClickGUI
 import cn.asone.endless.utils.ColorUtils
 import cn.asone.endless.utils.RenderUtils
-import cn.asone.endless.value.IntValue
+import cn.asone.endless.option.IntOption
 
-class IntButton(override val value: IntValue, isSub: Boolean) : AbstractValueButton(value, isSub) {
+class IntButton(override val value: IntOption, isSub: Boolean) : AbstractOptionButton(value, isSub) {
     override fun drawBox(mouseX: Int, mouseY: Int) {
         super.drawBox(mouseX, mouseY)
         if (isHovering(mouseX, mouseY)) {

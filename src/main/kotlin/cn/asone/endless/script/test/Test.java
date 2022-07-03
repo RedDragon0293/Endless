@@ -5,8 +5,8 @@ import cn.asone.endless.event.UpdateEvent;
 import cn.asone.endless.script.AbstractScriptClass;
 import cn.asone.endless.utils.ClientUtils;
 import cn.asone.endless.utils.MovementUtils;
-import cn.asone.endless.value.AbstractValue;
-import cn.asone.endless.value.BoolValue;
+import cn.asone.endless.option.AbstractOption;
+import cn.asone.endless.option.BoolOption;
 import kotlin.collections.CollectionsKt;
 import net.minecraft.potion.Potion;
 import org.jetbrains.annotations.NotNull;
@@ -14,16 +14,16 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 
 public class Test extends AbstractScriptClass {
-    private final BoolValue allDirectionsValue = new BoolValue("AllDirections", false);
-    private final BoolValue blindnessValue = new BoolValue("Blindness", true);
-    private final BoolValue foodValue = new BoolValue("Food", true);
-    private final BoolValue checkServerSide = new BoolValue("CheckServerSide", false);
-    private final BoolValue checkServerSideGround = new BoolValue("CheckServerSideOnlyGround", false);
+    private final BoolOption allDirectionsValue = new BoolOption("AllDirections", false);
+    private final BoolOption blindnessValue = new BoolOption("Blindness", true);
+    private final BoolOption foodValue = new BoolOption("Food", true);
+    private final BoolOption checkServerSide = new BoolOption("CheckServerSide", false);
+    private final BoolOption checkServerSideGround = new BoolOption("CheckServerSideOnlyGround", false);
 
 
     public Test() {
         super("ScriptTestModule", "", 5);
-        checkServerSide.getSubValue().add(checkServerSideGround);
+        checkServerSide.getSubOptions().add(checkServerSideGround);
     }
 
     @NotNull
@@ -51,7 +51,7 @@ public class Test extends AbstractScriptClass {
 
     @NotNull
     @Override
-    public ArrayList<AbstractValue<?>> getValues() {
+    public ArrayList<AbstractOption<?>> getOptions() {
         return CollectionsKt.arrayListOf(
                 allDirectionsValue,
                 blindnessValue,

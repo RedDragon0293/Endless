@@ -49,7 +49,7 @@ object ModuleManager : ListenableClass() {
             ModulePerfectHorseJump
         ).forEach {
             registerModule(it)
-            if (it.values.isNotEmpty())
+            if (it.options.isNotEmpty())
                 CommandManager.registerModuleCommand(it)
         }
         ClientUtils.logger.info("成功初始化 ${modules.size} 个功能.")

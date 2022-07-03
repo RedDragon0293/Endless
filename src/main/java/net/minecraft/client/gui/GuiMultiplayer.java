@@ -2,7 +2,7 @@ package net.minecraft.client.gui;
 
 import cn.asone.endless.Endless;
 import cn.asone.endless.ui.gui.GuiFakeForge;
-import cn.asone.endless.value.BoolValue;
+import cn.asone.endless.option.BoolOption;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import net.minecraft.client.multiplayer.GuiConnecting;
@@ -45,7 +45,7 @@ public class GuiMultiplayer extends GuiScreen implements GuiYesNoCallback {
     /**
      * True为Netease, false为Mojang
      */
-    public static final BoolValue authType = new BoolValue("AuthType", false) {
+    public static final BoolOption authType = new BoolOption("AuthType", false) {
         @Override
         protected void changeValue(Boolean newValue) {
             super.changeValue(newValue);
@@ -299,7 +299,7 @@ public class GuiMultiplayer extends GuiScreen implements GuiYesNoCallback {
                 } else if (keyCode != 28 && keyCode != 156) {
                     super.keyTyped(typedChar, keyCode);
                 } else {
-                    this.actionPerformed((GuiButton) this.buttonList.get(2));
+                    this.actionPerformed(this.buttonList.get(2));
                 }
             } else {
                 super.keyTyped(typedChar, keyCode);
@@ -314,7 +314,7 @@ public class GuiMultiplayer extends GuiScreen implements GuiYesNoCallback {
         this.hoveringText = null;
         this.drawDefaultBackground();
         this.serverListSelector.drawScreen(mouseX, mouseY, partialTicks);
-        this.drawCenteredString(mc.fontRendererObj, I18n.format("multiplayer.title", new Object[0]), this.width / 2, 20, 16777215);
+        this.drawCenteredString(mc.fontRendererObj, I18n.format("multiplayer.title"), this.width / 2, 20, 16777215);
         super.drawScreen(mouseX, mouseY, partialTicks);
 
         if (this.hoveringText != null) {

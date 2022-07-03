@@ -2,9 +2,9 @@ package cn.asone.endless.ui.gui.clickgui.elements.moduleinfo
 
 import cn.asone.endless.ui.font.Fonts
 import cn.asone.endless.ui.gui.clickgui.GuiClickGUI
-import cn.asone.endless.value.TextValue
+import cn.asone.endless.option.TextOption
 
-class TextButton(override val value: TextValue, isSub: Boolean) : AbstractValueButton(value, isSub) {
+class TextButton(override val value: TextOption, isSub: Boolean) : AbstractOptionButton(value, isSub) {
     override fun drawText(mouseX: Int, mouseY: Int) {
         super.drawText(mouseX, mouseY)
         Fonts.condensedLight18.drawString(
