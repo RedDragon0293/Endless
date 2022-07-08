@@ -108,6 +108,13 @@ public class RedFontRenderer {
         return (int) (c.getTex().width * scale);
     }
 
+    public float getCharWidthFloat(char charAt) {
+        FontChar c = getFontChar(charAt);
+        if (c == null)
+            return 0;
+        return c.getTex().width * scale;
+    }
+
     /**
      * 将字体图片渲染到屏幕上
      */

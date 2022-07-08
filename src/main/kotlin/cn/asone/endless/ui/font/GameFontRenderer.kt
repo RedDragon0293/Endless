@@ -284,6 +284,51 @@ class GameFontRenderer(font: Font, companionStyle: Boolean = false) : FontRender
 
     override fun getCharWidth(character: Char) = getStringWidth(character.toString())
 
+    override fun trimStringToWidth(text: String, width: Int, reverse: Boolean): String {
+        val builder = StringBuilder()
+        var newStringWidth = 0.0f
+        val startIndex = if (reverse) text.length - 1 else 0
+        val i = if (reverse) -1 else 1
+        var charUnsupported = false
+        var flag1 = false
+
+
+        var k = startIndex
+        while (k >= 0 && k < text.length && newStringWidth < width.toFloat()) {
+            val currentChar = text[k]
+            val charWidth = defaultFont.getCharWidthFloat(currentChar)
+            if (charUnsupported) {
+                charUnsupported = false
+                if (currentChar.code != 108 /* l */ && currentChar.code != 76 /* L */) {
+                    if (currentChar.code == 114 /* r */ || currentChar.code == 82 /* R */) {
+                        flag1 = false
+                    }
+                } else {
+                    flag1 = true
+                }
+            } else if (charWidth < 0.0f) {
+                charUnsupported = true
+            } else {
+                newStringWidth += charWidth
+                if (flag1) {
+                    ++newStringWidth
+                }
+            }
+            if (newStringWidth > width.toFloat()) {
+                break
+            }
+            if (reverse) {
+                builder.insert(0, currentChar)
+            } else {
+                builder.append(currentChar)
+            }
+            k += i
+        }
+
+
+        return builder.toString()
+    }
+
     override fun onResourceManagerReload(resourceManager: IResourceManager) {}
 
     override fun bindTexture(resourceLocation: ResourceLocation?) {}

@@ -45,7 +45,7 @@ public interface IChatComponent extends Iterable<IChatComponent>
      */
     IChatComponent createCopy();
 
-    public static class Serializer implements JsonDeserializer<IChatComponent>, JsonSerializer<IChatComponent>
+    class Serializer implements JsonDeserializer<IChatComponent>, JsonSerializer<IChatComponent>
     {
         private static final Gson GSON;
 
@@ -80,7 +80,7 @@ public interface IChatComponent extends Iterable<IChatComponent>
                 }
                 else
                 {
-                    throw new JsonParseException("Don\'t know how to turn " + p_deserialize_1_.toString() + " into a Component");
+                    throw new JsonParseException("Don't know how to turn " + p_deserialize_1_ + " into a Component");
                 }
             }
             else
@@ -120,7 +120,7 @@ public interface IChatComponent extends Iterable<IChatComponent>
                     }
                     else
                     {
-                        ichatcomponent = new ChatComponentTranslation(s, new Object[0]);
+                        ichatcomponent = new ChatComponentTranslation(s);
                     }
                 }
                 else if (jsonobject.has("score"))
@@ -143,7 +143,7 @@ public interface IChatComponent extends Iterable<IChatComponent>
                 {
                     if (!jsonobject.has("selector"))
                     {
-                        throw new JsonParseException("Don\'t know how to turn " + p_deserialize_1_.toString() + " into a Component");
+                        throw new JsonParseException("Don't know how to turn " + p_deserialize_1_ + " into a Component");
                     }
 
                     ichatcomponent = new ChatComponentSelector(JsonUtils.getString(jsonobject, "selector"));
@@ -265,7 +265,7 @@ public interface IChatComponent extends Iterable<IChatComponent>
 
         public static String componentToJson(IChatComponent component)
         {
-            return GSON.toJson((Object)component);
+            return GSON.toJson(component);
         }
 
         public static IChatComponent jsonToComponent(String json)

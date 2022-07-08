@@ -173,7 +173,7 @@ public class FontRenderer implements IResourceManagerReloadListener {
      * Digests a string for nonprinting formatting characters then returns a string containing only that formatting.
      */
     public static String getFormatFromString(String text) {
-        String s = "";
+        StringBuilder s = new StringBuilder();
         int i = -1;
         int j = text.length();
 
@@ -182,14 +182,14 @@ public class FontRenderer implements IResourceManagerReloadListener {
                 char c0 = text.charAt(i + 1);
 
                 if (isFormatColor(c0)) {
-                    s = "\u00a7" + c0;
+                    s = new StringBuilder("\u00a7" + c0);
                 } else if (isFormatSpecial(c0)) {
-                    s = s + "\u00a7" + c0;
+                    s.append("\u00a7").append(c0);
                 }
             }
         }
 
-        return s;
+        return s.toString();
     }
 
     public void onResourceManagerReload(IResourceManager resourceManager) {
@@ -231,7 +231,7 @@ public class FontRenderer implements IResourceManagerReloadListener {
         for (int i1 = 0; i1 < 256; ++i1) {
             int j1 = i1 % 16;
             int k1 = i1 / 16;
-            int l1 = 0;
+            int l1;
 
             for (l1 = k - 1; l1 >= 0; --l1) {
                 int i2 = j1 * k + l1;
@@ -244,16 +244,13 @@ public class FontRenderer implements IResourceManagerReloadListener {
 
                     if (i3 > 16) {
                         flag = false;
+                        break;
                     }
                 }
 
                 if (!flag) {
                     break;
                 }
-            }
-
-            if (i1 == 65) {
-                i1 = i1;
             }
 
             if (i1 == 32) {
@@ -419,7 +416,7 @@ public class FontRenderer implements IResourceManagerReloadListener {
      * Draws the specified string.
      */
     public int drawString(String text, float x, float y, int color, boolean dropShadow) {
-        this.enableAlpha();
+        GlStateManager.enableAlpha();
 
         if (this.blend) {
             GlStateManager.getBlendState(this.oldBlendState);
@@ -500,7 +497,7 @@ public class FontRenderer implements IResourceManagerReloadListener {
                     }
 
                     this.textColor = hexColorCode;
-                    this.setColor((float) (hexColorCode >> 16) / 255.0F, (float) (hexColorCode >> 8 & 255) / 255.0F, (float) (hexColorCode & 255) / 255.0F, this.alpha);
+                    GlStateManager.color((float) (hexColorCode >> 16) / 255.0F, (float) (hexColorCode >> 8 & 255) / 255.0F, (float) (hexColorCode & 255) / 255.0F, this.alpha);
                 } else if (l == 16) {
                     this.randomStyle = true;
                 } else if (l == 17) {
@@ -517,7 +514,7 @@ public class FontRenderer implements IResourceManagerReloadListener {
                     this.strikethroughStyle = false;
                     this.underlineStyle = false;
                     this.italicStyle = false;
-                    this.setColor(this.red, this.blue, this.green, this.alpha);
+                    GlStateManager.color(this.red, this.blue, this.green, this.alpha);
                 }
 
                 ++i;
@@ -644,7 +641,7 @@ public class FontRenderer implements IResourceManagerReloadListener {
             this.blue = (float) (color >> 8 & 255) / 255.0F;
             this.green = (float) (color & 255) / 255.0F;
             this.alpha = (float) (color >> 24 & 255) / 255.0F;
-            this.setColor(this.red, this.blue, this.green, this.alpha);
+            GlStateManager.color(this.red, this.blue, this.green, this.alpha);
             this.posX = x;
             this.posY = y;
             this.renderStringAtPos(text, dropShadow);
@@ -728,28 +725,34 @@ public class FontRenderer implements IResourceManagerReloadListener {
 
     /**
      * Trims a string to fit a specified Width.
+     * <p>
+     *     根据传入的 width 将字符串超出的部分裁切掉
+     * </p>
      */
     public String trimStringToWidth(String text, int width) {
         return this.trimStringToWidth(text, width, false);
     }
 
     /**
-     * Trims a string to a specified width, and will reverse it if par3 is set.
+     * <p>Trims a string to a specified width, and will reverse it if par3 is set.</p>
+     * <p>
+     *     根据传入的 width 将字符串超出的部分裁切掉
+     * </p>
      */
     public String trimStringToWidth(String text, int width, boolean reverse) {
         StringBuilder stringbuilder = new StringBuilder();
         float newStringWidth = 0.0F;
         int startIndex = reverse ? text.length() - 1 : 0;
         int i = reverse ? -1 : 1;
-        boolean currentCharUnsupported = false;
+        boolean charUnsupported = false;
         boolean flag1 = false;
 
         for (int k = startIndex; k >= 0 && k < text.length() && newStringWidth < (float) width; k += i) {
             char currentChar = text.charAt(k);
             float charWidth = this.getCharWidthFloat(currentChar);
 
-            if (currentCharUnsupported) {
-                currentCharUnsupported = false;
+            if (charUnsupported) {
+                charUnsupported = false;
 
                 if (currentChar != 108 /* l */ && currentChar != 76 /* L */) {
                     if (currentChar == 114 /* r */ || currentChar == 82 /* R */) {
@@ -759,7 +762,7 @@ public class FontRenderer implements IResourceManagerReloadListener {
                     flag1 = true;
                 }
             } else if (charWidth < 0.0F) {
-                currentCharUnsupported = true;
+                charUnsupported = true;
             } else {
                 newStringWidth += charWidth;
 
@@ -958,14 +961,6 @@ public class FontRenderer implements IResourceManagerReloadListener {
         } else {
             return 16777215;
         }
-    }
-
-    protected void setColor(float p_setColor_1_, float p_setColor_2_, float p_setColor_3_, float p_setColor_4_) {
-        GlStateManager.color(p_setColor_1_, p_setColor_2_, p_setColor_3_, p_setColor_4_);
-    }
-
-    protected void enableAlpha() {
-        GlStateManager.enableAlpha();
     }
 
     protected void bindTexture(ResourceLocation resourceLocation) {

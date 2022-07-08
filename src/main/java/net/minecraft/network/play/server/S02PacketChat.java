@@ -11,6 +11,7 @@ public class S02PacketChat implements Packet<INetHandlerPlayClient>
     private IChatComponent chatComponent;
     private byte type;
 
+    @SuppressWarnings("unused")
     public S02PacketChat()
     {
     }

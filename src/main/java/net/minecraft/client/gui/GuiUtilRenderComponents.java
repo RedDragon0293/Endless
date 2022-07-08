@@ -9,83 +9,113 @@ import net.minecraft.util.IChatComponent;
 import java.util.List;
 
 public class GuiUtilRenderComponents {
-    public static String func_178909_a(String text, boolean p_178909_1_) {
-        return !p_178909_1_ && !Minecraft.getMinecraft().gameSettings.chatColours ? EnumChatFormatting.getTextWithoutFormattingCodes(text) : text;
+    public static String func_178909_a(String text, boolean chatColors) {
+        return !chatColors && !Minecraft.getMinecraft().gameSettings.chatColours ? EnumChatFormatting.getTextWithoutFormattingCodes(text) : text;
     }
 
-    public static List<IChatComponent> splitText(IChatComponent chatComponent, int width, FontRenderer fontRenderer, boolean p_178908_3_, boolean p_178908_4_) {
-        int i = 0;
+    /**
+     * 将含有换行符的ChatComponent分割至多行
+     *
+     * @param colors 是否保留 Style 标识
+     * @param width  目标宽度
+     */
+    public static List<IChatComponent> splitText(IChatComponent chatComponent, int width, FontRenderer fontRenderer, boolean removeSpace, boolean colors) {
+        int currentWidth = 0;
         IChatComponent emptyComponent = new ChatComponentText("");
-        List<IChatComponent> list = Lists.newArrayList();
-        List<IChatComponent> list1 = Lists.newArrayList(chatComponent);
+        List<IChatComponent> resultList = Lists.newArrayList();
+        /*
+        用于临时储存待处理的ChatComponent
+         */
+        List<IChatComponent> tempList = Lists.newArrayList(chatComponent);
 
-        for (int j = 0; j < list1.size(); ++j) {
-            IChatComponent ichatcomponent1 = list1.get(j);
-            String s = ichatcomponent1.getUnformattedTextForChat();
-            boolean flag = false;
+        for (int index = 0; index < tempList.size(); ++index) {
+            IChatComponent currentComponent = tempList.get(index);
+            String currentTextUnformatted = currentComponent.getUnformattedTextForChat();
+            boolean newLine = false;
 
-            if (s.contains("\n")) {
-                int k = s.indexOf(10);
-                String s1 = s.substring(k + 1);
-                s = s.substring(0, k + 1);
-                ChatComponentText chatcomponenttext = new ChatComponentText(s1);
-                chatcomponenttext.setChatStyle(ichatcomponent1.getChatStyle().createShallowCopy());
-                list1.add(j + 1, chatcomponenttext);
-                flag = true;
+            if (currentTextUnformatted.contains("\n")) {
+                int k = currentTextUnformatted.indexOf(10 /* 换行符 */);
+                /*
+                换行符之后的内容
+                 */
+                String stringAfterNewLine = currentTextUnformatted.substring(k + 1);
+                /*
+                换行符之前的内容
+                 */
+                currentTextUnformatted = currentTextUnformatted.substring(0, k + 1);
+                ChatComponentText afterNewLineComponent = new ChatComponentText(stringAfterNewLine);
+                afterNewLineComponent.setChatStyle(currentComponent.getChatStyle().createShallowCopy());
+                tempList.add(index + 1, afterNewLineComponent);
+                newLine = true;
             }
 
-            String s4 = func_178909_a(ichatcomponent1.getChatStyle().getFormattingCode() + s, p_178908_4_);
-            String s5 = s4.endsWith("\n") ? s4.substring(0, s4.length() - 1) : s4;
-            int i1 = fontRenderer.getStringWidth(s5);
-            ChatComponentText chatcomponenttext1 = new ChatComponentText(s5);
-            chatcomponenttext1.setChatStyle(ichatcomponent1.getChatStyle().createShallowCopy());
+            /*
+            如果上一个if语句中已经分割换行符前后的内容, 则为换行符前的内容
+             */
+            String currentTextOrigin = func_178909_a(currentComponent.getChatStyle().getFormattingCode() + currentTextUnformatted, colors);
+            /*
+            去除末尾的换行符
+             */
+            String currentText = currentTextOrigin.endsWith("\n") ? currentTextOrigin.substring(0, currentTextOrigin.length() - 1) : currentTextOrigin;
+            int width1 = fontRenderer.getStringWidth(currentText);
+            ChatComponentText currentComponent1 = new ChatComponentText(currentText);
+            currentComponent1.setChatStyle(currentComponent.getChatStyle().createShallowCopy());
 
-            if (i + i1 > width) {
-                String s2 = fontRenderer.trimStringToWidth(s4, width - i, false);
-                String s3 = s2.length() < s4.length() ? s4.substring(s2.length()) : null;
+            if (currentWidth + width1 > width) {
+                String trimmed = fontRenderer.trimStringToWidth(currentTextOrigin, width - currentWidth, false);
+                /*
+                被裁切掉的部分
+                 */
+                String s3 = trimmed.length() < currentTextOrigin.length() ? currentTextOrigin.substring(trimmed.length()) : null;
 
                 if (s3 != null) {
-                    int l = s2.lastIndexOf(" ");
+                    int l = trimmed.lastIndexOf(" ");
 
-                    if (l >= 0 && fontRenderer.getStringWidth(s4.substring(0, l)) > 0) {
-                        s2 = s4.substring(0, l);
+                    if (l >= 0 && fontRenderer.getStringWidth(currentTextOrigin.substring(0, l)) > 0) {
+                        /*
+                        如果裁切后的字符串 (trimmed) 内有空格, 则替换为空格前的内容
+                        */
+                        trimmed = currentTextOrigin.substring(0, l);
 
-                        if (p_178908_3_) {
+                        if (removeSpace) {
                             ++l;
                         }
 
-                        s3 = s4.substring(l);
-                    } else if (i > 0 && !s4.contains(" ")) {
-                        s2 = "";
-                        s3 = s4;
+                        s3 = currentTextOrigin.substring(l);
+                    } else if (currentWidth > 0 && !currentTextOrigin.contains(" ")) {
+                        trimmed = "";
+                        s3 = currentTextOrigin;
                     }
 
+                    //Forge: Fix chat formatting not surviving line wrapping.
+                    s3 = FontRenderer.getFormatFromString(trimmed) + s3;
+
                     ChatComponentText chatcomponenttext2 = new ChatComponentText(s3);
-                    chatcomponenttext2.setChatStyle(ichatcomponent1.getChatStyle().createShallowCopy());
-                    list1.add(j + 1, chatcomponenttext2);
+                    chatcomponenttext2.setChatStyle(currentComponent.getChatStyle().createShallowCopy());
+                    tempList.add(index + 1, chatcomponenttext2);
                 }
 
-                i1 = fontRenderer.getStringWidth(s2);
-                chatcomponenttext1 = new ChatComponentText(s2);
-                chatcomponenttext1.setChatStyle(ichatcomponent1.getChatStyle().createShallowCopy());
-                flag = true;
+                width1 = fontRenderer.getStringWidth(trimmed);
+                currentComponent1 = new ChatComponentText(trimmed);
+                currentComponent1.setChatStyle(currentComponent.getChatStyle().createShallowCopy());
+                newLine = true;
             }
 
-            if (i + i1 <= width) {
-                i += i1;
-                emptyComponent.appendSibling(chatcomponenttext1);
+            if (currentWidth + width1 <= width) {
+                currentWidth += width1;
+                emptyComponent.appendSibling(currentComponent1);
             } else {
-                flag = true;
+                newLine = true;
             }
 
-            if (flag) {
-                list.add(emptyComponent);
-                i = 0;
+            if (newLine) {
+                resultList.add(emptyComponent);
+                currentWidth = 0;
                 emptyComponent = new ChatComponentText("");
             }
         }
 
-        list.add(emptyComponent);
-        return list;
+        resultList.add(emptyComponent);
+        return resultList;
     }
 }

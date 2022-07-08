@@ -141,12 +141,12 @@ public class GuiNewChat extends Gui {
             this.deleteChatLine(id);
         }
 
-        int i = MathHelper.floor_float((float) this.getChatWidth() / this.getChatScale());
-        List<IChatComponent> list = GuiUtilRenderComponents.splitText(component, i, this.mc.fontRendererObj, false, false);
-        boolean flag = this.getChatOpen();
+        int width = MathHelper.floor_float((float) this.getChatWidth() / this.getChatScale());
+        List<IChatComponent> list = GuiUtilRenderComponents.splitText(component, width, this.mc.fontRendererObj, false, false);
+        boolean chatOpen = this.getChatOpen();
 
         for (IChatComponent ichatcomponent : list) {
-            if (flag && this.scrollHelper.getCurrentValue() > 0) {
+            if (chatOpen && this.scrollHelper.getCurrentValue() > 0) {
                 this.isScrolled = true;
                 this.scroll(1);
             }
@@ -307,10 +307,10 @@ public class GuiNewChat extends Gui {
         return this.mc.gameSettings.chatScale;
     }
 
-    public static int calculateChatboxWidth(float p_146233_0_) {
+    public static int calculateChatboxWidth(float expectedWidth) {
         int i = 320;
         int j = 40;
-        return MathHelper.floor_float(p_146233_0_ * (float) (i - j) + (float) j);
+        return MathHelper.floor_float(expectedWidth * (float) (i - j) + (float) j);
     }
 
     public static int calculateChatboxHeight(float p_146243_0_) {

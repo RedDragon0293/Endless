@@ -13,9 +13,9 @@ public class ChatLine
      */
     private final int chatLineID;
 
-    public ChatLine(int p_i45000_1_, IChatComponent chatComponent, int id) {
+    public ChatLine(int updateCounterCreated, IChatComponent chatComponent, int id) {
         this.lineString = chatComponent;
-        this.updateCounterCreated = p_i45000_1_;
+        this.updateCounterCreated = updateCounterCreated;
         this.chatLineID = id;
     }
 
