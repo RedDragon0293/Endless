@@ -182,10 +182,10 @@ public class RedFontRenderer {
              * 从原版FontRenderer获取字符图片
              */
             int index = StringUtils.asciiCharacters.indexOf(charAt);
-            /*
-             * Unicode style
-             */
             if (index == -1) {
+                /*
+                 * Unicode style
+                 */
                 ResourceLocation location = Minecraft.getMinecraft().fonts.getUnicodePageLocation(charAt / 256);
                 BufferedImage globalImage = TextureUtil.readBufferedImage(Minecraft.getMinecraft().getResourceManager().getResource(location).getInputStream());
 
@@ -258,6 +258,10 @@ public class RedFontRenderer {
             if (mc.isCallingFromMinecraftThread()) {
                 chars[charAt] = new FontChar((char) charAt, generateCharImage(charAt));
             } else {
+                /*
+                不是从mc主线程调用的场景:
+                在onPacket()事件中调用displayChatMessage()等
+                 */
                 mc.addScheduledTask(() -> {
                     chars[charAt] = new FontChar((char) charAt, generateCharImage(charAt));
                 });
