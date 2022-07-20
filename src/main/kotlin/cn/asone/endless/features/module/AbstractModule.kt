@@ -2,9 +2,9 @@ package cn.asone.endless.features.module
 
 import cn.asone.endless.event.EventHook
 import cn.asone.endless.event.ListenableClass
-import cn.asone.endless.utils.extensions.playSound
 import cn.asone.endless.option.AbstractOption
 import cn.asone.endless.option.OptionRegister
+import cn.asone.endless.utils.extensions.playSound
 import org.lwjgl.input.Keyboard
 
 abstract class AbstractModule(
@@ -57,5 +57,5 @@ abstract class AbstractModule(
     open fun onEnable() {}
     open fun onDisable() {}
 
-    override fun isHandleEvents() = state
+    override fun isHandlingEvents() = state
 }

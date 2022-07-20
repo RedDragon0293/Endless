@@ -122,8 +122,8 @@ class GameFontRenderer(font: Font, companionStyle: Boolean = false) : FontRender
                     }
                     21 -> {
                         hexColor = color
-                        if (hexColor and -67108864 == 0)
-                            hexColor = hexColor or -16777216
+                        if (hexColor and -67108864 /*FC 00 00 00*/ == 0)
+                            hexColor = hexColor or -16777216 /*FF 00 00 00*/
 
                         bold = false
                         italic = false

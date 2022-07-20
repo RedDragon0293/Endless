@@ -4,10 +4,10 @@ import cn.asone.endless.event.EventHook
 import cn.asone.endless.event.EventManager
 import cn.asone.endless.event.ListenableClass
 import cn.asone.endless.event.SendPacketEvent
-import cn.asone.endless.utils.ClientUtils
 import cn.asone.endless.option.AbstractOption
 import cn.asone.endless.option.BoolOption
 import cn.asone.endless.option.OptionRegister
+import cn.asone.endless.utils.ClientUtils
 import io.netty.buffer.Unpooled
 import net.minecraft.network.PacketBuffer
 import net.minecraft.network.play.client.C17PacketCustomPayload
@@ -50,5 +50,5 @@ object FakeForge : ListenableClass(), OptionRegister {
         }
     }
 
-    override fun isHandleEvents() = true
+    override fun isHandlingEvents() = true
 }

@@ -52,7 +52,7 @@ object EventManager {
         when (event) {
             is UpdateEvent -> {
                 for (target in eventTarget) {
-                    if (!target.targetClass.isHandleEvents())
+                    if (!target.targetClass.isHandlingEvents())
                         continue
                     runCatching {
                         target.targetClass.onUpdate()
@@ -64,7 +64,7 @@ object EventManager {
 
             is PreMotionEvent -> {
                 for (target in eventTarget) {
-                    if (!target.targetClass.isHandleEvents())
+                    if (!target.targetClass.isHandlingEvents())
                         continue
                     runCatching {
                         target.targetClass.onPreMotion(event)
@@ -76,7 +76,7 @@ object EventManager {
 
             is PostMotionEvent -> {
                 for (target in eventTarget) {
-                    if (!target.targetClass.isHandleEvents())
+                    if (!target.targetClass.isHandlingEvents())
                         continue
                     runCatching {
                         target.targetClass.onPostMotion(event)
@@ -88,7 +88,7 @@ object EventManager {
 
             is Render2DEvent -> {
                 for (target in eventTarget) {
-                    if (!target.targetClass.isHandleEvents())
+                    if (!target.targetClass.isHandlingEvents())
                         continue
                     runCatching {
                         target.targetClass.onRender2D(event)
@@ -103,7 +103,7 @@ object EventManager {
 
             is Render3DEvent -> {
                 for (target in eventTarget) {
-                    if (!target.targetClass.isHandleEvents())
+                    if (!target.targetClass.isHandlingEvents())
                         continue
                     runCatching {
                         target.targetClass.onRender3D(event)
@@ -117,7 +117,7 @@ object EventManager {
 
             is KeyEvent -> {
                 for (target in eventTarget) {
-                    if (!target.targetClass.isHandleEvents())
+                    if (!target.targetClass.isHandlingEvents())
                         continue
                     runCatching {
                         target.targetClass.onKey(event)
@@ -129,7 +129,7 @@ object EventManager {
 
             is ReceivePacketEvent -> {
                 for (target in eventTarget) {
-                    if (!target.targetClass.isHandleEvents())
+                    if (!target.targetClass.isHandlingEvents())
                         continue
                     runCatching {
                         target.targetClass.onReceivePacket(event)
@@ -142,7 +142,7 @@ object EventManager {
 
             is SendPacketEvent -> {
                 for (target in eventTarget) {
-                    if (!target.targetClass.isHandleEvents())
+                    if (!target.targetClass.isHandlingEvents())
                         continue
                     runCatching {
                         target.targetClass.onSendPacket(event)

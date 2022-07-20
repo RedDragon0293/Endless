@@ -6,12 +6,12 @@ import cn.asone.endless.event.ReceivePacketEvent
 import cn.asone.endless.event.SendPacketEvent
 import cn.asone.endless.features.module.AbstractModule
 import cn.asone.endless.features.module.ModuleCategory
+import cn.asone.endless.option.AbstractOption
+import cn.asone.endless.option.ListOption
 import cn.asone.endless.ui.gui.clickgui.GuiClickGUI
 import cn.asone.endless.ui.gui.clickgui.elements.CategoryButton
 import cn.asone.endless.ui.gui.clickgui.elements.moduleslist.AbstractButton
 import cn.asone.endless.utils.ClientUtils
-import cn.asone.endless.option.AbstractOption
-import cn.asone.endless.option.ListOption
 import net.minecraft.network.play.client.C0DPacketCloseWindow
 import net.minecraft.network.play.server.S2EPacketCloseWindow
 import org.lwjgl.input.Keyboard
@@ -71,5 +71,5 @@ object ModuleClickGUI : AbstractModule(
         }
     }
 
-    override fun isHandleEvents() = true
+    override fun isHandlingEvents() = true
 }

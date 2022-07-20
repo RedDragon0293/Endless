@@ -71,5 +71,5 @@ object ModuleManager : ListenableClass() {
                 }
     }
 
-    override fun isHandleEvents() = true
+    override fun isHandlingEvents() = true
 }

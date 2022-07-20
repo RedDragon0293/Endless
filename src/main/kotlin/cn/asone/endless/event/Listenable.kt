@@ -2,7 +2,7 @@ package cn.asone.endless.event
 
 interface Listenable {
     val handledEvents: ArrayList<EventHook>
-    fun isHandleEvents(): Boolean
+    fun isHandlingEvents(): Boolean
 
     fun onUpdate()
     fun onPreMotion(event: PreMotionEvent)
