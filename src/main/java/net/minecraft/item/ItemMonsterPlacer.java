@@ -92,8 +92,8 @@ public class ItemMonsterPlacer extends Item
 
             pos = pos.offset(side);
             double d0 = 0.0D;
-
-            if (side == EnumFacing.UP && iblockstate instanceof BlockFence)
+            //if (side == EnumFacing.UP && iblockstate instanceof BlockFence)
+            if (side == EnumFacing.UP && iblockstate.getBlock() instanceof BlockFence) //Forge: Fix Vanilla bug comparing state instead of block
             {
                 d0 = 0.5D;
             }

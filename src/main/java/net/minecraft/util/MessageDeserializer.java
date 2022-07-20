@@ -29,21 +29,21 @@ public class MessageDeserializer extends ByteToMessageDecoder {
     protected void decode(ChannelHandlerContext ctx, @NotNull ByteBuf in, List<Object> out) throws IOException, InstantiationException, IllegalAccessException {
         if (in.readableBytes() != 0) {
             PacketBuffer packetbuffer = new PacketBuffer(in);
-            int i = packetbuffer.readVarIntFromBuffer();
-            Packet<?> packet = ctx.channel().attr(NetworkManager.attrKeyConnectionState).get().getPacket(this.direction, i);
+            int packetId = packetbuffer.readVarIntFromBuffer();
+            Packet<?> packet = ctx.channel().attr(NetworkManager.attrKeyConnectionState).get().getPacket(this.direction, packetId);
 
             if (packet == null) {
-                throw new IOException("Bad packet id " + i);
+                throw new IOException("Bad packet id " + packetId);
             } else {
                 packet.readPacketData(packetbuffer);
 
                 if (packetbuffer.readableBytes() > 0) {
-                    throw new IOException("Packet " + ctx.channel().attr(NetworkManager.attrKeyConnectionState).get().getId() + "/" + i + " (" + packet.getClass().getSimpleName() + ") was larger than I expected, found " + packetbuffer.readableBytes() + " bytes extra whilst reading packet " + i);
+                    throw new IOException("Packet " + ctx.channel().attr(NetworkManager.attrKeyConnectionState).get().getId() + "/" + packetId + " (" + packet.getClass().getSimpleName() + ") was larger than I expected, found " + packetbuffer.readableBytes() + " bytes extra whilst reading packet " + packetId);
                 } else {
                     out.add(packet);
 
                     if (logger.isDebugEnabled()) {
-                        logger.debug(RECEIVED_PACKET_MARKER, " IN: [{}:{}] {}", new Object[]{ctx.channel().attr(NetworkManager.attrKeyConnectionState).get(), i, packet.getClass().getName()});
+                        logger.debug(RECEIVED_PACKET_MARKER, " IN: [{}:{}] {}", new Object[]{ctx.channel().attr(NetworkManager.attrKeyConnectionState).get(), packetId, packet.getClass().getName()});
                     }
                 }
             }

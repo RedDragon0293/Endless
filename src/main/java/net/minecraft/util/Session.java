@@ -2,7 +2,9 @@ package net.minecraft.util;
 
 import com.google.common.collect.Maps;
 import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.properties.PropertyMap;
 import com.mojang.util.UUIDTypeAdapter;
+import net.minecraft.entity.player.EntityPlayer;
 
 import java.util.Map;
 import java.util.UUID;
@@ -13,6 +15,16 @@ public class Session
     private final String playerID;
     private final String token;
     private final Session.Type sessionType;
+
+    public PropertyMap getProperties() {
+        return properties;
+    }
+
+    public void setProperties(PropertyMap properties) {
+        this.properties = properties;
+    }
+
+    private PropertyMap properties;
 
     public Session(String usernameIn, String playerIDIn, String tokenIn, String sessionTypeIn)
     {
@@ -47,11 +59,16 @@ public class Session
         try
         {
             UUID uuid = UUIDTypeAdapter.fromString(this.getPlayerID());
-            return new GameProfile(uuid, this.getUsername());
+            GameProfile ret = new GameProfile(uuid, this.getUsername());    //Forge: Adds cached GameProfile properties to returned GameProfile.
+            if (properties != null) {                                       // Helps to cut down on calls to the session service,
+                ret.getProperties().putAll(properties);                     // which helps to fix MC-52974.
+            }
+            return ret;
         }
         catch (IllegalArgumentException var2)
         {
-            return new GameProfile(null, this.getUsername());
+            //return new GameProfile(null, this.getUsername());
+            return new GameProfile(EntityPlayer.getUUID(new GameProfile(null, this.getUsername())), this.getUsername());
         }
     }
 

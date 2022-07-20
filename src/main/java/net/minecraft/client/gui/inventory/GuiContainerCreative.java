@@ -192,8 +192,8 @@ public class GuiContainerCreative extends InventoryEffectRenderer {
 
                 return;
             }
-
-            if (itemstack1 != null && itemstack2 != null && itemstack1.isItemEqual(itemstack2))
+            //if (itemstack1 != null && itemstack2 != null && itemstack1.isItemEqual(itemstack2))
+            if (itemstack1 != null && itemstack1.isItemEqual(itemstack2) && ItemStack.areItemStackTagsEqual(itemstack1, itemstack2)) //Forge: Bugfix, Compare NBT data, allow for deletion of enchanted books, MC-12770
             {
                 if (clickedButton == 0)
                 {

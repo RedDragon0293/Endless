@@ -132,7 +132,8 @@ public class ItemInWorldManager
             else
             {
                 int k = this.curblockDamage - this.initialDamage;
-                float f1 = block1.getPlayerRelativeBlockHardness(this.thisPlayerMP, this.thisPlayerMP.worldObj, this.field_180241_i) * (float)(k + 1);
+                //float f1 = block1.getPlayerRelativeBlockHardness(this.thisPlayerMP, this.thisPlayerMP.worldObj, this.field_180241_i) * (float)(k + 1);
+                float f1 = block1.getPlayerRelativeBlockHardness(this.thisPlayerMP, this.thisPlayerMP.worldObj, this.field_180240_f) * (float)(k + 1); //Forge: Fix network break progress using wrong position
                 int l = (int)(f1 * 10.0F);
 
                 if (l != this.durabilityRemainingOnBlock)
@@ -155,7 +156,7 @@ public class ItemInWorldManager
     {
         if (this.isCreative())
         {
-            if (!this.theWorld.extinguishFire((EntityPlayer)null, pos, side))
+            if (!this.theWorld.extinguishFire(null, pos, side))
             {
                 this.tryHarvestBlock(pos);
             }

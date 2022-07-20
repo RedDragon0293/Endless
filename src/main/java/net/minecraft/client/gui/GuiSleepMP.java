@@ -14,7 +14,7 @@ public class GuiSleepMP extends GuiChat
     public void initGui()
     {
         super.initGui();
-        this.buttonList.add(new GuiButton(1, this.width / 2 - 100, this.height - 40, I18n.format("multiplayer.stopSleeping", new Object[0])));
+        this.buttonList.add(new GuiButton(1, this.width / 2 - 100, this.height - 40, I18n.format("multiplayer.stopSleeping")));
     }
 
     /**
@@ -37,7 +37,8 @@ public class GuiSleepMP extends GuiChat
 
             if (!s.isEmpty())
             {
-                this.mc.thePlayer.sendChatMessage(s);
+                //this.mc.thePlayer.sendChatMessage(s);
+                this.sendChatMessage(s); // Forge: fix vanilla not adding messages to the sent list while sleeping
             }
 
             this.inputField.setText("");

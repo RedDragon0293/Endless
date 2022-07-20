@@ -272,7 +272,9 @@ public class GuiAchievements extends GuiScreen implements IProgressMeter
         GlStateManager.depthFunc(518);
         GlStateManager.pushMatrix();
         GlStateManager.translate((float)i1, (float)j1, -200.0F);
-        GlStateManager.scale(1.0F / this.field_146570_r, 1.0F / this.field_146570_r, 0.0F);
+        // FIXES models rendering weirdly in the achievements pane
+        // see https://github.com/MinecraftForge/MinecraftForge/commit/1b7ce7592caafb760ec93066184182ae0711e793#commitcomment-10512284
+        GlStateManager.scale(1.0F / this.field_146570_r, 1.0F / this.field_146570_r, 1F);
         GlStateManager.enableTexture2D();
         GlStateManager.disableLighting();
         GlStateManager.enableRescaleNormal();
@@ -406,7 +408,7 @@ public class GuiAchievements extends GuiScreen implements IProgressMeter
 
         for (int i6 = 0; i6 < AchievementList.achievementList.size(); ++i6)
         {
-            Achievement achievement2 = (Achievement)AchievementList.achievementList.get(i6);
+            Achievement achievement2 = AchievementList.achievementList.get(i6);
             int l6 = achievement2.displayColumn * 24 - i;
             int j7 = achievement2.displayRow * 24 - j;
 
@@ -447,6 +449,7 @@ public class GuiAchievements extends GuiScreen implements IProgressMeter
 
                 this.mc.getTextureManager().bindTexture(ACHIEVEMENT_BACKGROUND);
 
+                GlStateManager.enableBlend(); // Forge: Specifically enable blend because it is needed here. And we fix Generic RenderItem's leakage of it.
                 if (achievement2.getSpecial())
                 {
                     this.drawTexturedModalRect(l6 - 2, j7 - 2, 26, 202, 26, 26);
@@ -455,6 +458,7 @@ public class GuiAchievements extends GuiScreen implements IProgressMeter
                 {
                     this.drawTexturedModalRect(l6 - 2, j7 - 2, 0, 202, 26, 26);
                 }
+                GlStateManager.disableBlend(); //Forge: Cleanup states we set.
 
                 if (!this.statFileWriter.canUnlockAchievement(achievement2))
                 {
@@ -463,7 +467,8 @@ public class GuiAchievements extends GuiScreen implements IProgressMeter
                     this.itemRender.func_175039_a(false);
                 }
 
-                GlStateManager.enableLighting();
+                //GlStateManager.enableLighting();
+                GlStateManager.disableLighting(); //Forge: Make sure Lighting is disabled. Fixes MC-33065
                 GlStateManager.enableCull();
                 this.itemRender.renderItemAndEffectIntoGUI(achievement2.theItemStack, l6 + 3, j7 + 3);
                 GlStateManager.blendFunc(770, 771);

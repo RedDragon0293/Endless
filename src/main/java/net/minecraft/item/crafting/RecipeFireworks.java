@@ -89,9 +89,10 @@ public class RecipeFireworks implements IRecipe
             {
                 this.field_92102_a = new ItemStack(Items.fireworks);
 
+                NBTTagCompound nbttagcompound1 = new NBTTagCompound();
                 if (l > 0)
                 {
-                    NBTTagCompound nbttagcompound1 = new NBTTagCompound();
+                    //NBTTagCompound nbttagcompound1 = new NBTTagCompound();
                     NBTTagCompound nbttagcompound3 = new NBTTagCompound();
                     NBTTagList nbttaglist = new NBTTagList();
 
@@ -108,9 +109,10 @@ public class RecipeFireworks implements IRecipe
                     nbttagcompound3.setTag("Explosions", nbttaglist);
                     nbttagcompound3.setByte("Flight", (byte)j);
                     nbttagcompound1.setTag("Fireworks", nbttagcompound3);
-                    this.field_92102_a.setTagCompound(nbttagcompound1);
+                    //this.field_92102_a.setTagCompound(nbttagcompound1);
                 }
 
+                this.field_92102_a.setTagCompound(nbttagcompound1); //Forge BugFix: NPE Protection
                 return true;
             }
             else if (j == 1 && i == 0 && l == 0 && k > 0 && j1 <= 1)

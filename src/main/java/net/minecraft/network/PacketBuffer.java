@@ -62,11 +62,11 @@ public class PacketBuffer extends ByteBuf {
         this.writeLong(pos.toLong());
     }
 
-    public IChatComponent readChatComponent() throws IOException {
+    public IChatComponent readChatComponent() {
         return IChatComponent.Serializer.jsonToComponent(this.readStringFromBuffer(32767));
     }
 
-    public void writeChatComponent(IChatComponent component) throws IOException {
+    public void writeChatComponent(IChatComponent component) {
         this.writeString(IChatComponent.Serializer.componentToJson(component));
     }
 
@@ -79,22 +79,26 @@ public class PacketBuffer extends ByteBuf {
     }
 
     /**
-     * Reads a compressed int from the buffer. To do so it maximally reads 5 byte-sized chunks whose most significant
-     * bit dictates whether another byte should be read.
+     * <p>Reads a compressed int from the buffer. To do so it maximally reads 5 byte-sized chunks whose most significant
+     * bit dictates whether another byte should be read. </p>
+     * <p>从缓冲区读取压缩的int。为此，它最多读取5字节大小的块，其最高有效位指示是否应读取另一个字节。</p>
+     * <p>压缩Int格式：每个字节的前7bit为数据位，第八bit表示是否要读取下一字节</p>
      */
     public int readVarIntFromBuffer() {
         int i = 0;
         int j = 0;
 
         while (true) {
-            byte b0 = this.readByte();
-            i |= (b0 & 127) << j++ * 7;
+            byte currentByte = this.readByte();
+            i |= (currentByte & 127 /*01111111*/) << (j * 7);
+            j++;
 
             if (j > 5) {
                 throw new RuntimeException("VarInt too big");
             }
 
-            if ((b0 & 128) != 128) {
+            if ((currentByte & 128 /*10000000*/) != 128) { //最高有效位是否为1
+                //若不是则跳出循环
                 break;
             }
         }

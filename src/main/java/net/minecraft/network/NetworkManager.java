@@ -123,7 +123,7 @@ public class NetworkManager extends SimpleChannelInboundHandler<Packet<INetHandl
                 }
 
                 channel.pipeline().addLast("timeout", (new ReadTimeoutHandler(30))) //Inbound
-                        .addLast("splitter", (new MessageDeserializer2())) //Inbound
+                        .addLast("splitter", (new MessageDeserializer2())) //Inbound, 解决粘包问题
                         .addLast("decoder", (new MessageDeserializer(EnumPacketDirection.CLIENTBOUND))) //Inbound
                         .addLast("packet_handler", networkmanager) //Inbound
                         .addFirst("byte_counter", new ByteCounter())
