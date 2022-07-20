@@ -1,8 +1,8 @@
 package net.minecraft.client.gui;
 
 import cn.asone.endless.Endless;
-import cn.asone.endless.ui.gui.GuiFakeForge;
 import cn.asone.endless.option.BoolOption;
+import cn.asone.endless.ui.gui.GuiFakeForge;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import net.minecraft.client.multiplayer.GuiConnecting;
@@ -43,14 +43,14 @@ public class GuiMultiplayer extends GuiScreen implements GuiYesNoCallback {
     private boolean initialized;
     private static final GuiButton authButton = new GuiButton(20, 235, 8, 110, 20, "Mojang");
     /**
-     * True为Netease, false为Mojang
+     * True为Mix, false为Mojang
      */
     public static final BoolOption authType = new BoolOption("AuthType", false) {
         @Override
         protected void changeValue(Boolean newValue) {
             super.changeValue(newValue);
             if (newValue) {
-                authButton.displayString = "Netease";
+                authButton.displayString = "Mix";
             } else {
                 authButton.displayString = "Mojang";
             }
