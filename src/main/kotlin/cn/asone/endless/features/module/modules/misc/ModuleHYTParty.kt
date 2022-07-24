@@ -12,7 +12,6 @@ import io.netty.buffer.Unpooled
 import net.minecraft.network.PacketBuffer
 import net.minecraft.network.play.client.C17PacketCustomPayload
 import net.minecraft.network.play.server.S3FPacketCustomPayload
-import net.minecraftforge.fml.common.network.internal.FMLProxyPacket
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.IOException
@@ -38,7 +37,7 @@ object ModuleHYTParty : AbstractModule(
 
     override fun onReceivePacket(event: ReceivePacketEvent) {
         val p = event.packet
-        if (p is S3FPacketCustomPayload && p.channelName == "VexView") {
+        if (p is S3FPacketCustomPayload) {
             val bytes = ByteArray(p.bufferData.readableBytes())
             p.bufferData.readBytes(bytes)
             /**
@@ -51,36 +50,42 @@ object ModuleHYTParty : AbstractModule(
                 stream.write(bytes)
                 stream.toString("UTF-8")
             }
-            val packetReader = VexViewPacketReader(packetString)
-            if (packetReader.packetType == "hud") {
-                //ClientUtils.logger.info(packetString)
-                event.cancelEvent()
-                return
-            }
-            ClientUtils.logger.info(packetString)
-            if (packetReader.packetType == "ver") {
-                if (packetReader.packetSubType == "get") {
-                    ClientUtils.chatInfo("发送VexView版本数据包.")
-                    //sendDebugPacket(arrayListOf("post", "2.6.10", "ver"))
-                } else if (packetReader.packetSubType == "ok") {
-                    ClientUtils.chatSuccess("VexView版本效验成功!")
+            if (p.channelName == "VexView") {
+                ClientUtils.logger.info("Received:${packetString}")
+                val packetReader = VexViewPacketReader(packetString)
+                if (packetReader.packetType == "hud") {
+                    //ClientUtils.logger.info(packetString)
+                    event.cancelEvent()
+                    return
                 }
-                return
+                if (packetReader.packetType == "ver") {
+                    if (packetReader.packetSubType == "get") {
+                        ClientUtils.chatInfo("发送VexView版本数据包.")
+                        sendDebugPacket(arrayListOf("post", "2.6.10", "ver"))
+                    } else if (packetReader.packetSubType == "ok") {
+                        ClientUtils.chatSuccess("VexView版本效验成功!")
+                    }
+                    return
+                }
+                if (packetReader.packetType == "gui") {
+                    ClientUtils.chatInfo("======VexView尝试打开一个GUI======")
+                    val data = Unpooled.wrappedBuffer(encode(JsonOpenGUI))
+                    mc.netHandler.addToSendQueue(C17PacketCustomPayload("VexView", PacketBuffer(data)))
+                    for (i in packetReader.buttonList)
+                        ClientUtils.chatInfo("${i.key}: ${i.value}")
+                }
+                if (packetReader.packetType == "flowview") {
+                    ClientUtils.displayChatMessage(packetReader.packetData.asString)
+                }
+            } else if (p.channelName == "germmod-netease") {
+                ClientUtils.logger.info("Received:${packetString}")
             }
-            if (packetReader.packetType == "gui") {
-                ClientUtils.chatInfo("======VexView尝试打开一个GUI======")
-                val data = Unpooled.wrappedBuffer(encode(JsonOpenGUI))
-                mc.netHandler.addToSendQueue(C17PacketCustomPayload("VexView", PacketBuffer(data)))
-                for (i in packetReader.buttonList)
-                    ClientUtils.chatInfo("${i.key}: ${i.value}")
-            }
-        } else if (p is FMLProxyPacket) {
-            ClientUtils.chatInfo("FMLProxy!")
-            ClientUtils.displayChatMessage(p.channel())
-            ClientUtils.displayChatMessage(decode(p.payload().array()))
         }
     }
 
+    /**
+     * 按下按钮：id / null / button
+     */
     fun sendDebugPacket(params: List<String>) {
         if (params.size < 3) {
             ClientUtils.chatError("参数长度错误!")
@@ -120,7 +125,7 @@ object ModuleHYTParty : AbstractModule(
     class VexViewPacketReader(val json: String) {
         val packetSubType: String
         val packetType: String
-        val packetData: JsonElement?
+        val packetData: JsonElement
         val buttonList: HashMap<String, String> = hashMapOf()
 
         init {

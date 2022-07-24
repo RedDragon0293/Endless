@@ -59,9 +59,11 @@ public class ViaMCP {
         @Override
         public void fromJson(@NotNull JsonElement element) {
             if (element.isJsonPrimitive()) {
-                set(element.getAsInt());
+                int v = element.getAsInt();
+                set(v);
                 if (!Endless.disableVia) {
-                    instance.setVersion(element.getAsInt());
+                    instance.setVersion(v);
+                    instance.asyncSlider.setVersion(v);
                 }
 
             } else
