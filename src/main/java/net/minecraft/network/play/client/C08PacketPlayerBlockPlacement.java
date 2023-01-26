@@ -42,7 +42,7 @@ public class C08PacketPlayerBlockPlacement implements Packet<INetHandlerPlayServ
         this.position = buf.readBlockPos();
         this.placedBlockDirection = buf.readUnsignedByte();
         this.stack = buf.readItemStackFromBuffer();
-        if (ModuleHYTPacketFixer.INSTANCE.getState()) {
+        if (ModuleHYTPacketFixer.INSTANCE.getState() && ModuleHYTPacketFixer.INSTANCE.getC08().get()) {
             this.facingX = buf.readUnsignedByte();
             this.facingY = buf.readUnsignedByte();
             this.facingZ = buf.readUnsignedByte();

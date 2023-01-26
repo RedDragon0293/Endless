@@ -7,10 +7,7 @@ import cn.asone.endless.event.ListenableClass
 import cn.asone.endless.features.command.CommandManager
 import cn.asone.endless.features.module.modules.combat.ModuleAura
 import cn.asone.endless.features.module.modules.combat.ModuleVelocity
-import cn.asone.endless.features.module.modules.misc.ModuleAntiBot
-import cn.asone.endless.features.module.modules.misc.ModuleHYTPacketFixer
-import cn.asone.endless.features.module.modules.misc.ModuleHYTParty
-import cn.asone.endless.features.module.modules.misc.ModuleTest
+import cn.asone.endless.features.module.modules.misc.*
 import cn.asone.endless.features.module.modules.movement.*
 import cn.asone.endless.features.module.modules.render.ModuleClickGUI
 import cn.asone.endless.features.module.modules.render.ModuleHUD
@@ -48,7 +45,8 @@ object ModuleManager : ListenableClass() {
             ModuleAntiFall,
             ModuleWallClimb,
             ModulePerfectHorseJump,
-            ModuleHYTPacketFixer
+            ModuleHYTPacketFixer,
+            ModuleHYTGermHandler
         ).forEach {
             registerModule(it)
             if (it.options.isNotEmpty())

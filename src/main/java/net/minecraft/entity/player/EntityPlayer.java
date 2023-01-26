@@ -1,5 +1,6 @@
 package net.minecraft.entity.player;
 
+import cn.asone.endless.features.module.modules.misc.ModuleHYTPacketFixer;
 import com.google.common.base.Charsets;
 import com.google.common.collect.Lists;
 import com.mojang.authlib.GameProfile;
@@ -1488,9 +1489,17 @@ public abstract class EntityPlayer extends EntityLivingBase {
         this.triggerAchievement(StatList.jumpStat);
 
         if (this.getSprinting()) {
-            this.addExhaustion(0.8F);
+            if (ModuleHYTPacketFixer.INSTANCE.getState()) {
+                this.addExhaustion(0.2F);
+            } else {
+                this.addExhaustion(0.8F);
+            }
         } else {
-            this.addExhaustion(0.2F);
+            if (ModuleHYTPacketFixer.INSTANCE.getState()) {
+                this.addExhaustion(0.05F);
+            } else {
+                this.addExhaustion(0.2F);
+            }
         }
     }
 

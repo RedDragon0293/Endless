@@ -1,8 +1,6 @@
 package cn.asone.endless.features.command
 
-import cn.asone.endless.features.command.commands.CommandBind
-import cn.asone.endless.features.command.commands.CommandDebug
-import cn.asone.endless.features.command.commands.CommandToggle
+import cn.asone.endless.features.command.commands.*
 import cn.asone.endless.features.module.AbstractModule
 import cn.asone.endless.utils.ClientUtils
 
@@ -19,7 +17,9 @@ object CommandManager {
         arrayOf(
             CommandBind(),
             CommandToggle(),
-            CommandDebug()
+            CommandDebug(),
+            CommandGerm(),
+            CommandSession()
         ).forEach {
             commands.add(it)
         }

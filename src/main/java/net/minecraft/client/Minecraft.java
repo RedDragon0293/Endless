@@ -3,6 +3,7 @@ package net.minecraft.client;
 import cn.asone.endless.Endless;
 import cn.asone.endless.event.EventManager;
 import cn.asone.endless.event.KeyEvent;
+import cn.asone.endless.features.module.modules.misc.ModuleHYTPacketFixer;
 import cn.asone.endless.ui.font.Fonts;
 import cn.asone.endless.utils.RenderUtils;
 import com.google.common.collect.Lists;
@@ -12,7 +13,6 @@ import com.google.common.collect.Sets;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListenableFutureTask;
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftSessionService;
 import com.mojang.authlib.properties.PropertyMap;
@@ -113,7 +113,9 @@ import java.nio.ByteOrder;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.concurrent.*;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Executors;
+import java.util.concurrent.FutureTask;
 
 public class Minecraft implements IThreadListener, IPlayerUsage {
     private static final Logger logger = LogManager.getLogger("Minecraft");
@@ -705,7 +707,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
         if (imageStream == null)
             return null;
         BufferedImage bufferedimage = ImageIO.read(imageStream);
-        int[] rgb = bufferedimage.getRGB(0, 0, bufferedimage.getWidth(), bufferedimage.getHeight(), (int[]) null, 0, bufferedimage.getWidth());
+        int[] rgb = bufferedimage.getRGB(0, 0, bufferedimage.getWidth(), bufferedimage.getHeight(), null, 0, bufferedimage.getWidth());
         ByteBuffer bytebuffer = ByteBuffer.allocate(4 * rgb.length);
 
         for (int i : rgb) {
@@ -1280,7 +1282,9 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
 
     private void clickMouse() {
         if (this.leftClickCounter <= 0) {
-            this.thePlayer.swingItem();
+            if (!ModuleHYTPacketFixer.INSTANCE.getState() && ModuleHYTPacketFixer.INSTANCE.getSwing().get()) {
+                this.thePlayer.swingItem();
+            }
 
             if (this.objectMouseOver == null) {
                 logger.error("Null returned as 'hitResult', this shouldn't happen!");
@@ -1307,6 +1311,9 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
                         if (this.playerController.isNotCreative()) {
                             this.leftClickCounter = 10;
                         }
+                }
+                if (ModuleHYTPacketFixer.INSTANCE.getState() && ModuleHYTPacketFixer.INSTANCE.getSwing().get()) {
+                    this.thePlayer.swingItem();
                 }
             }
         }
