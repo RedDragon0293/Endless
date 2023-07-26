@@ -1,7 +1,7 @@
 package net.minecraft.client.gui;
 
 import cn.asone.endless.Endless;
-import cn.asone.endless.ui.gui.accounts.GuiAccounts;
+import cn.asone.endless.ui.gui.accounts.GuiLoginSelect;
 import com.google.common.collect.Lists;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
@@ -45,7 +45,7 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
     /**
      * Counts the number of screen updates.
      */
-    private float updateCounter;
+    private final float updateCounter;
 
     /**
      * The splash message.
@@ -62,7 +62,7 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
      * Texture allocated for the current viewport of the main menu's panorama background.
      */
     private DynamicTexture viewportTexture;
-    private boolean field_175375_v = true;
+    private final boolean field_175375_v = true;
 
     /**
      * The Object object utilized as a thread lock when performing non thread-safe operations
@@ -223,7 +223,7 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
      */
     private void addDemoButtons(int p_73972_1_, int p_73972_2_) {
         this.buttonList.add(new GuiButton(11, this.width / 2 - 100, p_73972_1_, I18n.format("menu.playdemo")));
-        this.buttonList.add(this.buttonResetDemo = new GuiButton(12, this.width / 2 - 100, p_73972_1_ + p_73972_2_ * 1, I18n.format("menu.resetdemo")));
+        this.buttonList.add(this.buttonResetDemo = new GuiButton(12, this.width / 2 - 100, p_73972_1_ + p_73972_2_, I18n.format("menu.resetdemo")));
         ISaveFormat isaveformat = this.mc.getSaveLoader();
         WorldInfo worldinfo = isaveformat.getWorldInfo("Demo_World");
 
@@ -254,7 +254,7 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
 
         if (button.id == 14) {
             //mc.displayGuiScreen(new GuiFakeForge(this));
-            mc.displayGuiScreen(new GuiAccounts(this));
+            mc.displayGuiScreen(new GuiLoginSelect(this));
         }
 
         if (button.id == 4) {

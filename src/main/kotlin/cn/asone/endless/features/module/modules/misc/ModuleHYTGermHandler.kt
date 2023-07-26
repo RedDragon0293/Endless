@@ -4,6 +4,7 @@ import cn.asone.endless.event.EventHook
 import cn.asone.endless.event.ReceivePacketEvent
 import cn.asone.endless.features.module.AbstractModule
 import cn.asone.endless.features.module.ModuleCategory
+import cn.asone.endless.option.AbstractOption
 import cn.asone.endless.utils.ClientUtils
 import io.netty.buffer.Unpooled
 import net.minecraft.client.gui.ScaledResolution
@@ -62,6 +63,7 @@ object ModuleHYTGermHandler : AbstractModule(
 
     override val handledEvents: ArrayList<EventHook>
         get() = arrayListOf(EventHook(ReceivePacketEvent::class.java))
+    override val options: ArrayList<AbstractOption<*>> = arrayListOf()
 
     override fun onReceivePacket(event: ReceivePacketEvent) {
         val p = event.packet

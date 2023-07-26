@@ -44,9 +44,9 @@ abstract class AbstractModule(
                 "$field §7${tag()}"
         }
 
-    override val handledEvents: ArrayList<EventHook> = arrayListOf()
+    abstract override val handledEvents: ArrayList<EventHook>
 
-    override val options: ArrayList<AbstractOption<*>> = arrayListOf()
+    abstract override val options: ArrayList<AbstractOption<*>>
 
     fun toggle() {
         state = !state

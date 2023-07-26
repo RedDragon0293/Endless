@@ -49,25 +49,18 @@ public interface IChatComponent extends Iterable<IChatComponent>
     {
         private static final Gson GSON;
 
-        public IChatComponent deserialize(JsonElement p_deserialize_1_, Type p_deserialize_2_, JsonDeserializationContext p_deserialize_3_) throws JsonParseException
-        {
-            if (p_deserialize_1_.isJsonPrimitive())
-            {
-                return new ChatComponentText(p_deserialize_1_.getAsString());
-            }
-            else if (!p_deserialize_1_.isJsonObject())
-            {
-                if (p_deserialize_1_.isJsonArray())
-                {
-                    JsonArray jsonarray1 = p_deserialize_1_.getAsJsonArray();
+        public IChatComponent deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext context) throws JsonParseException {
+            if (jsonElement.isJsonPrimitive()) {
+                return new ChatComponentText(jsonElement.getAsString());
+            } else if (!jsonElement.isJsonObject()) {
+                if (jsonElement.isJsonArray()) {
+                    JsonArray jsonarray1 = jsonElement.getAsJsonArray();
                     IChatComponent ichatcomponent1 = null;
 
-                    for (JsonElement jsonelement : jsonarray1)
-                    {
-                        IChatComponent ichatcomponent2 = this.deserialize(jsonelement, jsonelement.getClass(), p_deserialize_3_);
+                    for (JsonElement jsonelement : jsonarray1) {
+                        IChatComponent ichatcomponent2 = this.deserialize(jsonelement, jsonelement.getClass(), context);
 
-                        if (ichatcomponent1 == null)
-                        {
+                        if (ichatcomponent1 == null) {
                             ichatcomponent1 = ichatcomponent2;
                         }
                         else
@@ -80,12 +73,12 @@ public interface IChatComponent extends Iterable<IChatComponent>
                 }
                 else
                 {
-                    throw new JsonParseException("Don't know how to turn " + p_deserialize_1_ + " into a Component");
+                    throw new JsonParseException("Don't know how to turn " + jsonElement + " into a Component");
                 }
             }
             else
             {
-                JsonObject jsonobject = p_deserialize_1_.getAsJsonObject();
+                JsonObject jsonobject = jsonElement.getAsJsonObject();
                 IChatComponent ichatcomponent;
 
                 if (jsonobject.has("text"))
@@ -103,7 +96,7 @@ public interface IChatComponent extends Iterable<IChatComponent>
 
                         for (int i = 0; i < aobject.length; ++i)
                         {
-                            aobject[i] = this.deserialize(jsonarray.get(i), p_deserialize_2_, p_deserialize_3_);
+                            aobject[i] = this.deserialize(jsonarray.get(i), type, context);
 
                             if (aobject[i] instanceof ChatComponentText)
                             {
@@ -143,7 +136,7 @@ public interface IChatComponent extends Iterable<IChatComponent>
                 {
                     if (!jsonobject.has("selector"))
                     {
-                        throw new JsonParseException("Don't know how to turn " + p_deserialize_1_ + " into a Component");
+                        throw new JsonParseException("Don't know how to turn " + jsonElement + " into a Component");
                     }
 
                     ichatcomponent = new ChatComponentSelector(JsonUtils.getString(jsonobject, "selector"));
@@ -160,11 +153,11 @@ public interface IChatComponent extends Iterable<IChatComponent>
 
                     for (int j = 0; j < jsonarray2.size(); ++j)
                     {
-                        ichatcomponent.appendSibling(this.deserialize(jsonarray2.get(j), p_deserialize_2_, p_deserialize_3_));
+                        ichatcomponent.appendSibling(this.deserialize(jsonarray2.get(j), type, context));
                     }
                 }
 
-                ichatcomponent.setChatStyle(p_deserialize_3_.deserialize(p_deserialize_1_, ChatStyle.class));
+                ichatcomponent.setChatStyle(context.deserialize(jsonElement, ChatStyle.class));
                 return ichatcomponent;
             }
         }

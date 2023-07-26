@@ -55,31 +55,28 @@ public class RenderDragon extends RenderLiving<EntityDragon>
     /**
      * Renders the model in RenderLiving
      */
-    protected void renderModel(EntityDragon entitylivingbaseIn, float p_77036_2_, float p_77036_3_, float p_77036_4_, float p_77036_5_, float p_77036_6_, float p_77036_7_)
-    {
-        if (entitylivingbaseIn.deathTicks > 0)
-        {
-            float f = (float)entitylivingbaseIn.deathTicks / 200.0F;
+    protected void renderModel(EntityDragon entityDragon, float p_77036_2_, float p_77036_3_, float p_77036_4_, float p_77036_5_, float p_77036_6_, float p_77036_7_) {
+        if (entityDragon.deathTicks > 0) {
+            float f = (float) entityDragon.deathTicks / 200.0F;
             GlStateManager.depthFunc(515);
             GlStateManager.enableAlpha();
             GlStateManager.alphaFunc(516, f);
             this.bindTexture(enderDragonExplodingTextures);
-            this.mainModel.render(entitylivingbaseIn, p_77036_2_, p_77036_3_, p_77036_4_, p_77036_5_, p_77036_6_, p_77036_7_);
+            this.mainModel.render(entityDragon, p_77036_2_, p_77036_3_, p_77036_4_, p_77036_5_, p_77036_6_, p_77036_7_);
             GlStateManager.alphaFunc(516, 0.1F);
             GlStateManager.depthFunc(514);
         }
 
-        this.bindEntityTexture(entitylivingbaseIn);
-        this.mainModel.render(entitylivingbaseIn, p_77036_2_, p_77036_3_, p_77036_4_, p_77036_5_, p_77036_6_, p_77036_7_);
+        this.bindEntityTexture(entityDragon);
+        this.mainModel.render(entityDragon, p_77036_2_, p_77036_3_, p_77036_4_, p_77036_5_, p_77036_6_, p_77036_7_);
 
-        if (entitylivingbaseIn.hurtTime > 0)
-        {
+        if (entityDragon.hurtTime > 0) {
             GlStateManager.depthFunc(514);
             GlStateManager.disableTexture2D();
             GlStateManager.enableBlend();
             GlStateManager.blendFunc(770, 771);
             GlStateManager.color(1.0F, 0.0F, 0.0F, 0.5F);
-            this.mainModel.render(entitylivingbaseIn, p_77036_2_, p_77036_3_, p_77036_4_, p_77036_5_, p_77036_6_, p_77036_7_);
+            this.mainModel.render(entityDragon, p_77036_2_, p_77036_3_, p_77036_4_, p_77036_5_, p_77036_6_, p_77036_7_);
             GlStateManager.enableTexture2D();
             GlStateManager.disableBlend();
             GlStateManager.depthFunc(515);
@@ -120,8 +117,8 @@ public class RenderDragon extends RenderLiving<EntityDragon>
         float f6 = MathHelper.sqrt_float(f2 * f2 + f3 * f3 + f4 * f4);
         GlStateManager.pushMatrix();
         GlStateManager.translate((float)p_180574_2_, (float)p_180574_4_ + 2.0F, (float)p_180574_6_);
-        GlStateManager.rotate((float)(-Math.atan2((double)f4, (double)f2)) * 180.0F / (float)Math.PI - 90.0F, 0.0F, 1.0F, 0.0F);
-        GlStateManager.rotate((float)(-Math.atan2((double)f5, (double)f3)) * 180.0F / (float)Math.PI - 90.0F, 1.0F, 0.0F, 0.0F);
+        GlStateManager.rotate((float)(-Math.atan2(f4, f2)) * 180.0F / (float)Math.PI - 90.0F, 0.0F, 1.0F, 0.0F);
+        GlStateManager.rotate((float)(-Math.atan2(f5, f3)) * 180.0F / (float)Math.PI - 90.0F, 1.0F, 0.0F, 0.0F);
         Tessellator tessellator = Tessellator.getInstance();
         WorldRenderer worldrenderer = tessellator.getWorldRenderer();
         RenderHelper.disableStandardItemLighting();
@@ -136,9 +133,9 @@ public class RenderDragon extends RenderLiving<EntityDragon>
         for (int j = 0; j <= 8; ++j) {
             float f9 = MathHelper.sin((float) (j % 8) * (float) Math.PI * 2.0F / 8.0F) * 0.75F;
             float f10 = MathHelper.cos((float) (j % 8) * (float) Math.PI * 2.0F / 8.0F) * 0.75F;
-            float f11 = (float) (j % 8) * 1.0F / 8.0F;
-            worldrenderer.pos((double) (f9 * 0.2F), (double) (f10 * 0.2F), 0.0D).tex((double) f11, (double) f8).color(0, 0, 0, 255).endVertex();
-            worldrenderer.pos((double) f9, (double) f10, (double) f6).tex((double) f11, (double) f7).color(255, 255, 255, 255).endVertex();
+            float f11 = (float) (j % 8) / 8.0F;
+            worldrenderer.pos(f9 * 0.2F, f10 * 0.2F, 0.0D).tex(f11, f8).color(0, 0, 0, 255).endVertex();
+            worldrenderer.pos(f9, f10, f6).tex(f11, f7).color(255, 255, 255, 255).endVertex();
         }
 
         tessellator.draw();

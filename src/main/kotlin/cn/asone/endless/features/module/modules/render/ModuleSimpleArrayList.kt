@@ -5,6 +5,7 @@ import cn.asone.endless.event.Render2DEvent
 import cn.asone.endless.features.module.AbstractModule
 import cn.asone.endless.features.module.ModuleCategory
 import cn.asone.endless.features.module.ModuleManager
+import cn.asone.endless.option.AbstractOption
 import cn.asone.endless.ui.font.Fonts
 import cn.asone.endless.utils.RenderUtils
 import java.awt.Color
@@ -20,6 +21,7 @@ object ModuleSimpleArrayList : AbstractModule(
     override val handledEvents: ArrayList<EventHook> = arrayListOf(
         EventHook(Render2DEvent::class.java, 100)
     )
+    override val options: ArrayList<AbstractOption<*>> = arrayListOf()
 
     override fun onRender2D(event: Render2DEvent) {
         var offsetY = 0

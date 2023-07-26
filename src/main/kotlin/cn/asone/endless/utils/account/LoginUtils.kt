@@ -1,6 +1,6 @@
 package cn.asone.endless.utils.account
 
-import cn.asone.endless.ui.gui.accounts.GuiAccounts
+import cn.asone.endless.ui.gui.accounts.GuiTheAlteningLogin
 import cn.asone.endless.utils.ClientUtils
 import cn.asone.endless.utils.extensions.mc
 import com.google.gson.JsonParser
@@ -18,9 +18,9 @@ object LoginUtils {
     fun login(minecraftAccount: MinecraftAccount?): String {
         if (minecraftAccount == null)
             return ""
-        if (GuiAccounts.auth.service != AlteningServiceType.MOJANG) {
+        if (GuiTheAlteningLogin.auth.service != AlteningServiceType.MOJANG) {
             try {
-                GuiAccounts.auth.updateService(AlteningServiceType.MOJANG)
+                GuiTheAlteningLogin.auth.updateService(AlteningServiceType.MOJANG)
             } catch (e: NoSuchFieldException) {
                 ClientUtils.logger.error("Something went wrong while trying to switch alt service.", e)
             } catch (e: IllegalAccessException) {
@@ -79,7 +79,7 @@ object LoginUtils {
     fun loginTheAltening(token: String): String {
         lateinit var result: LoginResult
         runCatching {
-            GuiAccounts.auth.updateService(AlteningServiceType.THEALTENING)
+            GuiTheAlteningLogin.auth.updateService(AlteningServiceType.THEALTENING)
             result = loginMojang(token, "Endless")
             //GuiAccounts.auth.updateService(AlteningServiceType.MOJANG)
         }.onSuccess {

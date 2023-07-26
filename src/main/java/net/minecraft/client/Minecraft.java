@@ -1324,8 +1324,8 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
     /**
      * Called when user clicked he's mouse right button (place)
      */
-    private void rightClickMouse() {
-        if (!this.playerController.func_181040_m()) {
+    public void rightClickMouse() {
+        if (!this.playerController.isHittingBlock()) {
             this.rightClickDelayTimer = 4;
             boolean flag = true;
             ItemStack itemstack = this.thePlayer.inventory.getCurrentItem();

@@ -12,6 +12,7 @@ import cn.asone.endless.features.module.modules.movement.*
 import cn.asone.endless.features.module.modules.render.ModuleClickGUI
 import cn.asone.endless.features.module.modules.render.ModuleHUD
 import cn.asone.endless.features.module.modules.render.ModuleSimpleArrayList
+import cn.asone.endless.features.module.modules.render.ModuleTrueSight
 import cn.asone.endless.utils.ClientUtils
 import java.util.*
 
@@ -46,7 +47,10 @@ object ModuleManager : ListenableClass() {
             ModuleWallClimb,
             ModulePerfectHorseJump,
             ModuleHYTPacketFixer,
-            ModuleHYTGermHandler
+            ModuleHYTGermHandler,
+            ModuleAutoFish,
+            ModuleAntiAFK,
+            ModuleTrueSight
         ).forEach {
             registerModule(it)
             if (it.options.isNotEmpty())

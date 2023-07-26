@@ -46,6 +46,10 @@ public class GuiButton extends Gui {
     public boolean visible;
     protected boolean hovered;
 
+    /**
+     * 默认的宽度：200
+     * 默认的高度：20
+     */
     public GuiButton(int buttonId, int x, int y, String buttonText) {
         this(buttonId, x, y, 200, 20, buttonText);
     }

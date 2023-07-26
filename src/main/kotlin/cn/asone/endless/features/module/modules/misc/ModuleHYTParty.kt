@@ -4,6 +4,7 @@ import cn.asone.endless.event.EventHook
 import cn.asone.endless.event.ReceivePacketEvent
 import cn.asone.endless.features.module.AbstractModule
 import cn.asone.endless.features.module.ModuleCategory
+import cn.asone.endless.option.AbstractOption
 import cn.asone.endless.utils.ClientUtils
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
@@ -34,6 +35,7 @@ object ModuleHYTParty : AbstractModule(
 
     private const val JsonOpenGUI =
         "{\"packet_sub_type\":\"null\",\"packet_data\":\"null\",\"packet_type\":\"opengui\"}"
+    override val options: ArrayList<AbstractOption<*>> = arrayListOf()
 
     override fun onReceivePacket(event: ReceivePacketEvent) {
         val p = event.packet
