@@ -5,6 +5,7 @@ import com.google.gson.JsonPrimitive
 
 open class FloatOption(name: String, value: Float, val range: ClosedRange<Float> = 0F..Float.MAX_VALUE) :
     AbstractOption<Float>(name, value) {
+    constructor(name: String, value: Float, min: Float, max: Float) : this(name, value, min..max)
 
     fun set(newValue: Number) {
         super.set(newValue.toFloat())

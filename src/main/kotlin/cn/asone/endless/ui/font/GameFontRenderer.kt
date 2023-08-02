@@ -89,6 +89,10 @@ class GameFontRenderer(font: Font, companionStyle: Boolean = false) : FontRender
         var i = 0
         while (i < rawText.length) {
             var char = rawText[i]
+            if (this.glyphWidth[char.code] == 0.toByte()) {
+                i++
+                continue
+            }
             if (char.code == 167 && i + 1 < rawText.length) {
                 val type = rawText[i + 1]
                 when (getColorIndex(type)) {

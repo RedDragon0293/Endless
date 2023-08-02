@@ -5,6 +5,7 @@ import com.google.gson.JsonPrimitive
 
 open class IntOption(name: String, value: Int, val range: IntRange = 0..Int.MAX_VALUE) :
     AbstractOption<Int>(name, value) {
+    constructor(name: String, value: Int, min: Int, max: Int) : this(name, value, min..max)
 
     fun set(newValue: Number) {
         super.set(newValue.toInt())

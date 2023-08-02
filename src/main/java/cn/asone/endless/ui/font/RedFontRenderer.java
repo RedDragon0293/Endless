@@ -162,18 +162,24 @@ public class RedFontRenderer {
          */
 
         //空格不需要转换
-        if (charAt == 32)
+        if (charAt == 32) {
             return charImage;
-        if (font.canDisplay(charAt))
-            /*
-             * 判断字体图片是否为空白图片
-             */
+        }
+        /*
+         * 判断字体图片是否为空白图片
+         */
+        if (font.canDisplay(charAt)) {
             for (int m = 0; m < charImage.getWidth(); m++) {
                 for (int n = 0; n < charImage.getHeight(); n++) {
                     if (charImage.getRGB(m, n) != 0)
                         return charImage;
                 }
             }
+        }
+        //有些字符mc原版也不支持
+        if (Minecraft.getMinecraft().fonts.glyphWidth[charAt] == 0) {
+            return charImage;
+        }
 
         //logger.info("Trying to get original image for char " + (char) charAt + " , code " + charAt);
 

@@ -54,7 +54,7 @@ public class FontRenderer implements IResourceManagerReloadListener {
      */
     public byte[] glyphWidth = new byte[65536];
     public ResourceLocation locationFontTexture;
-    public GameSettings gameSettings;
+    //public GameSettings gameSettings;
     public ResourceLocation locationFontTextureBase;
     public float offsetBold = 1.0F;
     /**
@@ -116,7 +116,7 @@ public class FontRenderer implements IResourceManagerReloadListener {
     private boolean blend = false;
 
     public FontRenderer(GameSettings gameSettingsIn, ResourceLocation location, TextureManager textureManagerIn, boolean unicode) {
-        this.gameSettings = gameSettingsIn;
+        //this.gameSettings = gameSettingsIn;
         this.locationFontTextureBase = location;
         this.locationFontTexture = location;
         this.renderEngine = textureManagerIn;
@@ -182,9 +182,9 @@ public class FontRenderer implements IResourceManagerReloadListener {
                 char c0 = text.charAt(i + 1);
 
                 if (isFormatColor(c0)) {
-                    s = new StringBuilder("\u00a7" + c0);
+                    s = new StringBuilder("§" + c0);
                 } else if (isFormatSpecial(c0)) {
-                    s.append("\u00a7").append(c0);
+                    s.append("§").append(c0);
                 }
             }
         }
