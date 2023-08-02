@@ -5,8 +5,13 @@ import cn.asone.endless.utils.io.FileUtils
 import com.google.gson.*
 import java.io.*
 
-abstract class AbstractConfig(val file: File) {
+abstract class AbstractConfig(name: String) {
+    val file: File
     private val prettyGSON: Gson = GsonBuilder().setPrettyPrinting().create()
+
+    init {
+        file = File(ConfigManager.rootDir, name)
+    }
 
     @Throws(IOException::class)
     fun loadConfig() {

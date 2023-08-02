@@ -1,14 +1,12 @@
 package cn.asone.endless.config.configs
 
 import cn.asone.endless.config.AbstractConfig
-import cn.asone.endless.config.ConfigManager
 import cn.asone.endless.features.module.ModuleManager
 import cn.asone.endless.utils.ClientUtils
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
-import java.io.File
 
-class ValuesConfig : AbstractConfig(File(ConfigManager.rootDir, "values.json")) {
+class ValuesConfig : AbstractConfig("values.json") {
     override fun configParser(entry: Map.Entry<String, JsonElement>) {
         val module = ModuleManager.getModule(entry.key)
         if (module == null) {

@@ -1,19 +1,17 @@
 package cn.asone.endless.config.configs
 
 import cn.asone.endless.config.AbstractConfig
-import cn.asone.endless.config.ConfigManager
 import cn.asone.endless.features.special.FakeForge
-import cn.asone.endless.ui.font.Fonts
-import cn.asone.endless.utils.ClientUtils
 import cn.asone.endless.option.AbstractOption
 import cn.asone.endless.option.OptionRegister
+import cn.asone.endless.ui.font.Fonts
+import cn.asone.endless.utils.ClientUtils
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import net.minecraft.client.gui.GuiMultiplayer
 import viamcp.ViaMCP
-import java.io.File
 
-class GlobalConfig : AbstractConfig(File(ConfigManager.rootDir, "global.json")) {
+class GlobalConfig : AbstractConfig("global.json") {
     private val objectRegister: HashMap<String, OptionRegister> = hashMapOf(
         Pair("FakeForge", FakeForge),
         Pair("CustomFont", Fonts)
