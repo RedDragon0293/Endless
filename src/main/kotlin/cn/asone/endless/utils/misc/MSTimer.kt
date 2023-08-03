@@ -11,4 +11,8 @@ class MSTimer(private var time: Long) {
     fun reset() {
         time = System.currentTimeMillis()
     }
+
+    fun plusTime(ms: Long) {
+        time += ms
+    }
 }

@@ -69,12 +69,12 @@ object ModuleAutoFish : AbstractModule(
         if (orb) {
             //寻找宝球对应的盔甲架
             val list: List<Entity> = mc.theWorld.loadedEntityList
-            var min = Float.MAX_VALUE
+            var min = Double.MAX_VALUE
             for (i in list) {
                 if (i !is EntityArmorStand || i.getCurrentArmor(3) == null) {
                     continue
                 }
-                val dis: Float = i.getDistanceToEntity(mc.thePlayer)
+                val dis = i.getDistance(lastX, lastY, lastZ)
                 if (dis < min) {
                     min = dis
                     orbEntity = i
@@ -104,85 +104,87 @@ object ModuleAutoFish : AbstractModule(
             mc.thePlayer.rotationPitch = pitch.get()
             mc.thePlayer.rotationYaw = yaw
         }
-        if (fishTimer.hasTimePassed(400)) {
-            when (stage) {
-                0 -> {
-                    //idle
+        when (stage) {
+            0 -> {
+                //idle
+                if (fishTimer.hasTimePassed(500)) {
                     if (hookEntity == null) {
                         mc.thePlayer.rotationPitch = pitch.get()
                         mc.thePlayer.rotationYaw = yaw
                         useFishingRod()
-                    }
-                    if (hookEntity != null) {
+                    } else {
                         stage = 1
                     }
                     fishTimer.reset()
                 }
+            }
 
-                1 -> {
-                    //get armor stand
-                    if (fishTimer.hasTimePassed(300)) {
-                        val list: List<Entity> = mc.theWorld.loadedEntityList
-                        var min = Float.MAX_VALUE
-                        for (i in list) {
-                            if (i !is EntityArmorStand) {
-                                continue
-                            }
-                            assert(hookEntity != null)
-                            val dis: Float = i.getDistanceToEntity(hookEntity)
-                            if (dis < min) {
-                                min = dis
-                                hookArmorStand = i
-                            }
+            1 -> {
+                //get armor stand
+                if (fishTimer.hasTimePassed(300)) {
+                    val list: List<Entity> = mc.theWorld.loadedEntityList
+                    var min = Float.MAX_VALUE
+                    for (i in list) {
+                        if (i !is EntityArmorStand) {
+                            continue
                         }
-                        stage = 2
-                        fishTimer.reset()
-                    }
-                }
-
-                2 -> {
-                    // measure
-                    if (standingYPos != -1.0) {
-                        stage = 3
-                        return
-                    }
-                    if (hookArmorStand != null) {
-                        if (motionX == 0.0 && motionY == 0.0 && motionZ == 0.0 && fishTimer.hasTimePassed(3000)) {
-                            standingYPos = hookArmorStand!!.posY
+                        assert(hookEntity != null)
+                        val dis: Float = i.getDistanceToEntity(hookEntity)
+                        if (dis < min) {
+                            min = dis
+                            hookArmorStand = i
                         }
                     }
+                    stage = 2
+                    fishTimer.reset()
                 }
+            }
 
-                3 -> {
-                    //hook moving
-                    if (motionY > 0 || hookArmorStand!!.posY > standingYPos + 0.1) {
-                        lifting = true
-                    }
-                    if ( /*motionX == 0 && motionY == 0 && motionZ == 0 && */abs(standingYPos - hookArmorStand!!.posY) <= 0.07) {
-                        stage = 4
-                        return
-                    }
-                    if (hookArmorStand!!.posY < standingYPos && (motionY < 0 || (motionY == 0.0 && hookEntity!!.motionY < 0)) && lifting) {
-                        lifting = false
-                        stage = 5
-                        chatSuccess("State 3 success")
-                        useFishingRod()
-                        fishTimer.reset()
+            2 -> {
+                // measure
+                if (standingYPos != -1.0) {
+                    stage = 3
+                    return
+                }
+                if (hookArmorStand != null) {
+                    if (motionX == 0.0 && motionY == 0.0 && motionZ == 0.0 && fishTimer.hasTimePassed(3000)) {
+                        standingYPos = hookArmorStand!!.posY
                     }
                 }
+            }
 
-                4 -> {
-                    //waiting
-                    if (standingYPos - hookArmorStand!!.posY >= 0.08) {
-                        stage = 5
-                        chatSuccess("State 4 success, diff=" + (standingYPos - hookArmorStand!!.posY))
-                        useFishingRod()
-                        fishTimer.reset()
-                    }
+            3 -> {
+                //hook moving
+                if (motionY > 0/* || hookArmorStand!!.posY > standingYPos + 0.1*/) {
+                    lifting = true
                 }
+                if ( /*motionX == 0 && motionY == 0 && motionZ == 0 && */abs(standingYPos - hookArmorStand!!.posY) <= 0.07) {
+                    stage = 4
+                    lifting = false
+                    return
+                }
+                if (hookArmorStand!!.posY < standingYPos && (motionY < 0 || (motionY == 0.0 && hookEntity!!.motionY < 0)) && lifting) {
+                    lifting = false
+                    stage = 5
+                    chatSuccess("State 3 success")
+                    useFishingRod()
+                    fishTimer.reset()
+                }
+            }
 
-                5 -> {
-                    //success
+            4 -> {
+                //waiting
+                if (standingYPos - hookArmorStand!!.posY >= 0.08) {
+                    stage = 5
+                    chatSuccess("State 4 success, diff=" + (standingYPos - hookArmorStand!!.posY))
+                    useFishingRod()
+                    fishTimer.reset()
+                }
+            }
+
+            5 -> {
+                //success
+                if (fishTimer.hasTimePassed(300)) {
                     hookArmorStand = null
                     if (!orb) {
                         stage = 0
@@ -235,7 +237,7 @@ object ModuleAutoFish : AbstractModule(
                 orbTimer.reset()
                 chatSuccess("Orb deactivated!")
                 useFishingRod()
-                fishTimer.reset()
+                //fishTimer.reset()
             }
         }
     }
