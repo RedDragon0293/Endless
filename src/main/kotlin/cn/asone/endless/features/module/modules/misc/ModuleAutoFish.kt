@@ -184,7 +184,7 @@ object ModuleAutoFish : AbstractModule(
 
             5 -> {
                 //success
-                if (fishTimer.hasTimePassed(300)) {
+                if (fishTimer.hasTimePassed(200)) {
                     hookArmorStand = null
                     if (!orb) {
                         stage = 0
