@@ -6,6 +6,7 @@ import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.mojang.authlib.GameProfile;
 import io.netty.buffer.Unpooled;
+import kotlin.jvm.functions.Function0;
 import net.minecraft.block.Block;
 import net.minecraft.client.ClientBrandRetriever;
 import net.minecraft.client.Minecraft;
@@ -144,6 +145,10 @@ public class NetHandlerPlayClient implements INetHandlerPlayClient {
         this.mc.playerController.setGameType(packetIn.getGameType());
         this.mc.gameSettings.sendSettingsToServer();
         this.netManager.sendPacket(new C17PacketCustomPayload("MC|Brand", (new PacketBuffer(Unpooled.buffer())).writeString(ClientBrandRetriever.getClientModName())));
+        if (!mc.moduleEventList.isEmpty()) {
+            mc.moduleEventList.forEach(Function0::invoke);
+            mc.moduleEventList.clear();
+        }
     }
 
     /**

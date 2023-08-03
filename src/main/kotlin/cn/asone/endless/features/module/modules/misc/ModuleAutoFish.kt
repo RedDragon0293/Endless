@@ -29,7 +29,7 @@ object ModuleAutoFish : AbstractModule(
     private val orbTimer = MSTimer()
     private var hookArmorStand: EntityArmorStand? = null
     private var orbEntity: EntityArmorStand? = null
-    private var states = 0
+    private var stage = 0
     private var orb = false
     private var lifting = false
     private var standingYPos = -1.0
@@ -53,7 +53,7 @@ object ModuleAutoFish : AbstractModule(
 
     override fun onUpdate() {
         if (mc.thePlayer.heldItem == null || mc.thePlayer.heldItem.item !is ItemFishingRod) {
-            states = 0
+            stage = 0
             orb = false
             return
         }
@@ -80,7 +80,7 @@ object ModuleAutoFish : AbstractModule(
                     orbEntity = i
                 }
             }
-            if (orbEntity != null) {
+            if (orbEntity != null && fishTimer.hasTimePassed(700)) {
                 //瞄准
                 val rotation = toRotation(orbEntity!!.getPositionEyes(1f), true, mc.thePlayer)
                 mc.thePlayer.rotationYaw = rotation[0]
@@ -96,16 +96,16 @@ object ModuleAutoFish : AbstractModule(
             }
             return
         }
-        if (states != 0 && states != 5 && hookEntity == null || fishTimer.hasTimePassed(60000)) {
+        if (stage != 0 && stage != 5 && hookEntity == null || fishTimer.hasTimePassed(60000)) {
             fishTimer.reset()
             orbTimer.reset()
             orb = false
-            states = 0
+            stage = 0
             mc.thePlayer.rotationPitch = pitch.get()
             mc.thePlayer.rotationYaw = yaw
         }
         if (fishTimer.hasTimePassed(400)) {
-            when (states) {
+            when (stage) {
                 0 -> {
                     //idle
                     if (hookEntity == null) {
@@ -114,7 +114,7 @@ object ModuleAutoFish : AbstractModule(
                         useFishingRod()
                     }
                     if (hookEntity != null) {
-                        states = 1
+                        stage = 1
                     }
                     fishTimer.reset()
                 }
@@ -135,7 +135,7 @@ object ModuleAutoFish : AbstractModule(
                                 hookArmorStand = i
                             }
                         }
-                        states = 2
+                        stage = 2
                         fishTimer.reset()
                     }
                 }
@@ -143,7 +143,7 @@ object ModuleAutoFish : AbstractModule(
                 2 -> {
                     // measure
                     if (standingYPos != -1.0) {
-                        states = 3
+                        stage = 3
                         return
                     }
                     if (hookArmorStand != null) {
@@ -159,12 +159,12 @@ object ModuleAutoFish : AbstractModule(
                         lifting = true
                     }
                     if ( /*motionX == 0 && motionY == 0 && motionZ == 0 && */abs(standingYPos - hookArmorStand!!.posY) <= 0.07) {
-                        states = 4
+                        stage = 4
                         return
                     }
                     if (hookArmorStand!!.posY < standingYPos && (motionY < 0 || (motionY == 0.0 && hookEntity!!.motionY < 0)) && lifting) {
                         lifting = false
-                        states = 5
+                        stage = 5
                         chatSuccess("State 3 success")
                         useFishingRod()
                         fishTimer.reset()
@@ -174,7 +174,7 @@ object ModuleAutoFish : AbstractModule(
                 4 -> {
                     //waiting
                     if (standingYPos - hookArmorStand!!.posY >= 0.08) {
-                        states = 5
+                        stage = 5
                         chatSuccess("State 4 success, diff=" + (standingYPos - hookArmorStand!!.posY))
                         useFishingRod()
                         fishTimer.reset()
@@ -185,7 +185,7 @@ object ModuleAutoFish : AbstractModule(
                     //success
                     hookArmorStand = null
                     if (!orb) {
-                        states = 0
+                        stage = 0
                         mc.thePlayer.rotationPitch = pitch.get()
                         mc.thePlayer.rotationYaw = yaw
                     }
@@ -196,7 +196,7 @@ object ModuleAutoFish : AbstractModule(
 
     override fun onRender2D(event: Render2DEvent) {
         var text = ""
-        when (states) {
+        when (stage) {
             0 -> text = "idle"
             1 -> text = "get armor stand"
             2 -> text = "measure"
@@ -241,7 +241,7 @@ object ModuleAutoFish : AbstractModule(
     }
 
     override fun onEnable() {
-        states = 0
+        stage = 0
         fishTimer.reset()
         orbTimer.reset()
         standingYPos = -1.0

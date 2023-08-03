@@ -1,5 +1,6 @@
 package cn.asone.endless.features.module
 
+import cn.asone.endless.Endless
 import cn.asone.endless.event.EventHook
 import cn.asone.endless.event.ListenableClass
 import cn.asone.endless.option.AbstractOption
@@ -23,13 +24,21 @@ abstract class AbstractModule(
         set(value) {
             if (field == value)
                 return
-            if (mc.thePlayer != null && mc.theWorld != null) {
+            if (Endless.inited) {
                 mc.soundHandler.playSound("random.click", 1F)
-                if (value)
-                    onEnable()
-                else
-                    onDisable()
             }
+            if (value) {
+                if (Endless.inited) {
+                    onEnable()
+                } else {
+                    mc.moduleEventList.add { onEnable() }
+                }
+            } else {
+                if (Endless.inited) {
+                    onDisable()
+                }
+            }
+
             if (!canEnable) {
                 field = false
                 return

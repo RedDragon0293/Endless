@@ -17,6 +17,8 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftSessionService;
 import com.mojang.authlib.properties.PropertyMap;
 import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
+import kotlin.Unit;
+import kotlin.jvm.functions.Function0;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.audio.MusicTicker;
@@ -327,6 +329,8 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
      * Used to calculate delta time
      */
     private long last = getTime();
+
+    public ArrayList<Function0<Unit>> moduleEventList = new ArrayList<>();
 
     public Minecraft(GameConfiguration gameConfig) {
         theMinecraft = this;
