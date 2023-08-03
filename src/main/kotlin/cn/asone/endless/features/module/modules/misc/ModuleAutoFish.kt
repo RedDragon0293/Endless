@@ -7,16 +7,18 @@ import cn.asone.endless.event.UpdateEvent
 import cn.asone.endless.features.module.AbstractModule
 import cn.asone.endless.features.module.ModuleCategory
 import cn.asone.endless.option.AbstractOption
-import cn.asone.endless.option.BoolOption
 import cn.asone.endless.option.FloatOption
-import cn.asone.endless.option.ListOption
-import cn.asone.endless.utils.ClientUtils
+import cn.asone.endless.utils.ClientUtils.chatInfo
+import cn.asone.endless.utils.ClientUtils.chatSuccess
 import cn.asone.endless.utils.misc.MSTimer
-import cn.asone.endless.utils.player.RotationUtils
+import cn.asone.endless.utils.player.RotationUtils.toRotation
+import net.minecraft.entity.Entity
 import net.minecraft.entity.item.EntityArmorStand
 import net.minecraft.item.ItemFishingRod
 import net.minecraft.network.play.server.S45PacketTitle
 import java.awt.Color
+import kotlin.math.abs
+
 
 object ModuleAutoFish : AbstractModule(
     "AutoFish",
@@ -25,65 +27,54 @@ object ModuleAutoFish : AbstractModule(
 ) {
     private val fishTimer = MSTimer()
     private val orbTimer = MSTimer()
+    private var hookArmorStand: EntityArmorStand? = null
+    private var orbEntity: EntityArmorStand? = null
     private var states = 0
-    private var standingYPos = 0.0
     private var orb = false
+    private var lifting = false
+    private var standingYPos = -1.0
+    private var yaw = 0f
     private var lastX = 0.0
     private var lastY = 0.0
     private var lastZ = 0.0
     private var motionX = 0.0
     private var motionY = 0.0
     private var motionZ = 0.0
+    private val pitch = FloatOption("Pitch", 55f, -90f..90f)
 
-    /**
-     * 宝球对应的盔甲架
-     */
-    private var orbEntity: EntityArmorStand? = null
-
-    /**
-     * 鱼钩对应的盔甲架
-     */
-    private var hookArmorStand: EntityArmorStand? = null
-    private var yaw = 0F
-    private val mode: ListOption = ListOption("Mode", arrayOf("Hypixel"), "Hypixel")
-    private val staticYaw: BoolOption = BoolOption("StaticYaw", true)
-    private val pitch: FloatOption = FloatOption("RotationPitch", 55F, -90F..90F)
 
     override val handledEvents: ArrayList<EventHook> = arrayListOf(
-        EventHook(UpdateEvent::class.java),
         EventHook(Render2DEvent::class.java),
+        EventHook(UpdateEvent::class.java),
         EventHook(ReceivePacketEvent::class.java)
     )
 
-    override val options: ArrayList<AbstractOption<*>> = arrayListOf(mode, pitch)
+    override val options: ArrayList<AbstractOption<*>> = arrayListOf(pitch)
 
     override fun onUpdate() {
-        //钓鱼得有钓鱼竿
         if (mc.thePlayer.heldItem == null || mc.thePlayer.heldItem.item !is ItemFishingRod) {
             states = 0
             orb = false
             return
         }
-        val hookEntity = mc.thePlayer.fishEntity
-        //纠错机制 避免错误的状态
-        if (states != 0 && states != 4 && hookEntity == null && !orb) {
-            fishTimer.reset()
-            orbTimer.reset()
-            orb = false
-            states = 0
-            mc.thePlayer.rotationPitch = pitch.get()
-            mc.thePlayer.rotationYaw = yaw
+        if (hookArmorStand != null) {
+            motionX = hookArmorStand!!.posX - lastX
+            motionY = hookArmorStand!!.posY - lastY
+            motionZ = hookArmorStand!!.posZ - lastZ
+            lastX = hookArmorStand!!.posX
+            lastY = hookArmorStand!!.posY
+            lastZ = hookArmorStand!!.posZ
         }
-        //Deactivate orb!!
+        val hookEntity = mc.thePlayer.fishEntity
         if (orb) {
             //寻找宝球对应的盔甲架
-            val list = mc.theWorld.loadedEntityList
+            val list: List<Entity> = mc.theWorld.loadedEntityList
             var min = Float.MAX_VALUE
             for (i in list) {
                 if (i !is EntityArmorStand || i.getCurrentArmor(3) == null) {
                     continue
                 }
-                val dis = i.getDistanceToEntity(mc.thePlayer)
+                val dis: Float = i.getDistanceToEntity(mc.thePlayer)
                 if (dis < min) {
                     min = dis
                     orbEntity = i
@@ -91,70 +82,109 @@ object ModuleAutoFish : AbstractModule(
             }
             if (orbEntity != null) {
                 //瞄准
-                val rotation = RotationUtils.toRotation(orbEntity!!.getPositionEyes(1F), true)
+                val rotation = toRotation(orbEntity!!.getPositionEyes(1f), true, mc.thePlayer)
                 mc.thePlayer.rotationYaw = rotation[0]
                 mc.thePlayer.rotationPitch = rotation[1]
             }
-            if (orbTimer.hasTimePassed(800)) {
+            if (orbTimer.hasTimePassed(800) && fishTimer.hasTimePassed(1700)) {
                 //攻击
                 useFishingRod()
+                if (mc.thePlayer.fishEntity != null) {
+                    useFishingRod()
+                }
                 orbTimer.reset()
             }
             return
         }
-        //正常钓鱼流程
+        if (states != 0 && states != 5 && hookEntity == null || fishTimer.hasTimePassed(60000)) {
+            fishTimer.reset()
+            orbTimer.reset()
+            orb = false
+            states = 0
+            mc.thePlayer.rotationPitch = pitch.get()
+            mc.thePlayer.rotationYaw = yaw
+        }
         if (fishTimer.hasTimePassed(400)) {
             when (states) {
-                0 -> { //idle
+                0 -> {
+                    //idle
                     if (hookEntity == null) {
+                        mc.thePlayer.rotationPitch = pitch.get()
+                        mc.thePlayer.rotationYaw = yaw
                         useFishingRod()
-                        fishTimer.reset()
                     }
                     if (hookEntity != null) {
                         states = 1
-                        mc.thePlayer.rotationPitch = pitch.get()
-                        mc.thePlayer.rotationYaw = yaw
                     }
+                    fishTimer.reset()
                 }
 
-                1 -> { //drowning
-                    if (hookEntity.motionY > 0) {
-                        states = 2
-                        val list = mc.theWorld.loadedEntityList
+                1 -> {
+                    //get armor stand
+                    if (fishTimer.hasTimePassed(300)) {
+                        val list: List<Entity> = mc.theWorld.loadedEntityList
                         var min = Float.MAX_VALUE
                         for (i in list) {
                             if (i !is EntityArmorStand) {
                                 continue
                             }
-                            val dis = i.getDistanceToEntity(hookEntity)
+                            assert(hookEntity != null)
+                            val dis: Float = i.getDistanceToEntity(hookEntity)
                             if (dis < min) {
                                 min = dis
                                 hookArmorStand = i
                             }
                         }
+                        states = 2
+                        fishTimer.reset()
                     }
                 }
 
-                2 -> { //floating
-                    if (motionY >= 0) {
+                2 -> {
+                    // measure
+                    if (standingYPos != -1.0) {
                         states = 3
-                        standingYPos = hookArmorStand!!.posY
+                        return
+                    }
+                    if (hookArmorStand != null) {
+                        if (motionX == 0.0 && motionY == 0.0 && motionZ == 0.0 && fishTimer.hasTimePassed(3000)) {
+                            standingYPos = hookArmorStand!!.posY
+                        }
                     }
                 }
 
-                3 -> { //waiting
-                    if (standingYPos - hookArmorStand!!.posY < 0) {
-                        standingYPos = hookArmorStand!!.posY
+                3 -> {
+                    //hook moving
+                    if (motionY > 0 || hookArmorStand!!.posY > standingYPos + 0.1) {
+                        lifting = true
                     }
-                    if (standingYPos - hookArmorStand!!.posY >= 0.13 || (motionX != 0.0 && motionZ != 0.0 && motionY < 0.0)) {
+                    if ( /*motionX == 0 && motionY == 0 && motionZ == 0 && */abs(standingYPos - hookArmorStand!!.posY) <= 0.07) {
                         states = 4
+                        return
+                    }
+                    if (hookArmorStand!!.posY < standingYPos && (motionY < 0 || (motionY == 0.0 && hookEntity!!.motionY < 0)) && lifting) {
+                        lifting = false
+                        states = 5
+                        chatSuccess("State 3 success")
                         useFishingRod()
+                        fishTimer.reset()
                     }
                 }
 
                 4 -> {
-                    if (!orb) {
+                    //waiting
+                    if (standingYPos - hookArmorStand!!.posY >= 0.08) {
+                        states = 5
+                        chatSuccess("State 4 success, diff=" + (standingYPos - hookArmorStand!!.posY))
+                        useFishingRod()
                         fishTimer.reset()
+                    }
+                }
+
+                5 -> {
+                    //success
+                    hookArmorStand = null
+                    if (!orb) {
                         states = 0
                         mc.thePlayer.rotationPitch = pitch.get()
                         mc.thePlayer.rotationYaw = yaw
@@ -162,25 +192,17 @@ object ModuleAutoFish : AbstractModule(
                 }
             }
         }
-        if (hookArmorStand != null) {
-            motionX = hookArmorStand!!.posX - lastX
-            motionY = hookArmorStand!!.posY - lastY
-            motionZ = hookArmorStand!!.posZ - lastZ
-
-            lastX = hookArmorStand!!.posX
-            lastY = hookArmorStand!!.posY
-            lastZ = hookArmorStand!!.posZ
-        }
     }
 
     override fun onRender2D(event: Render2DEvent) {
-        val text = when (states) {
-            0 -> "idle"
-            1 -> "drowning"
-            2 -> "floating"
-            3 -> "waiting"
-            4 -> "success"
-            else -> throw IllegalStateException()
+        var text = ""
+        when (states) {
+            0 -> text = "idle"
+            1 -> text = "get armor stand"
+            2 -> text = "measure"
+            3 -> text = "hook moving"
+            4 -> text = "waiting"
+            5 -> text = "success"
         }
         mc.fontRendererObj.drawString(text, 200, 200, Color.RED.rgb)
         if (mc.thePlayer.heldItem != null && mc.thePlayer.heldItem.item is ItemFishingRod) {
@@ -194,39 +216,41 @@ object ModuleAutoFish : AbstractModule(
                     240,
                     Color.GREEN.rgb
                 )
+                mc.fontRendererObj.drawString(standingYPos.toString(), 200, 250, Color.RED.rgb)
             }
-        }
-    }
-
-    private fun useFishingRod() {
-        if (mc.playerController.sendUseItem(mc.thePlayer, mc.theWorld, mc.thePlayer.heldItem)) {
-            mc.entityRenderer.itemRenderer.resetEquippedProgress2()
-        }
-    }
-
-    override fun onEnable() {
-        fishTimer.reset()
-        orbTimer.reset()
-        orb = false
-        states = 0
-        if (staticYaw.get()) {
-            yaw = mc.thePlayer.rotationYaw
         }
     }
 
     override fun onReceivePacket(event: ReceivePacketEvent) {
         val packet = event.packet
         if (packet is S45PacketTitle && packet.type == S45PacketTitle.Type.TITLE) {
-            if (!orb && packet.message.unformattedText.contains("警告")) {
+            if (!orb && packet.message.getUnformattedText().contains("警告")) {
                 orb = true
-                ClientUtils.chatInfo("!!!Orb!!!")
+                chatInfo("!!!Orb!!!")
+                orbTimer.reset()
+                fishTimer.reset()
             }
-            if (orb && packet.message.unformattedText.contains("成功")) {
+            if (orb && packet.message.getUnformattedText().contains("成功")) {
                 orb = false
                 orbTimer.reset()
-                ClientUtils.chatSuccess("Orb deactivated!")
+                chatSuccess("Orb deactivated!")
                 useFishingRod()
+                fishTimer.reset()
             }
+        }
+    }
+
+    override fun onEnable() {
+        states = 0
+        fishTimer.reset()
+        orbTimer.reset()
+        standingYPos = -1.0
+        yaw = mc.thePlayer.rotationYaw
+    }
+
+    private fun useFishingRod() {
+        if (mc.playerController.sendUseItem(mc.thePlayer, mc.theWorld, mc.thePlayer.heldItem)) {
+            mc.entityRenderer.itemRenderer.resetEquippedProgress2()
         }
     }
 }

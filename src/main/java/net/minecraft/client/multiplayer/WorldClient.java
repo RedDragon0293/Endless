@@ -1,6 +1,6 @@
 package net.minecraft.client.multiplayer;
 
-import cn.asone.endless.features.module.modules.render.ModuleTrueSight;
+import cn.asone.endless.features.module.modules.visual.ModuleTrueSight;
 import com.google.common.collect.Sets;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;

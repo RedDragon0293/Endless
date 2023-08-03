@@ -1,4 +1,4 @@
-package cn.asone.endless.features.module.modules.render
+package cn.asone.endless.features.module.modules.visual
 
 import cn.asone.endless.Endless
 import cn.asone.endless.event.EventHook

@@ -1,13 +1,13 @@
-package cn.asone.endless.features.module.modules.render
+package cn.asone.endless.features.module.modules.visual
 
 import cn.asone.endless.event.EventHook
 import cn.asone.endless.event.Render2DEvent
 import cn.asone.endless.features.module.AbstractModule
 import cn.asone.endless.features.module.ModuleCategory
-import cn.asone.endless.ui.hud.AbstractElement
-import cn.asone.endless.ui.hud.elements.ElementArraylist
 import cn.asone.endless.option.AbstractOption
 import cn.asone.endless.option.BoolOption
+import cn.asone.endless.ui.hud.AbstractElement
+import cn.asone.endless.ui.hud.elements.ElementArraylist
 
 object
 ModuleHUD : AbstractModule("HUD", "Toggles visibility of the HUD.", ModuleCategory.VISUAL) {

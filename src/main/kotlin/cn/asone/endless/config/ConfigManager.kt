@@ -5,7 +5,7 @@ import cn.asone.endless.config.configs.FontCacheConfig
 import cn.asone.endless.config.configs.GlobalConfig
 import cn.asone.endless.config.configs.ModulesConfig
 import cn.asone.endless.config.configs.ValuesConfig
-import cn.asone.endless.features.module.modules.render.ModuleHUD
+import cn.asone.endless.features.module.modules.visual.ModuleHUD
 import cn.asone.endless.utils.ClientUtils
 import cn.asone.endless.utils.extensions.mc
 import java.io.File

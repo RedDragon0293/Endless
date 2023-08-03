@@ -1,6 +1,6 @@
 package net.minecraft.client.renderer.entity;
 
-import cn.asone.endless.features.module.modules.render.ModuleTrueSight;
+import cn.asone.endless.features.module.modules.visual.ModuleTrueSight;
 import com.google.common.collect.Lists;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;

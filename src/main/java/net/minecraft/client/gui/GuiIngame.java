@@ -2,7 +2,7 @@ package net.minecraft.client.gui;
 
 import cn.asone.endless.event.EventManager;
 import cn.asone.endless.event.Render2DEvent;
-import cn.asone.endless.features.module.modules.render.ModuleHUD;
+import cn.asone.endless.features.module.modules.visual.ModuleHUD;
 import cn.asone.endless.utils.ColorUtils;
 import cn.asone.endless.utils.animation.SmoothHelper;
 import com.google.common.collect.Iterables;
@@ -737,7 +737,7 @@ public class GuiIngame extends Gui {
             } else if (entity instanceof EntityLivingBase) {
                 this.mc.mcProfiler.endStartSection("mountHealth");
                 EntityLivingBase entitylivingbase = (EntityLivingBase) entity;
-                int i7 = (int) Math.ceil((double) entitylivingbase.getHealth());
+                int i7 = (int) Math.ceil(entitylivingbase.getHealth());
                 float f3 = entitylivingbase.getMaxHealth();
                 int j8 = (int) (f3 + 0.5F) / 2;
 

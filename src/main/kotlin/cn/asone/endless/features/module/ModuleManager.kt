@@ -9,10 +9,10 @@ import cn.asone.endless.features.module.modules.combat.ModuleAura
 import cn.asone.endless.features.module.modules.combat.ModuleVelocity
 import cn.asone.endless.features.module.modules.misc.*
 import cn.asone.endless.features.module.modules.movement.*
-import cn.asone.endless.features.module.modules.render.ModuleClickGUI
-import cn.asone.endless.features.module.modules.render.ModuleHUD
-import cn.asone.endless.features.module.modules.render.ModuleSimpleArrayList
-import cn.asone.endless.features.module.modules.render.ModuleTrueSight
+import cn.asone.endless.features.module.modules.visual.ModuleClickGUI
+import cn.asone.endless.features.module.modules.visual.ModuleHUD
+import cn.asone.endless.features.module.modules.visual.ModuleSimpleArrayList
+import cn.asone.endless.features.module.modules.visual.ModuleTrueSight
 import cn.asone.endless.utils.ClientUtils
 import java.util.*
 
