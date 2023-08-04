@@ -18,11 +18,12 @@ import net.minecraft.item.ItemFishingRod
 import net.minecraft.network.play.server.S45PacketTitle
 import java.awt.Color
 import kotlin.math.abs
+import kotlin.math.floor
 
 
 object ModuleAutoFish : AbstractModule(
     "AutoFish",
-    "Auto Fish",
+    "Auto Fish for Hypixel",
     ModuleCategory.MISC
 ) {
     private val fishTimer = MSTimer()
@@ -147,8 +148,13 @@ object ModuleAutoFish : AbstractModule(
                     return
                 }
                 if (hookArmorStand != null) {
+                    /*
                     if (motionX == 0.0 && motionY == 0.0 && motionZ == 0.0 && fishTimer.hasTimePassed(3000)) {
                         standingYPos = hookArmorStand!!.posY
+                    }
+                    */
+                    if (motionX == 0.0 && motionY == 0.0 && motionZ == 0.0) {
+                        standingYPos = floor(hookArmorStand!!.posY) + 0.875
                     }
                 }
             }
